@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Index</title>
+{% endblock title%}
+{% block base %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'style-profile.css'%}">
+
+
+
+    <div class="indexsize">
+        <br><br><br><br><br>
+   <div class="row justify-content-md-center ">
+      
+        <form class="form-inline md-form form-sm mt-0 m-3 " method="POST" action="{% url 'index' %}">
+          {% csrf_token %}
+     
+         <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2 " >
+                <input class="form-control" type="text" placeholder="ค้นหาห้องว่าง" name="search" >
+                
+            </div>
+            
+            <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2">
+          
+            </div>
+            <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2">
+              
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     ประเภทห้อง
+                    </button>
+                   
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      {% for rt in type %}
+                      <a class="dropdown-item" href="#" name="findtype">{{rt.name}}</a>
+                      {% endfor %}
+                    </div>
+                 
+                  </div>
+            </div>
+            {% if request.user.is_superuser %}
+            <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2">
+            <a href="{% url 'add'  %}"><button type="button" class="btn btn-danger" >เพิ่ม</button></a>
+            {% endif %}
+             
+            </div>
+        </form>
+      </div>  
+    </div>
+<br>
+     <center>
+    <div style="width: 65%" class="table-wrapper-scroll-y my-custom-scrollbar">
+    <table class="table table-hover " bgcolor="#eaecea">
+        <thead class="">
+          <tr>
+            <th scope="col">ชื่อห้อง</th>
+            <th scope="col">เวลาเปิด</th>
+            <th scope="col">เวลาปิด</th>
+            <th scope="col">ความจุ</th>
+            <th scope="col">ประเภทห้อง</th>
+          
+
+
+          </tr>
+        </thead>
+        <tbody> 
+        {% for rm in all_room %}
+          <tr>
+            <td>{{rm.name}}</td>
+            <td>{{rm.start_time}}</td>
+            <td>{{rm.end_time}}</td>
+            <td>{{rm.capacity}}</td>
+            <td>{{rm.room_type.name}}</td>
+            <td>
+              <a href="{% url 'bookcheck' %}"><button type="submit" class="btn btn-info">สถานะการจอง</button></a>
+              <a href="{% url 'booking' %}"><button type="submit" class="btn btn-info">จอง</button></a>
+              {% if request.user.is_superuser %}
+            <a href="{% url 'edit' %}"><button type="submit" class="btn btn-danger">แก้ไข</button></a>
+            {% endif %}
+            {% if request.user.is_superuser %}
+            <a href="{% url 'delete' rm.id %}"><button type="submit" class="btn btn-danger">ลบ</button></a>
+        
+            </td>
+            {% endif %}
+            <!-- {% comment %} {% if user.is_authenticated %} {% endcomment %} -->
+            <!-- {% if request.user.is_superuser %} -->
+            
+            <!-- {% endif %} -->
+            <!-- {% comment %} {% endif %} {% endcomment %} -->
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    </center>
+ 
+    
+
+{% endblock base %}

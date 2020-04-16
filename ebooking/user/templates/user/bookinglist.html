@@ -1,0 +1,155 @@
+{% extends 'list_base.html' %}
+{% block title %}
+<title>All Bookinglist</title>
+{% endblock title%}
+{% block list %}
+<br>
+<div class="container shadow bg-light" style=" height:600px;">
+  <br>
+<div class="row">
+  <div class="col-1"></div>
+  <div class="col-9">
+    <h2>List Request:</h2>
+    </div> 
+    <div class="col-2">
+      <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
+        <option selected>Today</option>
+        <!-- <option value="1">Today</option> -->
+        <option value="2">Yesterday</option>
+        <option value="3">All</option>
+      </select>
+    </div>   
+</div>
+<br>
+
+
+<center>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'style-profile.css'%}">
+    <div  class="table-wrapper-scroll-y my-custom-scrollbar" style=" height:450px;">
+     
+    <table class="table table-hover " >
+        <thead >
+          <tr>
+            <th scope="col">ชื่อห้อง</th>
+            <th scope="col">วันที่</th>
+            <th scope="col">เวลา</th>
+            <th scope="col">ผู้ขอ</th>
+         
+          </tr>
+        </thead>
+        <tbody> 
+
+        {% for rm in all_room %}
+          <tr>
+            <td>{{rm.name}}</td> 
+            <td>{{rm.open_time}}</td>
+            <td>{{rm.open_time}}</td>
+            <td>{{rm.open_time}}</td>
+
+          </tr>
+          {% endfor%}
+
+          <tr>
+            <td>asd</td>
+            <td>asd</td>
+            <td>asds</td>
+            <td>asds</td>
+            <td style="width: 10%">
+              <a href="{% url 'accept'  %}"><button type="submit" class="btn btn-danger">อนุมัติ</button></a>
+            </td>
+          </tr>
+          <tr>
+            <td>asd</td>
+            <td>asd</td>
+            <td>asds</td>
+          </tr>
+          <tr>
+            <td>asd</td>
+            <td>asd</td>
+            <td>asds</td>
+          </tr>
+          <tr>
+            <td>asd</td>
+            <td>asd</td>
+            <td>asds</td>
+          </tr>
+          <tr>
+            <td>asd</td>
+            <td>asd</td>
+            <td>asds</td>
+          </tr>
+          <tr>
+            <td>asd</td>
+            <td>asd</td>
+            <td>asds</td>
+          </tr>
+          <tr>
+            <td>asd</td>
+            <td>asd</td>
+            <td>asds</td>
+          </tr>
+          <tr>
+            <td>asd</td>
+            <td>asd</td>
+            <td>asds</td>
+          </tr>
+          <tr>
+            <td>asd</td>
+            <td>asd</td>
+            <td>asds</td>
+          </tr>
+        </tbody>
+      </table>
+     
+    </div>
+    </center>
+  </div>
+<!-- <br>
+    <div class="row">
+      <div class="col-2"></div>
+      <div class="col-10"><h3>วันก่อนๆ</h3></div>
+      </div> -->
+      
+      <!-- <center>
+          <div style="width: 65%" class="table-wrapper-scroll-y my-custom-scrollbar">
+          <table class="table table-hover shadow">
+              <thead >
+                <tr>
+                  <th scope="col">ชื่อห้อง</th>
+                  <th scope="col">วันที่</th>
+                  <th scope="col">ผู้ขอ</th>
+      
+                </tr>
+              </thead>
+              <tbody> 
+              {% for rm in all_room %}
+                <tr>
+                  <td>{{rm.name}}</td>
+                  <td>{{rm.open_time}}</td>
+                  <td>{{rm.close_time}}</td>
+                
+                  {% if perms.user.change_room %}
+                  <td>
+                  <a href="{% url 'edit' rm.room_id %}"><button type="submit" class="btn btn-danger">แก้ไข</button></a>
+                  {% endif %}
+                  {% if perms.user.delete_room %}
+                  <a href="{% url 'delete' rm.room_id %}"><button type="submit" class="btn btn-danger">ลบ</button></a>
+                  </td>
+                  {% endif %}
+                  {% comment %} {% if user.is_authenticated %} {% endcomment %}
+                    {% if perms.user.add_booking %}
+                  <td>
+                  <a href="{% url 'booking' rm.room_id %}"><button type="submit" class="btn btn-info">จอง</button></a>
+                  </td>
+                  {% endif %}
+                  {% comment %} {% endif %} {% endcomment %}
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          </center> -->
+
+
+{% endblock list %}
