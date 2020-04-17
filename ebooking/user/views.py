@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type
-from user.forms import EditForm
+from user.forms import EditForm, AddRoomForm
 # Create your views here.
 # @login_required(login_url='/')
 # @permission_required('user.view_room', login_url='/')
@@ -61,6 +61,42 @@ def bookcheck(request, rm_id):
     }
     return render(request, 'user/bookcheck.html', context)
 
+# def add(request):
+#     context = dict()
+#     type = Room_type.objects.all()
+#     context['type'] = type
+
+#     if request.method == 'POST':
+#         name = request.POST.get('name')
+#         opentime = request.POST.get('st_time')
+#         closetime = request.POST.get('ed_time')
+#         capacity = request.POST.get('cap')
+#         roomType = request.POST.get('typeselect')
+
+
+#         try:
+#             room = Room.objects.get(name=request.POST.get('name'))
+#         except ObjectDoesNotExist:
+#             room = None
+
+#         if room:
+#             context['error'] = 'ห้องซ้ำ'
+#             return render(request, 'user/addroom.html', context=context)     
+#         else:
+#             room = Room.objects.create(
+#             name = name,
+#             start_time = opentime,
+#             end_time = closetime,
+#             capacity = capacity,
+#             room_type = Room_type.objects.get(pk=roomType)
+
+#             )
+#             room.save()
+#             return redirect('index')
+    
+#     return render(request, 'user/addroom.html', context=context)
+
+
 def add(request):
     context = dict()
     type = Room_type.objects.all()
@@ -71,7 +107,7 @@ def add(request):
         opentime = request.POST.get('st_time')
         closetime = request.POST.get('ed_time')
         capacity = request.POST.get('cap')
-      
+        roomType = request.POST.get('typeselect')
 
 
         try:
@@ -88,13 +124,17 @@ def add(request):
             start_time = opentime,
             end_time = closetime,
             capacity = capacity,
-         
+            room_type = Room_type.objects.get(pk=roomType)
 
             )
             room.save()
             return redirect('index')
+        
+    else:
+        context['form'] = AddRoomForm()
     
-    return render(request, 'user/addroom.html', context=context)
+    return render(request, 'user/addroom.html', context)
+
 
 def edit(request, rm_id):
     room = Room.objects.get(pk=rm_id)
