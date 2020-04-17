@@ -1,0 +1,66 @@
+{% load static %}
+  <link rel="stylesheet" href="{% static 'style.css'%}">
+  
+
+<div class="size">
+    <div class="containers" id="containers">
+        <div class="form-containers sign-in-containers">
+            <form action="#">
+                <p> ห้อง : </p> 
+                <p> วันที่จอง</p>
+                <p> เวลาที่จอง</p>
+                <p> เหตุผลในการจอง</p>
+
+                <p> ผู้จอง </p> 
+                <p> รหัสนักศึกษา</p>
+                <p> ชั้นปี</p>
+        </div>
+
+
+        <div class="overlay-containers">
+            <div class="overlay">
+                <div class="overlay-panel overlay-right">
+                    <br><br><br><br><br><br>
+                    <center><table class="table table-borderless">
+                        <tbody>
+                          <tr >
+                            <td width="10%">
+                                {% load static %}
+                                <img   src="{% static 'correct.png' %}" alt="">
+                            </td>
+                            <td width="30%">
+                                ยื่นคำร้อง
+                                <p>6 เมษายน 2563</p>
+                                
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td>{% load static %}                             
+                                <img   src="{% static 'correct.png' %}" alt="">
+                            </td>
+                            <td>อาจารย์อนุมัติ
+                                <p>6 เมษายน 2563</p>
+                            </td>
+                            <td>อาจารย์ เอ</td>
+                          </tr>
+
+                          <tr>                          
+                            <td>{% load static %}                              
+                                <img   src="{% static 'correct.png' %}" alt="">
+                            </td>
+                            <td>เจ้าที่สถานที่อนุมัติ
+                                <p>6 เมษายน 2563</p>
+                            </td>
+                            <td>พี่โจ้</td>
+                          </tr>
+                        </tbody>
+                      </table></center>
+                   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  

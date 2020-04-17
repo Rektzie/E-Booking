@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block base %}
+    {% load static %}
+  <link rel="stylesheet" href="{% static 'style.css'%}">
+  
+
+<div class="size">
+    <div class="containers" id="containers">
+        <div class="form-containers sign-in-containers">
+            <form action="#">
+                <h1>Profile</h1>
+               <a class="nav-link" href="{% url 'profile' %}" style="color:rgb(255, 255, 255)">Profile</a>
+          
+              
+                
+              
+            </form>
+        </div>
+        <div class="overlay-containers">
+            <div class="overlay">
+                <div class="overlay-panel overlay-right">
+                    {% block profile_detail %}
+                    {% endblock profile_detail %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+  
+
+
+{% endblock base %}
+  

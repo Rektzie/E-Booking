@@ -1,0 +1,56 @@
+{% extends 'list_base.html' %}
+{% block title %}
+<title>All Bookinglist</title>
+{% endblock title%}
+{% block list %}
+<br>
+<div class="container shadow bg-light" style=" height:600px;">
+<br>
+
+
+
+<center>
+  <h3>ประวัติการใช้สถานที่</h3>
+  <br>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'style-profile.css'%}">
+    <div  class="table-wrapper-scroll-y my-custom-scrollbar" style=" height:450px;">
+     
+    <table class="table table-hover " bgcolor="#eaecea">
+        <thead >
+          <tr>
+            <th scope="col">ชื่อห้อง</th>
+            <th scope="col">วันที่ขอจอง</th>
+            <th scope="col">เวลา</th>
+            <th scope="col">ผู้ขอ</th>
+            <th scope="col">อาจารย์</th>
+            <th scope="col">เจ้าหน้าที่สถานที่</th>
+
+         
+          </tr>
+        </thead>
+        <tbody> 
+
+          {% for bl in all_booklist %}
+          <tr>
+            <td>{{bl.room_id.name}}</td> 
+            <td>{{bl.booking_id.bookdate}}</td>
+            <td>{{bl.start_time}} - {{bl.end_time}}</td>
+            <td>{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
+            <td>{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
+            
+            
+
+          </tr>
+          {% endfor%}
+
+         
+        </tbody>
+      </table>
+     
+    </div>
+    </center>
+
+  </div>  
+
+{% endblock list %}
