@@ -46,6 +46,28 @@ def booking(request):
     return render(request, 'user/booking.html')
 
 def profile(request):
+    context = {}
+    if request.method == 'POST':
+        username = request.user.username
+        user = User.objects.get(username__exact=username)
+        # oldpassword1 = request.user.password
+        # oldpassword2 = request.POST.get('oldpass')
+        password1 = request.POST.get('pass1')
+        password2 = request.POST.get('pass2')
+        # check that the passwords match
+
+        # matchcheck = check_password(oldpassword1, oldpassword2)
+        # if matchcheck:
+        if password1 == password2:
+            user.set_password(password1)
+            user.save()
+
+            logout(request)
+            return redirect('login')
+        else:
+                context['error'] = 'รหัสผ่านไม่ตรงกัน'
+        # else:
+        #         context['error'] = 'OldPasswords do not match.'  
 
     return render(request, 'user/profile.html')
 

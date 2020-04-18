@@ -1,53 +1,184 @@
 {% extends 'base.html' %}
 
 {% block base %}
+      
+{% if error %}
+<div class="alert alert-danger" role="alert">
+ <strong>Oh snap!</strong> {{error}}
+</div>
+ {% endif %}
+
 <br>
 <br>
-<br>
+
 {% load static %}
   <link rel="stylesheet" href="{% static 'style-profile.css'%}">
     <div class="container">
-        <div class="row">
+        <!-- <br>
+        <center><h3>โปรไฟล์</h3></center>
+
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+        <div class="card m-3" >
+            <div class="card-header">
+                ข้อมูลส่วนบุคคล
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item list-group-item-action">ชื่อ &nbsp;  {{ request.user.first_name }}<button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
+                <li class="list-group-item list-group-item-action">นามสกุล &nbsp;{{ request.user.last_name }}<button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
+                <li class="list-group-item list-group-item-action">รหัสนักศึกษา &nbsp;<button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
+                <li class="list-group-item list-group-item-action">ชั้นปี &nbsp;<button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
+          </div>
+      
+       <div class="card m-3" >
+        <div class="card-header">
+            Account
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item list-group-item-action">ชื่อผู้ใช้ &nbsp; {{ request.user.username }}<button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
+            <li class="list-group-item list-group-item-action">รหัสผ่าน &nbsp;******<button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
+            <li class="list-group-item list-group-item-action">อีเมล &nbsp;{{ request.user.email }} <button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
+            
+      </div>
+    </div>
+   <br> -->
+ 
+       <div class="row">
             <div></div>
          
-            <div class="col-6 p-3 ">
-                <div class="pbg p-3 shadow rounded-lg p-4" >
-                
-                   <center> <h2> Profile</h2> </center>
+            <div class="col-4 p-3 ">
+                <div class="p-3 shadow bg-light" >
                    <br>
-                    <p>ชื่อ  <p> 
-                    <p>รหัสนักศึกษา <p>
-                    <p>ชั้นปี<p>
-                    <p>email</p>
-                    <p>username</p>
-                    <!-- <button type="submit" class="btn btn-info"></button> -->
+                   <br>
+                   {% load static %}
+                   <center> <img src="{% static 'user1.png' %}" style="width: 100px;"> 
+                    <br>
+                    <br>
+                   <h5>{{ request.user.first_name }} {{ request.user.last_name }}</h5>
+                <p>บทบาท : นักศึกษา</p>
+                    </center>
+                    <br>
+                    <div class="row">
+                        <div class="col-6">
+                            <center>
+                                <p> 0 </p>
+                                คำร้องทั้งหมด
+                            </center>
+                        </div>
+                        <div class="col-6">
+                            <center>
+                                <p> 0 </p>
+                                ได้รับการอนุมัติ
+                            </center>
+                        </div>
+                    </div>
                     
+                  
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-8">
                 <div class="p-3" >
                     <div class="container">
-                        <div class="pbg p-2 shadow rounded-lg p-4" >
-                            <h2> เปลี่ยนรหัสผ่าน </h2>
-                            <br>
-                            <p>รหัสผ่านเดิม : <input type="text"></p>
-                            <p>รหัสผ่านใหม่ : <input type="text"></p>
-                            <p>รหัสผ่านใหม่ อีกครั้ง : <input type="text"></p>
-                            <button type="submit" class="btn btn-dark ">ยืนยัน</button>
+                        <div class="shadow  p-4 bg-light " >
+
+                              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                  <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">ข้อมูลส่วนบุคคล</a>
+                                </li>
+                                <li class="nav-item">
+                                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">เปลี่ยนรหัสผ่าน</a>
+                                </li>
+                              
+                              </ul>
+                              <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                    <br>
+                                    <center><h2> ข้อมูลส่วนบุคคล </h2></center>
+                                        <br>
+                                        <form method="POST" accept="{% url 'profile' %}">
+                                            {% csrf_token %} 
+                                            <div class="form-group row">
+                                            <label  class="col-sm-3 col-form-label">ชื่อ</label>
+                                            <div class="col-sm-9">
+                                                <input type="text"  class="form-control"  value="{{ request.user.first_name }}">
+                                            </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label  class="col-sm-3 col-form-label">นามสกุล</label>
+                                                <div class="col-sm-9">
+                                                <input type="text"  class="form-control"  value="{{ request.user.last_name }}">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label  class="col-sm-3 col-form-label">รหัสนักศึกษา</label>
+                                                <div class="col-sm-9">
+                                                <input type="text" readonly class="form-control"  value=""> <!-- มาแก้ให้มันดึงข้อมูล-->
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label  class="col-sm-3 col-form-label">ชั้นปี</label>
+                                                <div class="col-sm-9">
+                                                <input type="text" readonly class="form-control"  value=""> <!-- มาแก้ให้มันดึงข้อมูล-->
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label  class="col-sm-3 col-form-label">สาขา</label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" readonly class="form-control"  value=""> <!-- มาแก้ให้มันดึงข้อมูล-->
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label  class="col-sm-3 col-form-label">email</label>
+                                                <div class="col-sm-9">
+                                                <input type="text" readonly class="form-control"  value="{{ request.user.email }}">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label  class="col-sm-3 col-form-label">username</label>
+                                                <div class="col-sm-9">
+                                                <input type="text" readonly    class="form-control"  value="{{ request.user.username }}">
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <button type="submit" class="btn btn-info" style="float: right;">บันทึก</button>
+                                            <br>
+                                           </form>
+                                </div>
+                                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                    <br>
+                                    <h5>เปลี่ยนรหัสผ่าน</h5>
+                                    <form action="{% url 'profile' %}" method="POST">
+                                        {% csrf_token %} 
+                                  <!-- <div class="form-group row">
+                                    <label for="inputPassword" class="col-sm-3 col-form-label">รหัสผ่านปัจจุบัน</label>
+                                    <div class="col-sm-9">
+                                      <input type="password" class="form-control" id="inputPassword" name="oldpass" placeholder="Password">
+                                    </div>
+                                  </div> -->
+                                  <div class="form-group row">
+                                      <label for="inputPassword" class="col-sm-3 col-form-label">รหัสผ่านใหม่</label>
+                                      <div class="col-sm-9">
+                                        <input type="password" class="form-control" id="inputPassword" name="pass1" placeholder="Password">
+                                      </div>
+                                    </div>
+                                    <div class="form-group row">
+                                      <label for="inputPassword" class="col-sm-3 col-form-label">รหัสผ่านใหม่อีกครั้ง</label>
+                                      <div class="col-sm-9">
+                                        <input type="password" class="form-control" id="inputPassword" name="pass2" placeholder="Password">
+                                      </div>
+                                    </div>
+                                
+                                    <button type="submit" class="btn btn-info" style="float: right;">บันทึก</button>
+                                    <br>
+                                </form>
+                                </div>
+                              </div>
+                            
+                                 
                         </div>
                     </div> 
                 </div>
-                <div class="p-3" >
-                    <div class="container">
-                        <div class="bg-light p-2 shadow rounded-lg" >
-                            <h2> รายละเอียด </h2>
-                            <p>ความจุ : {{room.capacity}}</p>
-                            <p>เวลาเปิด : {{room.open_time}}</p>
-                            <p>เวลาปิด : {{room.close_time}}</p>
-                        </div>
-                    </div> 
-                </div>
+
             </div>
-        </div>
+        </div> 
     </div>
     {% endblock base %}
