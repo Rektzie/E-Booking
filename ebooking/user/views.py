@@ -103,32 +103,33 @@ def add(request):
     context['type'] = type
 
     if request.method == 'POST':
-        name = request.POST.get('name')
-        opentime = request.POST.get('st_time')
-        closetime = request.POST.get('ed_time')
-        capacity = request.POST.get('cap')
-        roomType = request.POST.get('typeselect')
+        form = AddRoomForm(request.POST)
+        if form.is_valid():
+            name = request.POST.get('name')
+            start_time = request.POST.get('start_time')
+            end_time = request.POST.get('end_time')
+            capacity = request.POST.get('capacity')
+            room_type = request.POST.get('room_type')
 
 
-        try:
-            room = Room.objects.get(name=request.POST.get('name'))
-        except ObjectDoesNotExist:
-            room = None
+            try:
+                room = Room.objects.get(name=request.POST.get('name'))
+            except ObjectDoesNotExist:
+                room = None
 
-        if room:
-            context['error'] = 'ห้องซ้ำ'
-            return render(request, 'user/addroom.html', context=context)     
-        else:
-            room = Room.objects.create(
-            name = name,
-            start_time = opentime,
-            end_time = closetime,
-            capacity = capacity,
-            room_type = Room_type.objects.get(pk=roomType)
-
-            )
-            room.save()
-            return redirect('index')
+            if room:
+                context['error'] = 'ห้องซ้ำ'
+                return render(request, 'user/addroom.html', context=context)     
+            else:
+                room = Room.objects.create(
+                name = name,
+                start_time = start_time,
+                end_time = end_time,
+                capacity = capacity,
+                room_type = Room_type.objects.get(pk=room_type)
+                )
+                room.save()
+                return redirect('index')
         
     else:
         context['form'] = AddRoomForm()

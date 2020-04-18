@@ -9,12 +9,18 @@ class EditForm(forms.Form):
     name = forms.CharField(max_length=255)
     date = forms.DateField()
     
+    
+class TimeInput(forms.TimeInput):
+    input_type = 'time'    
+    
 class AddRoomForm(forms.Form):
-    roomTypeChoices = [Room_type.objects.values('id'), Room_type.objects.values('name')]
+    roomType = Room_type.objects.all()
+    roomTypeChoices = [('', 'select')]
+    for i in roomType:
+        roomTypeChoices.append((i.id, i.name))
+        
     name = forms.CharField(label='ชื่อห้อง' ,max_length=30, required=True)
-    typeselect = forms.ChoiceField(widget=forms.Select, choices=roomTypeChoices)
-    start_time = forms.TimeField(required=True)
-    end_time = forms.TimeField(required=True)
+    start_time = forms.TimeField(widget=TimeInput, required=True)
+    end_time = forms.TimeField(widget=TimeInput, required=True)
     capacity = forms.IntegerField(required=True)
-    
-    
+    room_type = forms.ChoiceField(widget=forms.Select, choices=roomTypeChoices)
