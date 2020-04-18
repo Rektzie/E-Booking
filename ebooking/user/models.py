@@ -11,8 +11,8 @@ class Student(models.Model):
     )
     user_id = models.OneToOneField(User, on_delete=models.CASCADE)
     stu_id = models.IntegerField()
-    major = models.Choices
-    year = models.IntegerField(choices=mj)
+    year = models.IntegerField()
+    major = models.IntegerField(choices=mj)
 
 class Adminn(models.Model):
     user_id = models.OneToOneField(User, on_delete=models.CASCADE)

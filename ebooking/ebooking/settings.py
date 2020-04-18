@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'ebooking.wsgi.application'
 DATABASES = {
                 'default': {
                     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-                    'NAME': 'ebooking_db',
+                    'NAME': 'ebook_db',
                     'USER': 'postgres',
                     'PASSWORD': '1234',
                     'HOST': 'localhost',
