@@ -45,8 +45,28 @@ def booking(request):
 
     return render(request, 'user/booking.html')
 
+# def profile_edit(request):
+#     context = {}
+#     user = request.user
+#     if request.method == 'POST':     
+
+#         user.first_name = request.POST.get('fname')
+#         user.last_name = request.POST.get('lname')
+#         user.save()
+
+#         return redirect('profile_edit')
+#     return render(request, 'user/profile.html', context)
+
 def profile(request):
     context = {}
+    try:
+        user_id = request.user.id
+        student = Student.objects.get(user_id__exact=user_id)
+        context['student'] = student
+    except ObjectDoesNotExist:
+        student = None
+   
+    
     if request.method == 'POST':
         username = request.user.username
         user = User.objects.get(username__exact=username)
@@ -67,9 +87,10 @@ def profile(request):
         else:
                 context['error'] = 'รหัสผ่านไม่ตรงกัน'
         # else:
-        #         context['error'] = 'OldPasswords do not match.'  
+        #         context['error'] = 'OldPasswords do not match.' 
+         
 
-    return render(request, 'user/profile.html')
+    return render(request, 'user/profile.html', context)
 
 
 def bookcheck(request, rm_id):
