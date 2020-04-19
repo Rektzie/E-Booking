@@ -27,16 +27,14 @@ def my_login(request):
     return render(request, 'guest/login.html', context=context)
 
 
+
 def register(request):
     context = {}
 
     if request.method == 'POST':
-        firstname = request.POST.get('firstname')
-        lastname = request.POST.get('lastname')
-        username = request.POST.get('username')
         password = request.POST.get('password')
         repassword = request.POST.get('repassword')
-        email = request.POST.get('email')
+
 
         try:
             user = User.objects.get(username=request.POST.get('username'))
@@ -51,10 +49,15 @@ def register(request):
             return render(request, 'guest/login.html', context)
 
         if password == repassword:
-            user = User.objects.create_user(username, email, password)
-            user.first_name = firstname
-            user.last_name = lastname
-            # group = Group.objects.get(name='student')
+            user = User.objects.create_user(request.POST.get('username'), request.POST.get('email'), request.POST.get('password'))
+            user.first_name = request.POST.get('firstname')
+            user.last_name = request.POST.get('lastname')
+
+
+            print(request.POST.get('firstname'),request.POST.get('lastname'))
+
+            
+            # group = Group.objects.get(name='myUser')
             # user.groups.add(group)
             user.save
             return redirect('my_login')

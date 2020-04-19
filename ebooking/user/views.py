@@ -207,9 +207,16 @@ def tracking(request, bl_id):
         'book_list': book_list,
     }
     return render(request, 'user/track.html', context)
-def accept(request):
+def accept(request, bl_id):
 
-    return render(request, 'user/accept.html')
+    
+
+    book_list = Booking_list.objects.get(pk=bl_id)
+    context = {
+        'book_list': book_list,
+    }
+  
+    return render(request, 'user/accept.html', context)
 
 def delete(request, rm_id):
     room = Room.objects.get(pk=rm_id)

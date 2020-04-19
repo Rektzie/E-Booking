@@ -49,7 +49,7 @@
             <td>{{bl.start_time}} - {{bl.end_time}} </td>
             <td>{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
             <td style="width: 10%">
-              <a href="{% url 'accept'  %}"><button type="submit" class="btn btn-danger">อนุมัติ</button></a>
+              <a href="{% url 'accept' bl.list_no %}"><button type="submit" class="btn btn-danger">อนุมัติ</button></a>
             </td>
           </tr>
           {% endfor%}
