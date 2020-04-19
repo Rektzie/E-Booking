@@ -20,7 +20,15 @@ class AddRoomForm(forms.Form):
         roomTypeChoices.append((i.id, i.name))
         
     name = forms.CharField(label='ชื่อห้อง' ,max_length=30, required=True)
-    start_time = forms.TimeField(widget=TimeInput, required=True)
-    end_time = forms.TimeField(widget=TimeInput, required=True)
-    capacity = forms.IntegerField(required=True)
-    room_type = forms.ChoiceField(widget=forms.Select, choices=roomTypeChoices)
+    start_time = forms.TimeField(label='เวลาเปิด' ,widget=TimeInput, required=True)
+    end_time = forms.TimeField(label='เวลาปิด' ,widget=TimeInput, required=True)
+    capacity = forms.IntegerField(label='ความจุห้อง' ,required=True)
+    room_type = forms.ChoiceField(label='ประเภทห้อง' ,widget=forms.Select, choices=roomTypeChoices)
+
+    name.widget.attrs.update({'class' : 'form-control'})
+    room_type.widget.attrs.update({'class' : 'form-control'})
+    start_time.widget.attrs.update({'class' : 'form-control'})
+    end_time.widget.attrs.update({'class' : 'form-control'})
+    capacity.widget.attrs.update({'class' : 'form-control'})
+
+

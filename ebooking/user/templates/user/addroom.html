@@ -29,51 +29,33 @@
 
                 <form method="POST" action="{% url 'add'%}">
                     {% csrf_token %}
-                    {% comment %} <div class="row">
-                        <div class="col-6">
-                            <p> ชื่อห้อง
-
-                                <input type="text" id="name" name="name" required="required">
+                   <div class="row">
+                        <div class="col-6"> 
+                            <p>                            
+                                <label for="{{ form.name.id_for_label }}"> {{ form.name.label }} </label>
+                                {{ form.name }}
                             </p>
                         </div>
                         <div class="col-6">
-
-                            <select id="inputState" class="form-control" name="typeselect">
-                                <option selected>ประเภทห้อง</option>
-                                {% for rt in type %}
-                                <option value="{{rt.id}}">{{rt.name}}</option>
-                                {% endfor %}
-                            </select>
-
-                        </div>
-                    </div>
-
-                    
-
-
-                    <p> เวลาเปิด
-                        <input class="form-control" type="time" name="st_time" required="required">
-                    </p>
-                    <p> เวลาปิด
-                        <input class="form-control" type="time" name="ed_time" required="required">
                         <p>
+                            <label for="{{ form.room_type.id_for_label }}"> {{ form.room_type.label }} </label>
+                            {{ form.room_type }}    
+                        </p>                     
+                       </div>
+                    </div>
+                        <p>  
+                            <label for="{{ form.start_time.id_for_label }}"> {{ form.start_time.label }} </label>
+                            {{ form.start_time }}
+                        </p>
+                        <p> <label for="{{ form.end_time.id_for_label }}"> {{ form.end_time.label }} </label>
+                        {{ form.end_time }}
                         </p>
                         <div class="form-group">
-                            <p> ความจุ
-                                <input class="form-control" type="text" name="cap" required="required">
-                            </p>
-
+                            <label for="{{ form.capacity.id_for_label }}"> {{ form.capacity.label }} </label>
+                            {{ form.capacity }}
                         </div>
-                    </p> {% endcomment %}
-                    
-                    <p>name{{ form.name }}<br></p>
-                    <p>startTime{{ form.start_time }}<br></p>
-                    <p>endTime{{ form.end_time }}<br></p>
-                    <p>cap{{ form.capacity }}<br></p>
-                    <p>type{{ form.room_type }}<br></p>
                     <button type="submit" class="btn btn-dark">ยืนยัน</button>
                 </form>
-
             </div>
         </div>
     </div>
