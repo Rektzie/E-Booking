@@ -71,10 +71,10 @@ class Booking_teacher(models.Model):
 class Booking_staff(models.Model):
     booking_id = models.OneToOneField(Booking, on_delete=models.CASCADE)
 
+
 class Room_type(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-
 
 class Room(models.Model):
     id = models.AutoField(primary_key=True)
@@ -87,6 +87,8 @@ class Room(models.Model):
     def __str__(self):
         return self.name
 
+
+
 class Booking_list(models.Model):
     list_no = models.AutoField(primary_key=True)
     start_time = models.TimeField()
@@ -95,7 +97,3 @@ class Booking_list(models.Model):
     room_id = models.ForeignKey(Room, on_delete=models.CASCADE)
 
 
-class AddRoomForm(ModelForm):
-    class Meta:
-        model = Room
-        fields = ['name', 'start_time', 'end_time', 'capacity', 'room_type']
