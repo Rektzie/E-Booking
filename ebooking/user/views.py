@@ -152,8 +152,8 @@ def bookcheck(request, rm_id):
 def add(request):
     context = dict()
     type = Room_type.objects.all()
-    context['type'] = type
-
+    # context['type'] = type
+    
     if request.method == 'POST':
         form = AddRoomForm(request.POST)
         if form.is_valid():
@@ -164,29 +164,30 @@ def add(request):
             room_type = request.POST.get('room_type')
 
 
-            try:
-                room = Room.objects.get(name=request.POST.get('name'))
-            except ObjectDoesNotExist:
-                room = None
+            # try:
+            #     room = Room.objects.get(name=request.POST.get('name'))
+            # except ObjectDoesNotExist:
+            #     room = None
 
-            if room:
-                context['error'] = 'ห้องซ้ำ'
-                return render(request, 'user/addroom.html', context=context)     
-            else:
-                room = Room.objects.create(
-                name = name,
-                start_time = start_time,
-                end_time = end_time,
-                capacity = capacity,
-                room_type = Room_type.objects.get(pk=room_type)
-                )
-                room.save()
-                return redirect('index')
+            # if room:
+            #     context['error'] = 'ห้องซ้ำ'
+            #     context['form'] = AddRoomForm()
+            #     # return render(request, 'user/addroom.html', context=context)     
+            # else:
+            room = Room.objects.create(
+            name = name,
+            start_time = start_time,
+            end_time = end_time,
+            capacity = capacity,
+            room_type = Room_type.objects.get(pk=room_type)
+            )
+            room.save()
+            return redirect('index')
+            
         
     else:
-        context['form'] = AddRoomForm()
-    
-    return render(request, 'user/addroom.html', context)
+        form = AddRoomForm()
+    return render(request, 'user/addroom.html', {'form': form, 'type': type})
 
 
 def edit(request, rm_id):

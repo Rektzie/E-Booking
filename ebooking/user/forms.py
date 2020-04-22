@@ -3,6 +3,8 @@ from tkinter import Widget
 
 from django import forms
 from user.models import Room_type
+from user.models import Room
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class EditForm(forms.Form):
@@ -13,7 +15,7 @@ class EditForm(forms.Form):
 class TimeInput(forms.TimeInput):
     input_type = 'time'    
     
-class AddRoomForm(forms.Form):
+class AddRoomForm(forms.Form): #form add, book
     roomType = Room_type.objects.all()
     roomTypeChoices = [('', 'select')]
     for i in roomType:
@@ -31,5 +33,23 @@ class AddRoomForm(forms.Form):
     start_time.widget.attrs.update({'class' : 'form-control'})
     end_time.widget.attrs.update({'class' : 'form-control'})
     capacity.widget.attrs.update({'class' : 'form-control'})
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        
+        try:
+            room = Room.objects.get(name=name)
+            # room = Room.objects.get(name=request.POST.get('name'))
+
+        except ObjectDoesNotExist:
+            room = None
+
+        if room:
+            # raise ValidationError(
+            #     'ห้องชื่อ %(name)s มีอยู่ในระบบแล้ว', code='invalid', params={'roomName' : name}
+            errorMsg = 'ห้องชื่อนี้มีอยู่ในระบบแล้ว'
+            self.add_error('name', errorMsg)
+            # )
 
 

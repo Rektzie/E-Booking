@@ -54,12 +54,12 @@ def register(request):
             user.last_name = request.POST.get('lastname')
 
 
-            print(request.POST.get('firstname'),request.POST.get('lastname'))
+            
 
             
             # group = Group.objects.get(name='myUser')
             # user.groups.add(group)
-            user.save
+            user.save()
             return redirect('my_login')
         else:
             context['error'] = 'Password ซ้ำ'

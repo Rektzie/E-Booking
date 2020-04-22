@@ -31,7 +31,7 @@
                     {% csrf_token %}
                    <div class="row">
                         <div class="col-6"> 
-                            <p>                            
+                            <p> {{ form.name.errors }}                           
                                 <label for="{{ form.name.id_for_label }}"> {{ form.name.label }} </label>
                                 {{ form.name }}
                             </p>
