@@ -3,6 +3,7 @@
 <title>Tracking</title>
 {% endblock title%}
 {% block base %}
+{% load static %}
 <br><br>
 <div class="container shadow bg-light" style=" height:600px;">
     <div class="row">
@@ -43,37 +44,49 @@
                 <table class="table table-borderless">
                     <tbody>                       
                       <tr >
-                        <td width="10%">
-                            {% load static %}
-                            <img   src="{% static 'correct.png' %}" alt="">
+                        <td width="5%"> 
+                            <img   src="{% static 'complete.png' %}" style="width: 50px;">
                         </td>
-                        <td width="30%">
+                        <td width="">
                             ยื่นคำร้อง
                             <p>{{book_list.booking_id.date}}</p>
                         </td>
                       </tr>
                       <tr>
-                       
-                        <td>{% load static %}
-                          
-                            <img   src="{% static 'correct.png' %}" alt="">
-                        </td>
+                        {% for st in booking_st %}
+                        {% if st.teacher_result == 0 %}
+                        <td>  <img   src="{% static 'wait.png' %}" style="width: 50px;"></td>
+                        {% else %}
+                        <td>  <img   src="{% static 'complete.png' %}" style="width: 50px;"></td>
+                      {% endif %}
+                      {% endfor %}
                         <td>อาจารย์อนุมัติ
-                            <p>6 เมษายน 2563</p>
+                          {% for st in booking_st %}
+                            <p>{{ st.teacher_date}}</p>
+                          {% endfor %}
                         </td>
-                        <td>อาจารย์ เอ</td>
+                        <!-- <td>{% for st in booking_st %}
+                          <p>{{ st.teacher_user_id_id}}</p>
+                        {% endfor %}</td> -->
+                        
                       </tr>
                       <tr>
-                      
-                        <td>{% load static %}
-                          
-                            <img   src="{% static 'correct.png' %}" alt="">
+                        {% for st in booking_st %}
+                          {% if st.staff_result == 0 %}
+                          <td>  <img   src="{% static 'wait.png' %}" style="width: 50px;"></td>
+                          {% else %}
+                          <td>  <img   src="{% static 'complete.png' %}" style="width: 50px;"></td>
+                        {% endif %}
+                        {% endfor %}
+
+                        <td>เจ้าหน้าที่สถานที่อนุมัติ
+                          {% for st in booking_st %}
+                          <p>{{ st.staff_date}}</p>
+                        {% endfor %}
                         </td>
-                        <td>เจ้าที่สถานที่อนุมัติ
-                            <p>6 เมษายน 2563</p>
-                        </td>
-                        <td>พี่โจ้
-                        </td>
+                        <!-- <td>{% for t in teacher %}
+                          <p>{{ t.position}}</p>
+                        {% endfor %}</td> -->
                       </tr>
                     </tbody>
                   </table>

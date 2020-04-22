@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
-from django.db.models import Count
+from django.db.models import Subquery
 from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type
 from user.forms import EditForm, AddRoomForm
 # Create your views here.
@@ -213,11 +213,26 @@ def edit(request, rm_id):
 
 
 def tracking(request, bl_id):
+
+    listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')
+    booking = Booking.objects.filter(id__in = Subquery(listno)).values_list('id')
+    booking_st = Booking_student.objects.filter(booking_id__in =  Subquery(booking))
+ 
+    
+
     book_list = Booking_list.objects.get(pk=bl_id)
+    print(booking_st)
     student = Student.objects.all()
+
+    book_id = Booking.objects.filter()
+
     context = {
         'book_list': book_list,
         'student': student,
+        'booking_st': booking_st,
+    
+
+
 
     }
     return render(request, 'user/track.html', context)
@@ -236,6 +251,12 @@ def delete(request, rm_id):
     room = Room.objects.get(pk=rm_id)
     room.delete()
     return redirect('index')
+
+def track_delete(request, bl_id):
+    listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')
+    booking = Booking.objects.filter(id__in = Subquery(listno))
+    booking.delete()
+    return redirect('bookinglist')
 
 def bookinglistadmin(request):
     all_booklist = Booking_list.objects.all()

@@ -4,6 +4,15 @@ from datetime import datetime
 # Create your models here.
 
 
+class UserRole(models.Model):
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE)
+    rl = (
+    (1, "นักศึกษา"),
+    (2, "อาจารย์"),
+    (3, "บุคคลากร"),
+    )
+    role = models.IntegerField(choices=rl)
+
 class Student(models.Model):
     mj = (
     (1, "it"),
@@ -48,11 +57,11 @@ class Booking(models.Model):
 
 class Booking_student(models.Model):
     booking_id = models.OneToOneField(Booking, on_delete=models.CASCADE)
-    teacher_user_id = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True)
-    staff_user_id = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True)
-    teacher_date = models.DateTimeField(default=datetime.now, blank=True, null=True)
+    teacher_user_id = models.ForeignKey(Teacher, on_delete=models.CASCADE, blank=True)
+    staff_user_id = models.ForeignKey(Staff, on_delete=models.CASCADE, blank=True)
+    teacher_date = models.DateTimeField(blank=True)
     teacher_result = models.BooleanField(default=False)
-    staff_date = models.DateTimeField(default=datetime.now, blank=True, null=True)
+    staff_date = models.DateTimeField(blank=True)
     staff_result = models.BooleanField(default=False)
 
 class Booking_teacher(models.Model):
