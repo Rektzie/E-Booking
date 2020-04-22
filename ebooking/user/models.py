@@ -23,7 +23,7 @@ class Student(models.Model):
     user_id = models.OneToOneField(User, on_delete=models.CASCADE)
     stu_id = models.IntegerField()
     year = models.IntegerField()
-    major = models.IntegerField(choices=mj)
+    major = models.IntegerField(choices=mj, blank=True)
 
 
 
