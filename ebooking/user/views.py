@@ -180,6 +180,8 @@ def edit(request, rm_id):
 
     return render(request, 'user/editroom.html', context)
 
+
+
 def tracking(request, bl_id):
     book_list = Booking_list.objects.get(pk=bl_id)
     context = {

@@ -24,3 +24,5 @@ class AddRoomForm(forms.Form):
     end_time = forms.TimeField(widget=TimeInput, required=True)
     capacity = forms.IntegerField(required=True)
     room_type = forms.ChoiceField(widget=forms.Select, choices=roomTypeChoices)
+    
+    
