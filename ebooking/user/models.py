@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.forms import ModelForm
 # Create your models here.
 
 
@@ -93,3 +94,8 @@ class Booking_list(models.Model):
     booking_id = models.ForeignKey(Booking, on_delete=models.CASCADE)
     room_id = models.ForeignKey(Room, on_delete=models.CASCADE)
 
+
+class AddRoomForm(ModelForm):
+    class Meta:
+        model = Room
+        fields = ['name', 'start_time', 'end_time', 'capacity', 'room_type']
