@@ -9,6 +9,7 @@
 
 
 
+
 <center>
   <h3>ประวัติการใช้สถานที่</h3>
   <br>
@@ -16,7 +17,7 @@
   <link rel="stylesheet" href="{% static 'style-profile.css'%}">
     <div  class="table-wrapper-scroll-y my-custom-scrollbar" style=" height:450px;">
      
-    <table class="table table-hover " bgcolor="#eaecea">
+    <table class="table table-hover " >
         <thead >
           <tr>
             <th scope="col">ชื่อห้อง</th>
@@ -37,7 +38,18 @@
             <td>{{bl.booking_id.bookdate}}</td>
             <td>{{bl.start_time}} - {{bl.end_time}}</td>
             <td>{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
-            <td>{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
+           
+            <td>.. </td>
+            {% for s in st_booking %}
+            {% for u in user %}          
+              {% if s.staff_user_id_id == u.id %}
+                        <td> {{u.first_name}} {{u.last_name}} </td>
+                        {% endif %}
+                        {% endfor %}
+                        {% endfor %}
+          
+          
+
             
             
 

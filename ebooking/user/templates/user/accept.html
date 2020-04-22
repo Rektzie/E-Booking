@@ -20,10 +20,15 @@
                  <br>
                  <br>
                 <h5>{{ book_list.booking_id.user_id.first_name }} {{ book_list.booking_id.user_id.last_name }}</h5>
-             <p>รหัสนักศึกษา : </p>
-             <p>ชั้นปี : </p>
-             <p>email : </p>
-
+               
+            {% for s in student %}
+                {% if book_list.booking_id.user_id.id == s.user_id_id %}
+             <p>รหัสนักศึกษา : {{ s.stu_id }}</p>
+             <p>ชั้นปี : {{ s.year }} </p>
+             <p>email : {{ book_list.booking_id.user_id.email }} </p>
+                {% endif %}
+            {% endfor %}
+            
 
                  </center>
                  <br>

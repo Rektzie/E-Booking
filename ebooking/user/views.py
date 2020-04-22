@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
+from django.db.models import Count
 from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type
 from user.forms import EditForm, AddRoomForm
 # Create your views here.
@@ -42,8 +43,10 @@ def bookinglist(request):
     return render(request, 'user/bookinglistme.html', context)
 
 def booking(request):
-
-    return render(request, 'user/booking.html')
+    student = Student.objects.all()
+    context = {}
+    context['student'] = student
+    return render(request, 'user/booking.html', context)
 
 # def profile_edit(request):
 #     context = {}
@@ -59,10 +62,16 @@ def booking(request):
 
 def profile(request):
     context = {}
+
     try:
         user_id = request.user.id
+        
         student = Student.objects.get(user_id__exact=user_id)
+        list = Booking.objects.filter(user_id=user_id).count()
+        print(list)
         context['student'] = student
+        context['list'] = list
+
     except ObjectDoesNotExist:
         student = None
    
@@ -203,17 +212,20 @@ def edit(request, rm_id):
 
 def tracking(request, bl_id):
     book_list = Booking_list.objects.get(pk=bl_id)
+    student = Student.objects.all()
     context = {
         'book_list': book_list,
+        'student': student,
+
     }
     return render(request, 'user/track.html', context)
 def accept(request, bl_id):
-
-    
-
+    student = Student.objects.all()
     book_list = Booking_list.objects.get(pk=bl_id)
     context = {
         'book_list': book_list,
+        'student': student,
+
     }
   
     return render(request, 'user/accept.html', context)
@@ -234,11 +246,16 @@ def bookinglistadmin(request):
     return render(request, 'user/bookinglistadmin.html', context)
 
 def history(request):
-   
+    user = User.objects.all()
+    st_booking = Booking_student.objects.all()
     all_booklist = Booking_list.objects.all()
    
     context = {
         'all_booklist' : all_booklist,
+        'st_booking' : st_booking,
+        'user' : user,
+
+
 
      
     }
