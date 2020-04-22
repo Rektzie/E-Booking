@@ -14,33 +14,7 @@
 {% load static %}
   <link rel="stylesheet" href="{% static 'style-profile.css'%}">
     <div class="container">
-        <!-- <br>
-        <center><h3>โปรไฟล์</h3></center>
-
-        <div class="table-wrapper-scroll-y my-custom-scrollbar">
-        <div class="card m-3" >
-            <div class="card-header">
-                ข้อมูลส่วนบุคคล
-            </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item list-group-item-action">ชื่อ &nbsp;  {{ request.user.first_name }}<button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
-                <li class="list-group-item list-group-item-action">นามสกุล &nbsp;{{ request.user.last_name }}<button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
-                <li class="list-group-item list-group-item-action">รหัสนักศึกษา &nbsp;<button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
-                <li class="list-group-item list-group-item-action">ชั้นปี &nbsp;<button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
-          </div>
-      
-       <div class="card m-3" >
-        <div class="card-header">
-            Account
-        </div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item list-group-item-action">ชื่อผู้ใช้ &nbsp; {{ request.user.username }}<button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
-            <li class="list-group-item list-group-item-action">รหัสผ่าน &nbsp;******<button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
-            <li class="list-group-item list-group-item-action">อีเมล &nbsp;{{ request.user.email }} <button type="submit" class="btn btn-warning" style="float: right;">แก้ไข</button></li>
-            
-      </div>
-    </div>
-   <br> -->
+       
  
        <div class="row">
             <div></div>
@@ -60,7 +34,7 @@
                     <div class="row">
                         <div class="col-6">
                             <center>
-                                <p> 0 </p>
+                                <p> {{ list }} </p>
                                 คำร้องทั้งหมด
                             </center>
                         </div>
@@ -99,33 +73,35 @@
                                             <div class="form-group row">
                                             <label  class="col-sm-3 col-form-label">ชื่อ</label>
                                             <div class="col-sm-9">
-                                                <input type="text"  class="form-control"  value="{{ request.user.first_name }}">
+                                                <input type="text"  class="form-control" name="fname" value="{{ request.user.first_name }}">
                                             </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label  class="col-sm-3 col-form-label">นามสกุล</label>
                                                 <div class="col-sm-9">
-                                                <input type="text"  class="form-control"  value="{{ request.user.last_name }}">
+                                                <input type="text"  class="form-control" name="lname"  value="{{ request.user.last_name }}">
                                                 </div>
                                             </div>
+                                            {% if request.user.is_authenticated %}
                                             <div class="form-group row">
                                                 <label  class="col-sm-3 col-form-label">รหัสนักศึกษา</label>
                                                 <div class="col-sm-9">
-                                                <input type="text" readonly class="form-control"  value=""> <!-- มาแก้ให้มันดึงข้อมูล-->
+                                                <input type="text" readonly class="form-control"  value="{{ student.stu_id }}"> <!-- มาแก้ให้มันดึงข้อมูล-->
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label  class="col-sm-3 col-form-label">ชั้นปี</label>
                                                 <div class="col-sm-9">
-                                                <input type="text" readonly class="form-control"  value=""> <!-- มาแก้ให้มันดึงข้อมูล-->
+                                                <input type="text" readonly class="form-control"  value="{{ student.year }}"> <!-- มาแก้ให้มันดึงข้อมูล-->
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label  class="col-sm-3 col-form-label">สาขา</label>
                                                 <div class="col-sm-9">
-                                                    <input type="text" readonly class="form-control"  value=""> <!-- มาแก้ให้มันดึงข้อมูล-->
+                                                    <input type="text" readonly class="form-control"  value="{{ student.major }}"> <!-- มาแก้ให้มันดึงข้อมูล-->
                                                 </div>
                                             </div>
+                                            {% endif %}
                                             <div class="form-group row">
                                                 <label  class="col-sm-3 col-form-label">email</label>
                                                 <div class="col-sm-9">

@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
+from django.db.models import Count
 from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type
 from user.forms import EditForm, AddRoomForm
 # Create your views here.
@@ -42,11 +43,39 @@ def bookinglist(request):
     return render(request, 'user/bookinglistme.html', context)
 
 def booking(request):
+    student = Student.objects.all()
+    context = {}
+    context['student'] = student
+    return render(request, 'user/booking.html', context)
 
-    return render(request, 'user/booking.html')
+# def profile_edit(request):
+#     context = {}
+#     user = request.user
+#     if request.method == 'POST':     
+
+#         user.first_name = request.POST.get('fname')
+#         user.last_name = request.POST.get('lname')
+#         user.save()
+
+#         return redirect('profile_edit')
+#     return render(request, 'user/profile.html', context)
 
 def profile(request):
     context = {}
+
+    try:
+        user_id = request.user.id
+        
+        student = Student.objects.get(user_id__exact=user_id)
+        list = Booking.objects.filter(user_id=user_id).count()
+        print(list)
+        context['student'] = student
+        context['list'] = list
+
+    except ObjectDoesNotExist:
+        student = None
+   
+    
     if request.method == 'POST':
         username = request.user.username
         user = User.objects.get(username__exact=username)
@@ -67,9 +96,10 @@ def profile(request):
         else:
                 context['error'] = 'รหัสผ่านไม่ตรงกัน'
         # else:
-        #         context['error'] = 'OldPasswords do not match.'  
+        #         context['error'] = 'OldPasswords do not match.' 
+         
 
-    return render(request, 'user/profile.html')
+    return render(request, 'user/profile.html', context)
 
 
 def bookcheck(request, rm_id):
@@ -184,13 +214,23 @@ def edit(request, rm_id):
 
 def tracking(request, bl_id):
     book_list = Booking_list.objects.get(pk=bl_id)
+    student = Student.objects.all()
     context = {
         'book_list': book_list,
+        'student': student,
+
     }
     return render(request, 'user/track.html', context)
-def accept(request):
+def accept(request, bl_id):
+    student = Student.objects.all()
+    book_list = Booking_list.objects.get(pk=bl_id)
+    context = {
+        'book_list': book_list,
+        'student': student,
 
-    return render(request, 'user/accept.html')
+    }
+  
+    return render(request, 'user/accept.html', context)
 
 def delete(request, rm_id):
     room = Room.objects.get(pk=rm_id)
@@ -208,11 +248,16 @@ def bookinglistadmin(request):
     return render(request, 'user/bookinglistadmin.html', context)
 
 def history(request):
-   
+    user = User.objects.all()
+    st_booking = Booking_student.objects.all()
     all_booklist = Booking_list.objects.all()
    
     context = {
         'all_booklist' : all_booklist,
+        'st_booking' : st_booking,
+        'user' : user,
+
+
 
      
     }

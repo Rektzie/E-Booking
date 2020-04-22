@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 # Create your models here.
 
+
 class Student(models.Model):
     mj = (
     (1, "it"),
@@ -13,6 +14,9 @@ class Student(models.Model):
     stu_id = models.IntegerField()
     year = models.IntegerField()
     major = models.IntegerField(choices=mj)
+
+
+
 
 class Adminn(models.Model):
     user_id = models.OneToOneField(User, on_delete=models.CASCADE)
