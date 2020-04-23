@@ -4,7 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from django.db.models import Subquery
 from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type
-from user.forms import EditForm, AddRoomForm
+from user.forms import EditForm, AddRoomForm, BookRoomForm
+from django.forms import formset_factory
 # Create your views here.
 # @login_required(login_url='/')
 # @permission_required('user.view_room', login_url='/')
@@ -33,7 +34,7 @@ def bookinglistall(request):
     }
     return render(request, 'user/bookinglist.html', context)
 
-def bookinglist(request):
+def bookinglist(request): #existing booking list from users' requests
     all_booklist = Booking_list.objects.all()
     user_id = request.user.id
     context = {
@@ -42,10 +43,20 @@ def bookinglist(request):
     }
     return render(request, 'user/bookinglistme.html', context)
 
-def booking(request):
-    student = Student.objects.all()
+def booking(request): #func called by booking.html
+    BookRoomFormSet = formset_factory(BookRoomForm)
+    formset = BookRoomFormSet()
+    data = {
+            'formset-0-raw': 'my raw field string',
+            'formset-INITIAL_FORMS': 1,
+            'formset-TOTAL_FORMS': 2
+            }
+    # if request.method == 'POST':
+        
+    
     context = {}
-    context['student'] = student
+    context['formset'] = formset
+    context['data'] = data
     return render(request, 'user/booking.html', context)
 
 # def profile_edit(request):
@@ -151,8 +162,7 @@ def bookcheck(request, rm_id):
 
 def add(request):
     context = dict()
-    type = Room_type.objects.all()
-    # context['type'] = type
+    
     
     if request.method == 'POST':
         form = AddRoomForm(request.POST)
@@ -187,7 +197,7 @@ def add(request):
         
     else:
         form = AddRoomForm()
-    return render(request, 'user/addroom.html', {'form': form, 'type': type})
+    return render(request, 'user/addroom.html', {'form': form})
 
 
 def edit(request, rm_id):

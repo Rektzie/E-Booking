@@ -15,6 +15,9 @@ class EditForm(forms.Form):
 class TimeInput(forms.TimeInput):
     input_type = 'time'    
     
+class DateInput(forms.DateInput):
+    input_type = 'date' 
+    
 class AddRoomForm(forms.Form): #form add, book
     roomType = Room_type.objects.all()
     roomTypeChoices = [('', 'select')]
@@ -51,5 +54,9 @@ class AddRoomForm(forms.Form): #form add, book
             errorMsg = 'ห้องชื่อนี้มีอยู่ในระบบแล้ว'
             self.add_error('name', errorMsg)
             # )
-
-
+            
+class BookRoomForm(forms.Form):
+    bookdate = forms.DateField(label='วันที่', widget=DateInput, required=True)
+    start_time = forms.TimeField(label='จองเวลา' ,widget=TimeInput, required=True)
+    end_time = forms.TimeField(label='จองเวลา' ,widget=TimeInput, required=True)
+    description = forms.CharField(label='จองเวลา', widget=forms.Textarea)

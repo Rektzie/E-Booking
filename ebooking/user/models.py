@@ -39,8 +39,8 @@ class Teacher(models.Model):
 class Staff(models.Model):
     user_id = models.OneToOneField(User, on_delete=models.CASCADE)
     position = models.CharField(max_length=255)
-
-class Booking(models.Model):
+    
+class Booking(models.Model): #each time the user submit the booking.html create this and it contains multiple bookinglist (model) if more than one day booked at once
     st = (
     (1, "รอการอนุมัติ"),
     (2, "อนุมัติ"),
@@ -88,7 +88,7 @@ class Room(models.Model):
 
 
 
-class Booking_list(models.Model):
+class Booking_list(models.Model): #each day of booking
     list_no = models.AutoField(primary_key=True)
     start_time = models.TimeField()
     end_time = models.TimeField()
