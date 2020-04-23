@@ -4,13 +4,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from django.db.models import Subquery
 from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type
-<<<<<<< HEAD
 from user.forms import EditForm, AddRoomForm, BookRoomForm
 from django.forms import formset_factory
-=======
 from user.forms import EditForm, AddRoomForm
 from django.http import JsonResponse
->>>>>>> 14c464613cb0265e344c46f3c2fc3524b1398ee6
 # Create your views here.
 # @login_required(login_url='/')
 # @permission_required('user.view_room', login_url='/')
