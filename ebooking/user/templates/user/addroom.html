@@ -3,6 +3,26 @@
 <title>Add Room</title>
 {% endblock title%}
 {% block base %}
+<!-- <div class="alert alert-warning" role="alert">
+    {{ form.name.errors }}   
+  </div> -->
+  <!-- <div class="alert alert-danger" role="alert">
+    {{ form.name.errors }}   
+  </div> -->
+  <!-- <div class="alert alert-danger" role="alert">
+   {{ form.name.errors }}   
+  
+  </div> -->
+
+  {% if form.errors %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>{{ form.name.errors }}</strong> 
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
+  
 <div class="container">
     <div class="row">
         <div class="col-12 ">
@@ -31,7 +51,8 @@
                     {% csrf_token %}
                    <div class="row">
                         <div class="col-6"> 
-                            <p> {{ form.name.errors }}                           
+                            
+                            <p>                     
                                 <label for="{{ form.name.id_for_label }}"> {{ form.name.label }} </label>
                                 {{ form.name }}
                             </p>

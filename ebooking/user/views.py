@@ -191,23 +191,25 @@ def add(request):
 
 
 def edit(request, rm_id):
-    room = Room.objects.get(pk=rm_id)
-    type = Room_type.objects.all()
-    if request.method == 'POST':     
 
-        room.name = request.POST.get('name')
-        room.open_time = request.POST.get('st_time')
-        room.close_time = request.POST.get('ed_time')
-        room.capacity = request.POST.get('cap')
-        room.save()
 
-        return redirect('index')
-    context = {
-        'room': room,
-        'room_id' : rm_id,
-        'type' : type 
+    # room = Room.objects.get(pk=rm_id)
+    # type = Room_type.objects.all()
+    # if request.method == 'POST':     
 
-        }
+    #     room.name = request.POST.get('name')
+    #     room.open_time = request.POST.get('st_time')
+    #     room.close_time = request.POST.get('ed_time')
+    #     room.capacity = request.POST.get('cap')
+    #     room.save()
+
+    #     return redirect('index')
+    # context = {
+    #     'room': room,
+    #     'room_id' : rm_id,
+    #     'type' : type 
+
+    #     }
 
     return render(request, 'user/editroom.html', context)
 
@@ -249,9 +251,13 @@ def accept(request, bl_id):
     return render(request, 'user/accept.html', context)
 
 def delete(request, rm_id):
-    room = Room.objects.get(pk=rm_id)
-    room.delete()
-    return redirect('index')
+    if request.method == 'DELETE':
+        room = Room.objects.get(pk=rm_id)
+        room.delete()
+        return HttpResponse(status=200)
+    # room = Room.objects.get(pk=rm_id)
+    # room.delete()
+    return HttpResponse(status=405)
 
 def track_delete(request, bl_id):
     listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')

@@ -49,7 +49,6 @@ class Booking(models.Model):
     id = models.AutoField(primary_key=True)
     description = models.TextField()
     date = models.DateTimeField(default=datetime.now, blank=True)
-    bookdate = models.DateField()
     status = models.IntegerField(choices=st, default = 1)
     
     status_remark = models.IntegerField(choices=st, default = 1)
@@ -93,6 +92,7 @@ class Booking_list(models.Model):
     list_no = models.AutoField(primary_key=True)
     start_time = models.TimeField()
     end_time = models.TimeField()
+    bookdate = models.DateField(blank=True, null=True)
     booking_id = models.ForeignKey(Booking, on_delete=models.CASCADE)
     room_id = models.ForeignKey(Room, on_delete=models.CASCADE)
 
