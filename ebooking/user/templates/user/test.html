@@ -1,66 +1,55 @@
-{% load static %}
-  <link rel="stylesheet" href="{% static 'style.css'%}">
-  
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-<div class="size">
-    <div class="containers" id="containers">
-        <div class="form-containers sign-in-containers">
-            <form action="#">
-                <p> ห้อง : </p> 
-                <p> วันที่จอง</p>
-                <p> เวลาที่จอง</p>
-                <p> เหตุผลในการจอง</p>
-
-                <p> ผู้จอง </p> 
-                <p> รหัสนักศึกษา</p>
-                <p> ชั้นปี</p>
-        </div>
-
-
-        <div class="overlay-containers">
-            <div class="overlay">
-                <div class="overlay-panel overlay-right">
-                    <br><br><br><br><br><br>
-                    <center><table class="table table-borderless">
-                        <tbody>
-                          <tr >
-                            <td width="10%">
-                                {% load static %}
-                                <img   src="{% static 'correct.png' %}" alt="">
-                            </td>
-                            <td width="30%">
-                                ยื่นคำร้อง
-                                <p>6 เมษายน 2563</p>
-                                
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <td>{% load static %}                             
-                                <img   src="{% static 'correct.png' %}" alt="">
-                            </td>
-                            <td>อาจารย์อนุมัติ
-                                <p>6 เมษายน 2563</p>
-                            </td>
-                            <td>อาจารย์ เอ</td>
-                          </tr>
-
-                          <tr>                          
-                            <td>{% load static %}                              
-                                <img   src="{% static 'correct.png' %}" alt="">
-                            </td>
-                            <td>เจ้าที่สถานที่อนุมัติ
-                                <p>6 เมษายน 2563</p>
-                            </td>
-                            <td>พี่โจ้</td>
-                          </tr>
-                        </tbody>
-                      </table></center>
-                   
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="form-group">
+  <label for="seeAnotherFieldGroup">Do You Want To See Another Group of Fields?</label>
+  <select class="form-control" id="seeAnotherFieldGroup">
+        <option value="no">Not Particularly.</option>
+        <option value="yes">I Guess!</option>
+  </select>
+</div>
+<div class="form-group" id="otherFieldGroupDiv">
+  <div class="row">
+    <div class="col-6">
+      <label for="otherField1">Group: Heres One!</label>
+      <input type="text" class="form-control w-100" id="otherField1">
     </div>
+    <div class="col-6">
+      <label for="otherField2">Group: Another One!</label>
+      <input type="text" class="form-control w-100" id="otherField2">
+    </div>
+  </div>
+</div>
 
-  
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+     
+<script>
+  $("#seeAnotherField").change(function() {
+        if ($(this).val() == "yes") {
+            $('#otherFieldDiv').show();
+            $('#otherField').attr('required', '');
+            $('#otherField').attr('data-error', 'This field is required.');
+        } else {
+            $('#otherFieldDiv').hide();
+            $('#otherField').removeAttr('required');
+            $('#otherField').removeAttr('data-error');
+        }
+        });
+        $("#seeAnotherField").trigger("change");
+
+        $("#seeAnotherFieldGroup").change(function() {
+        if ($(this).val() == "yes") {
+            $('#otherFieldGroupDiv').show();
+            $('#otherField1').attr('required', '');
+            $('#otherField1').attr('data-error', 'This field is required.');
+            $('#otherField2').attr('required', '');
+            $('#otherField2').attr('data-error', 'This field is required.');
+        } else {
+            $('#otherFieldGroupDiv').hide();
+            $('#otherField1').removeAttr('required');
+            $('#otherField1').removeAttr('data-error');
+            $('#otherField2').removeAttr('required');
+            $('#otherField2').removeAttr('data-error');
+        }
+        });
+        $("#seeAnotherFieldGroup").trigger("change");
+</script>

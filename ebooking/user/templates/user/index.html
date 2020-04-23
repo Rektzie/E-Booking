@@ -6,6 +6,10 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'style-index.css'%}">
 
+<body >
+  
+
+
 
 
     <div class="indexsize">
@@ -50,7 +54,7 @@
 <br>
      <center>
     <div style="width: 65%" class="table-wrapper-scroll-y my-custom-scrollbar">
-    <table class="table table-hover " bgcolor="#eaecea">
+    <table class="table table-hover " id="indextb" bgcolor="#eaecea">
         <thead class="">
           <tr>
             <th scope="col">ชื่อห้อง</th>
@@ -64,7 +68,7 @@
           </tr>
         </thead>
         <tbody> 
-        {% for rm in all_room %}
+         {% for rm in all_room %}
           <tr>
             <td>{{rm.name}}</td>
             <td>{{rm.start_time}}</td>
@@ -82,18 +86,76 @@
         
             </td>
             {% endif %}
-            <!-- {% comment %} {% if user.is_authenticated %} {% endcomment %} -->
-            <!-- {% if request.user.is_superuser %} -->
+            {% comment %} {% if user.is_authenticated %} {% endcomment %}
+      {% if request.user.is_superuser %}
             
-            <!-- {% endif %} -->
-            <!-- {% comment %} {% endif %} {% endcomment %} -->
-          </tr>
+            {% endif %} 
+          {% comment %} {% endif %} {% endcomment %} 
+         </tr>
         {% endfor %}
         </tbody>
       </table>
     </div>
     </center>
- 
+
     
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+
+
+    
+ // const axios = require('axios');
+    // var rooms = []
+
+    // function initialize () {
+    //     axios.get('/api/')
+    //     .then(function (response) {
+    //         // handle success
+    //         rooms = response.data
+
+    //         rooms.forEach((room) => {
+    //             let name = room.text
+    //             let start_time = room.start_time
+    //             let end_time = room.end_time
+    //             let capacity = room.capacity
+
+    //             let td = createRoom(text, start_time, end_time)
+    //             let ul = document.querySelector('ul#mytodo')
+    //             ul.appendChild(li)
+
+    //         //     let table = document.getElementById('indextb');
+    //         //     let row = table.insertRow(-1);
+    //         //     let cell, text;
+                
+    //         //     for(let i=0; i< 4 ; i++){
+    //         //         cell = row.insertCell(-1);
+    //         //         if(i==0){
+    //         //             text = name;
+    //         //         }else if(i==1){
+    //         //             text = start_time;
+    //         //         }else if(i == 2){
+    //         //             text = end_time;
+    //         //         }else{
+    //         //             text = capacity;
+    //         //         }
+    //         //         cell.appendChild(document.createTextNode(text));
+    //         // }
+    //         })
+
+    //         console.log(response);
+    //     })
+    //     .catch(function (error) {
+    //         // handle error
+    //         console.log(error);
+    //     })
+    //     .then(function () {
+    //         // always executed
+    //     });
+    // }
+
+   
+
+    </script>
+</body>
 {% endblock base %}

@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
+
 # Create your views here.
 
 def my_login(request):
@@ -34,10 +35,14 @@ def register(request):
     if request.method == 'POST':
         password = request.POST.get('password')
         repassword = request.POST.get('repassword')
+        select = request.POST.get('role')
+
+        print(select)
 
 
         try:
             user = User.objects.get(username=request.POST.get('username'))
+           
             
         except ObjectDoesNotExist:
             user = None
