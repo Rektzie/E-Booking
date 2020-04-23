@@ -68,7 +68,7 @@
                                     <br>
                                     <center><h2> ข้อมูลส่วนบุคคล </h2></center>
                                         <br>
-                                        <form method="POST" accept="{% url 'profile' %}">
+                                        <form method="POST" action="{% url 'profile' %}">
                                             {% csrf_token %} 
                                             <div class="form-group row">
                                             <label  class="col-sm-3 col-form-label">ชื่อ</label>

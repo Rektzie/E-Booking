@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 from django.db.models import Subquery
 from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type
 from user.forms import EditForm, AddRoomForm
+from django.http import JsonResponse
 # Create your views here.
 # @login_required(login_url='/')
 # @permission_required('user.view_room', login_url='/')
@@ -20,9 +21,21 @@ def index(request):
 
     }
 
-
     return render(request, 'user/index.html', context)
 
+# @csrf_exempt
+# def api(request):
+#     if request.method == 'GET':
+#         room = Room.objects.all()
+#         serializer = ToDoItemSerializer(room, many=True)
+#         return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+
+    # elif request.method == 'POST':
+    #     serializer = ToDoItemSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def bookinglistall(request):
     all_booklist = Booking_list.objects.all()
@@ -151,8 +164,7 @@ def bookcheck(request, rm_id):
 
 def add(request):
     context = dict()
-    type = Room_type.objects.all()
-    # context['type'] = type
+  
     
     if request.method == 'POST':
         form = AddRoomForm(request.POST)
@@ -187,29 +199,29 @@ def add(request):
         
     else:
         form = AddRoomForm()
-    return render(request, 'user/addroom.html', {'form': form, 'type': type})
+    return render(request, 'user/addroom.html', {'form': form})
 
 
 def edit(request, rm_id):
 
 
-    # room = Room.objects.get(pk=rm_id)
-    # type = Room_type.objects.all()
-    # if request.method == 'POST':     
+    room = Room.objects.get(pk=rm_id)
+    type = Room_type.objects.all()
+    if request.method == 'POST':     
 
-    #     room.name = request.POST.get('name')
-    #     room.open_time = request.POST.get('st_time')
-    #     room.close_time = request.POST.get('ed_time')
-    #     room.capacity = request.POST.get('cap')
-    #     room.save()
+        room.name = request.POST.get('name')
+        room.open_time = request.POST.get('st_time')
+        room.close_time = request.POST.get('ed_time')
+        room.capacity = request.POST.get('cap')
+        room.save()
 
-    #     return redirect('index')
-    # context = {
-    #     'room': room,
-    #     'room_id' : rm_id,
-    #     'type' : type 
+        return redirect('index')
+    context = {
+        'room': room,
+        'room_id' : rm_id,
+        'type' : type 
 
-    #     }
+        }
 
     return render(request, 'user/editroom.html', context)
 
@@ -251,13 +263,9 @@ def accept(request, bl_id):
     return render(request, 'user/accept.html', context)
 
 def delete(request, rm_id):
-    if request.method == 'DELETE':
-        room = Room.objects.get(pk=rm_id)
-        room.delete()
-        return HttpResponse(status=200)
-    # room = Room.objects.get(pk=rm_id)
-    # room.delete()
-    return HttpResponse(status=405)
+    room = Room.objects.get(pk=rm_id)
+    room.delete()
+    return redirect('index')
 
 def track_delete(request, bl_id):
     listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')
