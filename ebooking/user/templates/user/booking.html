@@ -10,7 +10,8 @@
 <!-- <link rel="stylesheet" href="{% static 'style-book.css'%}"> -->
 
 <br><br>
-<div class="container bg-light shadow p-3"> <!-- container-->
+<div class="container bg-light shadow p-3">
+    <!-- container-->
     <center>
         <h2>คำร้องจองห้อง</h2>
     </center>
@@ -23,15 +24,18 @@
 
         </div>
     </nav>
-    <div class="tab-content" id="nav-tabContent"> <!-- tab1-->
-        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-            <br>
+    <form method="POST" action="{% url 'booking' rm_id %}">
+        {% csrf_token %}
+        <div class="tab-content" id="nav-tabContent">
+            <!-- tab1-->
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <br>
 
-            <!-- <input type="button" value="Add More" id="add_more"> -->
-            <button type="button" class="btn btn-outline-warning" id="add_more">เพิ่มวัน</button>
+                <!-- <input type="button" value="Add More" id="add_more"> -->
+                <button type="button" class="btn btn-outline-warning" id="add_more">เพิ่มวัน</button>
 
-            <!-- {% comment %} try {% endcomment %} -->
-            <!-- <div id="form_set">
+                <!-- {% comment %} try {% endcomment %} -->
+                <!-- <div id="form_set">
                 {% for form in formset.forms %}
                 {{form.non_field_errors}}
                 {{form.errors}}
@@ -50,115 +54,119 @@
 
 
 
-            <div id="form_set">
-                {% for form in formset.forms %}
-                {{form.non_field_errors}}
-                {{form.errors}}
-            <div class='no_error'>
-      
-
-            <div class="form-group row p-3" >
-           
-                    <label class="col-sm-1 col-form-label">วันที่</label>
-                    <div class="col-sm-4">
-                        {{ form.bookdate }}
-                    </div>
-
-                    <label class="col-sm-1 col-form-label">จองเวลา</label>
-                    <div class="col-sm-2">
-                        {{ form.start_time }}
-
-                    </div>
-                    <label class="col-sm-1 col-form-label">ถึงเวลา</label>
-                    <div class="col-sm-2">
-                        {{ form.end_time }}
-                    </div> 
-                </div>
-            </div>
-         
-        </div>   
-    
-
-
-                <div id="empty_form" style="display:none">
+                <div id="form_set">
+                {{ formset.management_form }}
+                    {% for eachForm in formset.forms %}
+                    {{form.non_field_errors}}
+                    {{form.errors}}
                     <div class='no_error'>
+
+
+                        {% comment %} <div class="form-group row p-3">
+
+                            <label class="col-sm-1 col-form-label">วันที่</label>
+                            <div class="col-sm-4">
+                                {{ eachForm.bookdate }}
+                            </div>
+
+                            <label class="col-sm-1 col-form-label">จองเวลา</label>
+                            <div class="col-sm-2">
+                                {{ eachForm.start_time }}
+
+                            </div>
+                            <label class="col-sm-1 col-form-label">ถึงเวลา</label>
+                            <div class="col-sm-2">
+                                {{ eachForm.end_time }}
+                            </div>
+                        </div> {% endcomment %}
+                    </div>
+
+                </div>
+
+
+
+                <div id="empty_form" >
+                    <div class='no_error'>
+                        <div class="form-group row p-3">
+                            <label class="col-sm-1 col-form-label">วันที่</label>
+                            <div class="col-sm-4">
+                                {{ eachForm.bookdate }}
+                            </div>
+                            <label class="col-sm-1 col-form-label">จองเวลา</label>
+                            <div class="col-sm-2">
+                                {{ eachForm.start_time }}
+
+                            </div>
+                            <label class="col-sm-1 col-form-label">ถึงเวลา</label>
+                            <div class="col-sm-2">
+                                {{ eachForm.end_time }}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="form-group" id="form_set">
+                    {% comment %} {% for form in formset.forms %}
+                    {{form.non_field_errors}}
+                    {{form.errors}} {% endcomment %}
+                    <div class='no_error'>
+                        <label class="col-sm-2 col-form-label">เหตุผลในการจอง</label>
+                        <div class="col-sm-12">
+                            {{ form.description }}
+
+                        </div>
+                    </div>
+                    {% comment %} {% endfor %} {% endcomment %}
+                </div>
+
+
+
+                <button type="submit" class="btn btn-dark" style="float: right;">ยืนยัน</button>
+                <br>
+                <br>
+            </div>
+
+            </form>
+
+
+
+
+
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <br>
                 <div class="form-group row p-3">
                     <label class="col-sm-1 col-form-label">วันที่</label>
                     <div class="col-sm-4">
-                        {{ form.bookdate }}
+                        <input type="date" class="form-control" name="date">
                     </div>
                     <label class="col-sm-1 col-form-label">จองเวลา</label>
                     <div class="col-sm-2">
-                        {{ form.start_time }}
-
+                        <input type="time" class="form-control" name="start_time">
                     </div>
                     <label class="col-sm-1 col-form-label">ถึงเวลา</label>
                     <div class="col-sm-2">
-                        {{ form.end_time }}
-
-                    </div> 
+                        <input type="time" class="form-control" name="end_time">
                     </div>
                 </div>
-            </div>
-            {% endfor %}
-                <div class="form-group" id="form_set">
-                    {% for form in formset.forms %}
-                {{form.non_field_errors}}
-                {{form.errors}}
-                <div class='no_error'>
-                 <label class="col-sm-2 col-form-label">เหตุผลในการจอง</label> 
-                     <div class="col-sm-12">
-                        {{ form.description }}
-
-                    </div> 
+                <div class="form-group">
+                    <label class="col-sm-2 col-form-label">เหตุผลในการจอง</label>
+                    <div class="col-sm-12">
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" name="reason"
+                            ></textarea>
+                    </div>
                 </div>
-                {% endfor %}
+
+                <button type="submit" class="btn btn-dark" style="float: right;">ยืนยัน</button>
+                <br>
+                <br>
+
+
             </div>
-
-
-
-               <button type="submit" class="btn btn-dark" style="float: right;">ยืนยัน</button>
-               <br>
-               <br>
-                </div>
-    
     
 
-
-
-        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-            <br>
-            <div class="form-group row p-3">
-                <label class="col-sm-1 col-form-label">วันที่</label>
-                <div class="col-sm-4">
-                    <input type="date" class="form-control" name="date">
-                </div>
-                <label class="col-sm-1 col-form-label">จองเวลา</label>
-                <div class="col-sm-2">
-                    <input type="time" class="form-control" name="start_time">
-                </div>
-                <label class="col-sm-1 col-form-label">ถึงเวลา</label>
-                <div class="col-sm-2">
-                    <input type="time" class="form-control" name="end_time">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 col-form-label">เหตุผลในการจอง</label>
-                <div class="col-sm-12">
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" name="reason"
-                        required="required"></textarea>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-dark" style="float: right;">ยืนยัน</button>
-            <br>
-            <br>
-
-
-        </div>
-        
-    </div> <!-- tab1-->
-    </div> <!-- container-->
+</div> <!-- tab1-->
+</div> <!-- container-->
 
 
 
@@ -245,12 +253,14 @@
 <script  src="{% static 'script.js'%}"></script> -->
 
 <script>
-$('#add_more').click(function() {
-	var form_idx = $('#id_form-TOTAL_FORMS').val();
-	$('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
-	$('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
-});
+    $('#add_more').click(function () {
+        var form_idx = $('#id_form-TOTAL_FORMS').val();
+        $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
+        $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+    });
 </script>
+
+
 
 
 

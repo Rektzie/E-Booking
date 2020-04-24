@@ -54,15 +54,24 @@ class AddRoomForm(forms.Form): #form add, book
             errorMsg = 'ห้องชื่อนี้มีอยู่ในระบบแล้ว'
             self.add_error('name', errorMsg)
             # )
+
+class BookRoomDescriptionForm(forms.Form):
+    description = forms.CharField(label='เหตุผลในการจอง', widget=forms.Textarea, required=True)
+    def clean(self):
+        cleaned_data = super().clean()
+                
             
-class BookRoomForm(forms.Form):
+class BookRoomForm(forms.Form): #for booking_list
     bookdate = forms.DateField(label='วันที่', widget=DateInput, required=True)
     start_time = forms.TimeField(label='จองเวลา' ,widget=TimeInput, required=True)
     end_time = forms.TimeField(label='จองเวลา' ,widget=TimeInput, required=True)
-    description = forms.CharField(label='จองเวลา', widget=forms.Textarea)
+    
 
 
     bookdate.widget.attrs.update({'class' : 'form-control'})
     start_time.widget.attrs.update({'class' : 'form-control'})
     end_time.widget.attrs.update({'class' : 'form-control'})
-    description.widget.attrs.update({'class' : 'form-control'})
+    
+    def clean(self):
+        cleaned_data = super().clean()
+   
