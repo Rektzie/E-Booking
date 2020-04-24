@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from django.db.models import Subquery
-from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type, UserRole
+from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type
 from user.forms import EditForm, AddRoomForm, BookRoomForm
 from django.forms import formset_factory
 from user.forms import EditForm, AddRoomForm
@@ -75,13 +75,28 @@ def bookinglist(request): #existing booking list from users' requests
 
 def booking(request): #func called by booking.html
     BookRoomFormSet = formset_factory(BookRoomForm)
-    formset = BookRoomFormSet()
+    
     data = {
             'formset-0-raw': 'my raw field string',
             'formset-INITIAL_FORMS': 1,
             'formset-TOTAL_FORMS': 2
             }
-    # if request.method == 'POST':
+    if request.method == 'POST':
+        formset = BookRoomFormSet(request.POST)
+        if formset.is_valid():
+            booking_list = Booking_list.objects.create(
+                start_time = formset.cleaned_data['start_time'],
+                end_time = formset.cleaned_data['end_time'],
+                bookdate = formset.cleaned_data['start_time'],
+                booking_id = formset.cleaned_data['start_time'],
+                room_id = formset.cleaned_data['start_time']
+            )
+            booking = Booking.objects.create(
+                
+            )
+    else:
+        formset = BookRoomFormSet()
+        
         
     
     context = {}
@@ -103,19 +118,20 @@ def booking(request): #func called by booking.html
 
 def profile(request):
     context = {}
-    
+
     try:
         user_id = request.user.id
-        myrole = UserRole.objects.get(user_id__exact=user_id)
-        context['myrole'] = myrole
+        
         student = Student.objects.get(user_id__exact=user_id)
         list = Booking_list.objects.filter(booking_id__user_id=user_id).count()
         accept = Booking_list.objects.filter(booking_id__user_id=user_id, booking_id__status='2').count()
       
-        print(myrole)
+        # print(myrole)
         context['student'] = student
         context['list'] = list
         context['accept'] = accept
+
+ 
 
 
     except ObjectDoesNotExist:
