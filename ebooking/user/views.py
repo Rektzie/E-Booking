@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from django.db.models import Subquery
-from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type, UserRole
+from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type
 from user.forms import EditForm, AddRoomForm, BookRoomForm
 from django.forms import formset_factory
 from user.forms import EditForm, AddRoomForm
@@ -102,18 +102,15 @@ def booking(request): #func called by booking.html
 
 def profile(request):
     context = {}
-    
+
     try:
         user_id = request.user.id
-        myrole = UserRole.objects.get(user_id__exact=user_id)
-        context['myrole'] = myrole
+        
         student = Student.objects.get(user_id__exact=user_id)
         list = Booking.objects.filter(user_id=user_id).count()
-        print(myrole)
+        print(list)
         context['student'] = student
         context['list'] = list
-        
-
 
     except ObjectDoesNotExist:
         student = None

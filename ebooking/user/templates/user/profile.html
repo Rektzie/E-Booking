@@ -28,7 +28,7 @@
                     <br>
                     <br>
                    <h5>{{ request.user.first_name }} {{ request.user.last_name }}</h5>
-                <p>บทบาท : {{ myrole.get_role_display }}</p>
+                <p>บทบาท : นักศึกษา</p>
                     </center>
                     <br>
                     <div class="row">
@@ -86,19 +86,19 @@
                                             <div class="form-group row">
                                                 <label  class="col-sm-3 col-form-label">รหัสนักศึกษา</label>
                                                 <div class="col-sm-9">
-                                                <input type="text" readonly class="form-control"  value="{{ student.stu_id }}"> 
+                                                <input type="text" readonly class="form-control"  value="{{ student.stu_id }}"> <!-- มาแก้ให้มันดึงข้อมูล-->
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label  class="col-sm-3 col-form-label">ชั้นปี</label>
                                                 <div class="col-sm-9">
-                                                <input type="text" readonly class="form-control"  value="{{ student.year }}"> 
+                                                <input type="text" readonly class="form-control"  value="{{ student.year }}"> <!-- มาแก้ให้มันดึงข้อมูล-->
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label  class="col-sm-3 col-form-label">สาขา</label>
                                                 <div class="col-sm-9">
-                                                    <input type="text" readonly class="form-control"  value="{{ student.get_major_display }}"> 
+                                                    <input type="text" readonly class="form-control"  value="{{ student.major }}"> <!-- มาแก้ให้มันดึงข้อมูล-->
                                                 </div>
                                             </div>
                                             {% endif %}
