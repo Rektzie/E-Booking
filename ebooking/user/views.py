@@ -59,13 +59,28 @@ def bookinglist(request): #existing booking list from users' requests
 
 def booking(request): #func called by booking.html
     BookRoomFormSet = formset_factory(BookRoomForm)
-    formset = BookRoomFormSet()
+    
     data = {
             'formset-0-raw': 'my raw field string',
             'formset-INITIAL_FORMS': 1,
             'formset-TOTAL_FORMS': 2
             }
-    # if request.method == 'POST':
+    if request.method == 'POST':
+        formset = BookRoomFormSet(request.POST)
+        if formset.is_valid():
+            booking_list = Booking_list.objects.create(
+                start_time = formset.cleaned_data['start_time'],
+                end_time = formset.cleaned_data['end_time'],
+                bookdate = formset.cleaned_data['start_time'],
+                booking_id = formset.cleaned_data['start_time'],
+                room_id = formset.cleaned_data['start_time']
+            )
+            booking = Booking.objects.create(
+                
+            )
+    else:
+        formset = BookRoomFormSet()
+        
         
     
     context = {}
