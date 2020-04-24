@@ -7,7 +7,9 @@
 <br><br>
 <div class="container">
        
- 
+ <form action="{% url 'accept' bl_id %}" method="POST">
+    {% csrf_token %}
+
     <div class="row">
          <div></div>
       
@@ -37,6 +39,8 @@
                
              </div>
          </div>
+
+     
          <div class="col-8">
              <div class="p-3" >
                  <div class="container">
@@ -71,14 +75,20 @@
                             </div>
                             </div>
                             <center>
-                                <button type="submit" class="btn btn-success">อนุมัติ</button>
-                                <button type="submit" class="btn btn-danger">ไม่อนุมัติ</button>
+                                
+                                
+                               <button type="submit" class="btn btn-danger" value="allowt" name="allowt">อนุมัติ</button>
+                               <button type="submit" class="btn btn-danger" value="denyt" name="denyt">ไม่อนุมัติ</button>
+
+                               <button type="submit" class="btn btn-info" value="allows" name="allows">อนุมัติ</button>
+                               <button type="submit" class="btn btn-info" value="denys" name="denys">ไม่อนุมัติ</button>
+                          
                             </center>
                          
                              </div>
                            </div>
-                         
-                              
+                        </form>
+                   
                      </div>
                  </div> 
                  

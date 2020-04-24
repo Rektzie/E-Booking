@@ -8,6 +8,8 @@ from user.forms import EditForm, AddRoomForm, BookRoomForm
 from django.forms import formset_factory
 from user.forms import EditForm, AddRoomForm
 from django.http import JsonResponse
+from datetime import datetime
+
 # Create your views here.
 # @login_required(login_url='/')
 # @permission_required('user.view_room', login_url='/')
@@ -40,21 +42,35 @@ def index(request):
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def bookinglistall(request):
-    all_booklist = Booking_list.objects.all()
-    count = Booking_list.objects.count()
+    search_txt = request.POST.get('search','')
+
+    # if request.POST.get('select') == 1:
+    #     all_booklist.objects.filter(roon_id__name__icontains = 'L308')
+    #     count = all_booklist.count()
+
+    all_booklist = Booking_list.objects.filter(
+        room_id__name__icontains= search_txt ).order_by('bookdate')
+    count = all_booklist.count()
+    stbooking = Booking_student.objects.all()
     context = {
         'all_booklist' : all_booklist,
         'count' : count,
+        'stbooking' : stbooking,
+
     }
     return render(request, 'user/bookinglist.html', context)
 
 def bookinglist(request): #existing booking list from users' requests
-    all_booklist = Booking_list.objects.all()
+
+    all_booklist = Booking_list.objects.all().order_by('bookdate')
     user_id = request.user.id
     context = {
         'all_booklist' : all_booklist,
         'user_id' : user_id,
     }
+
+
+
     return render(request, 'user/bookinglistme.html', context)
 
 def booking(request): #func called by booking.html
@@ -93,11 +109,13 @@ def profile(request):
         myrole = UserRole.objects.get(user_id__exact=user_id)
         context['myrole'] = myrole
         student = Student.objects.get(user_id__exact=user_id)
-        list = Booking.objects.filter(user_id=user_id).count()
+        list = Booking_list.objects.filter(booking_id__user_id=user_id).count()
+        accept = Booking_list.objects.filter(booking_id__user_id=user_id, booking_id__status='2').count()
+      
         print(myrole)
         context['student'] = student
         context['list'] = list
-        
+        context['accept'] = accept
 
 
     except ObjectDoesNotExist:
@@ -269,12 +287,45 @@ def tracking(request, bl_id):
 def accept(request, bl_id):
     student = Student.objects.all()
     book_list = Booking_list.objects.get(pk=bl_id)
-    context = {
-        'book_list': book_list,
-        'student': student,
-
-    }
+    book = Booking.objects.get(pk=book_list.booking_id.id)
   
+    stu = Booking_student.objects.get(booking_id=book.id)
+    print(stu)
+    context = {}
+    context['book_list'] = book_list
+    context['student'] = student
+    context['bl_id'] = bl_id
+    now = str(datetime.now())
+    if request.method == 'POST':
+        if 'allowt' in request.POST:
+            stu.teacher_result = True
+            stu.teacher_date = now
+            stu.save()
+        
+            return redirect('bookinglistall')
+
+        elif 'denyt' in request.POST:
+            stu.teacher_result = False
+            stu.save()
+            return redirect('bookinglistall')
+        
+        elif 'allows' in request.POST:
+            stu.staff_result = True
+            stu.staff_date = now
+            stu.save()
+            return redirect('bookinglistall')
+
+        elif 'denys' in request.POST:
+            stu.staff_result = False
+            stu.save()
+            return redirect('bookinglistall')
+
+    # if stu.teacher_result == True and stu.staff_result == True: เดี๋ยวมาต่อ *********************************
+    #     book.status = '2'
+    #     book.save()
+
+    #     print(allow2)
+
     return render(request, 'user/accept.html', context)
 
 def delete(request, rm_id):
@@ -289,7 +340,9 @@ def track_delete(request, bl_id):
     return redirect('bookinglist')
 
 def bookinglistadmin(request):
-    all_booklist = Booking_list.objects.all()
+    search_txt = request.POST.get('search','')
+    all_booklist = Booking_list.objects.filter(
+        room_id__name__icontains= search_txt ).order_by('bookdate')
     user_id = request.user.id
     context = {
         'all_booklist' : all_booklist,
@@ -299,17 +352,24 @@ def bookinglistadmin(request):
     return render(request, 'user/bookinglistadmin.html', context)
 
 def history(request):
-    user = User.objects.all()
-    st_booking = Booking_student.objects.all()
-    all_booklist = Booking_list.objects.all()
+    try:
+        user = User.objects.all()
+        st_booking = Booking_student.objects.all()
+
+        search_txt = request.POST.get('search','')
+        all_booklist = Booking_list.objects.filter(
+            room_id__name__icontains= search_txt ).order_by('bookdate')
    
+        
+    
+    except ObjectDoesNotExist:
+        st_booking = None
+
     context = {
-        'all_booklist' : all_booklist,
-        'st_booking' : st_booking,
-        'user' : user,
-
-
-
-     
+            'all_booklist' : all_booklist,
+            'st_booking' : st_booking,
+            'user' : user,
     }
+
     return render(request, 'user/history.html', context)
+

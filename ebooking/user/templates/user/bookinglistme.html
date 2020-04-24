@@ -36,7 +36,7 @@
         {% if bl.booking_id.user_id.id == user_id %}
           <tr>
             <td >{{bl.room_id.name}}</td> 
-            <td style="width: 30%">{{bl.booking_id.bookdate}}</td>
+            <td style="width: 30%">{{bl.bookdate}}</td>
             <td style="width: 25%">{{bl.start_time}} - {{bl.end_time}}</td>
             <td style="width: 20%">
               <a href="{% url 'tracking' bl.list_no %}"><button type="button" class="btn btn-danger">ตรวจสอบ</button></a>

@@ -2,6 +2,12 @@
 {% block title %}
 <title>All Bookinglist</title>
 {% endblock title%}
+{% block search %}
+<form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'bookinglistadmin' %}">
+  {% csrf_token %}
+  <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search">
+</form>
+{% endblock search %}
 {% block list %}
 <br>
 <div class="container shadow bg-light" style=" height:600px;">
@@ -30,7 +36,7 @@
           {% if bl.booking_id.user_id.id == user_id %}
           <tr>
             <td>{{bl.room_id.name}}</td> 
-            <td>{{bl.booking_id.bookdate}}</td>
+            <td>{{bl.bookdate}}</td>
             <td>{{bl.start_time}} - {{bl.end_time}}</td>
           </tr>
           {% endif %}

@@ -2,7 +2,17 @@
 {% block title %}
 <title>All Bookinglist</title>
 {% endblock title%}
+{% block search %}
+<form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'bookinglistall' %}">
+  {% csrf_token %}
+  <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search">
+</form>
+{% endblock search %}
+
 {% block list %}
+
+
+
 <br>
 <div class="container shadow bg-light" style=" height:600px;">
   <br>
@@ -12,12 +22,17 @@
     <h2>List Request: {{ count }}</h2>
     </div> 
     <div class="col-2">
-      <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
-        <option selected>Today</option>
-        <!-- <option value="1">Today</option> -->
-        <option value="2">Yesterday</option>
-        <option value="3">All</option>
-      </select>
+      <form action="{% url 'bookinglistall' %}" method="POST">
+        {% csrf_token %}
+        <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref" name="select" onchange="this.form.submit();">
+          <!-- <option selected >Today</option> -->
+          <option value="">Sort</option>
+          <option value="1">Today</option>
+          <option value="2">Yesterday</option>
+          <option value="3">All</option>
+        </select>
+      </form>
+      
     </div>   
 </div>
 <br>
@@ -35,7 +50,9 @@
             <th scope="col">วันที่</th>
             <th scope="col">เวลา</th>
             <th scope="col">ผู้ขอ</th>
-            <th scope="col"></th>
+            <th scope="col">อาจารย์</th>
+            <th scope="col">เจ้าหน้าที่</th>
+
 
          
           </tr>
@@ -43,16 +60,34 @@
         <tbody> 
 
         {% for bl in all_booklist %}
+        {% for st in stbooking %}
+        {% if bl.booking_id.id == st.booking_id.id %}
           <tr>
-            <td>{{bl.room_id.name}}</td> 
-            <td>{{bl.booking_id.bookdate}}</td>
+            <td>{{bl.room_id.name}} </td> 
+            <td>{{bl.bookdate}}</td>
             <td>{{bl.start_time}} - {{bl.end_time}} </td>
             <td>{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
             <td style="width: 10%">
+              
+              {% if st.teacher_result == False %}
               <a href="{% url 'accept' bl.list_no %}"><button type="submit" class="btn btn-danger">อนุมัติ</button></a>
+             {% else %}
+             <p> อนุมัติ</p>
+             {% endif %}
+        
+            </td>
+            <td style="width: 10%">
+              {% if st.staff_result == False %}
+              <a href="{% url 'accept' bl.list_no %}"><button type="submit" class="btn btn-danger">อนุมัติ</button></a>
+             {% else %}
+             <p> อนุมัติ</p>
+             {% endif %}
             </td>
           </tr>
+          {% endif %}
           {% endfor%}
+          {% endfor%}
+
 
         </tbody>
       </table>
