@@ -36,10 +36,12 @@
                     <tbody>
                       {% for bl in all_booklist %}
                         {% if bl.room_id.name == room.name %}
+                          {% if bl.booking_id.status == 2 %}
                       <tr>
-                        <td>{{ bl.bookdate }}</td>
+                        <td>{{ bl.booking_id.bookdate }}</td>
                         <td>{{ bl.start_time }} - {{ bl.end_time }}</td>
                       </tr>
+                      {%endif%}
                       {%endif%}
                       {% endfor %} 
                     </tbody>
