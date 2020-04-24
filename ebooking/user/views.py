@@ -6,7 +6,7 @@ from django.db.models import Subquery
 from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type, UserRole
 from user.forms import EditForm, AddRoomForm, BookRoomForm
 from django.forms import formset_factory
-from user.forms import EditForm, AddRoomForm
+from user.forms import EditForm, AddRoomForm, BookRoomDescriptionForm
 from django.http import JsonResponse
 # Create your views here.
 # @login_required(login_url='/')
@@ -57,35 +57,57 @@ def bookinglist(request): #existing booking list from users' requests
     }
     return render(request, 'user/bookinglistme.html', context)
 
-def booking(request): #func called by booking.html
+def booking(request, rm_id): #func called by booking.html
     BookRoomFormSet = formset_factory(BookRoomForm)
     
-    data = {
-            'formset-0-raw': 'my raw field string',
-            'formset-INITIAL_FORMS': 1,
-            'formset-TOTAL_FORMS': 2
-            }
+    # data = {
+    #         'formset-0-raw': 'my raw field string',
+    #         'formset-INITIAL_FORMS': 1,
+    #         'formset-TOTAL_FORMS': 2,
+    #         }
     if request.method == 'POST':
         formset = BookRoomFormSet(request.POST)
-        if formset.is_valid():
-            booking_list = Booking_list.objects.create(
-                start_time = formset.cleaned_data['start_time'],
-                end_time = formset.cleaned_data['end_time'],
-                bookdate = formset.cleaned_data['start_time'],
-                booking_id = formset.cleaned_data['start_time'],
-                room_id = formset.cleaned_data['start_time']
-            )
+        form = BookRoomDescriptionForm(request.POST)
+        if formset.is_valid() and form.is_valid():
+            
             booking = Booking.objects.create(
-                
+                description = form.cleaned_data['description'],
+                user_id = request.user
             )
+            booking.save()
+            print('amount =', len(formset))
+            print(formset)
+            print('===================================================')
+            for eachForm in formset:
+                # print(eachForm.cleaned_data['start_time'])
+                print(eachForm)
+                booking_list = Booking_list.objects.create(                      
+                    start_time = eachForm.cleaned_data['start_time'],
+                    end_time = eachForm.cleaned_data['end_time'],
+                    bookdate = eachForm.cleaned_data['bookdate'],
+                    booking_id = booking,
+                    room_id = Room.objects.get(id=rm_id)
+                    
+                    
+                )
+                
+                
+                booking_list.save()
+                print(booking_list)
+            return redirect('index')
+            
+            
     else:
         formset = BookRoomFormSet()
+        form = BookRoomDescriptionForm()
         
         
     
     context = {}
     context['formset'] = formset
-    context['data'] = data
+    # context['data'] = data
+    context['form'] = form
+    context['rm_id'] = rm_id
     return render(request, 'user/booking.html', context)
 
 # def profile_edit(request):

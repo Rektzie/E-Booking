@@ -46,8 +46,8 @@ class Booking(models.Model): #each time the user submit the booking.html create 
     (2, "อนุมัติ"),
     (3, "ไม่อนุมัติ"),
     )
-    id = models.AutoField(primary_key=True)
-    description = models.TextField()
+    id = models.AutoField(primary_key=True) #id booking
+    description = models.TextField() # descipt 
     date = models.DateTimeField(default=datetime.now, blank=True)
     status = models.IntegerField(choices=st, default = 1)
     
