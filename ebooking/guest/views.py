@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
+from user.models import Student,UserRole,Teacher,Staff
 
 # Create your views here.
 
@@ -43,6 +44,7 @@ def register(request):
         try:
             user = User.objects.get(username=request.POST.get('username'))
            
+           
             
         except ObjectDoesNotExist:
             user = None
@@ -51,20 +53,57 @@ def register(request):
             context = {
                 'error_user' : "username ซ้ำ"
             }
-            return render(request, 'guest/login.html', context)
+            return redirect('my_login')
+            # return render(request, 'guest/login.html', context)
 
         if password == repassword:
             user = User.objects.create_user(request.POST.get('username'), request.POST.get('email'), request.POST.get('password'))
             user.first_name = request.POST.get('firstname')
             user.last_name = request.POST.get('lastname')
 
-
-            
-
-            
-            # group = Group.objects.get(name='myUser')
-            # user.groups.add(group)
+            if select == '1':
+                group = Group.objects.get(name='student')
+                user.groups.add(group)
+            elif select == '2':
+                group = Group.objects.get(name='teacher')
+                user.groups.add(group)
+            elif select == '3':
+                group = Group.objects.get(name='staff')
+                user.groups.add(group)
             user.save()
+            print(user.id)
+            id = user.id
+
+            myrole = UserRole.objects.create(
+                    role = request.POST.get('role'),
+                    user_id_id = id
+                )
+            myrole.save()
+
+            if select == '1':
+                student = Student.objects.create(
+                    stu_id = request.POST.get('st_id'),
+                    year = request.POST.get('year'),
+                    major = request.POST.get('major'),
+                    user_id_id = id
+                )
+                student.save()
+                
+            elif select == '2':
+                teacher = Teacher.objects.create(
+                    user_id_id = id,
+                    rank = request.POST.get('rank')
+                )
+                teacher.save()
+            elif select == '3':
+                staff = Staff.objects.create(
+                    user_id_id = id,
+                    position = request.POST.get('position')
+                )
+                staff.save()
+
+                print('ok i get it')
+
             return redirect('my_login')
         else:
             context['error'] = 'Password ซ้ำ'
