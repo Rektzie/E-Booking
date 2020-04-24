@@ -60,3 +60,9 @@ class BookRoomForm(forms.Form):
     start_time = forms.TimeField(label='จองเวลา' ,widget=TimeInput, required=True)
     end_time = forms.TimeField(label='จองเวลา' ,widget=TimeInput, required=True)
     description = forms.CharField(label='จองเวลา', widget=forms.Textarea)
+
+
+    bookdate.widget.attrs.update({'class' : 'form-control'})
+    start_time.widget.attrs.update({'class' : 'form-control'})
+    end_time.widget.attrs.update({'class' : 'form-control'})
+    description.widget.attrs.update({'class' : 'form-control'})
