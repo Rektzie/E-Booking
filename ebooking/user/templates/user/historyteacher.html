@@ -3,7 +3,7 @@
 <title>All Bookinglist</title>
 {% endblock title%}
 {% block search %}
-<form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'history' %}">
+<form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'history_teacher' %}">
   {% csrf_token %}
   <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search">
 </form>
@@ -24,10 +24,10 @@
     <table class="table table-hover " >
         <thead >
           <tr>
-            <th scope="col">ชื่อห้อง</th>
-            <th scope="col">วันที่ขอจอง</th>
-            <th scope="col">เวลา</th>
-            <th scope="col">ผู้ขอ</th>
+            <th scope="col" style="width: 10%">ชื่อห้อง</th>
+            <th scope="col" style="width: 30%">วันที่ขอจอง</th>
+            <th scope="col" style="width: 30%">เวลา</th>
+            <th scope="col" style="width: 30%">ผู้ขอ</th>
 
 
          
@@ -36,37 +36,18 @@
         <tbody> 
 
           {% for bl in all_booklist %}
-          <tr>
-            <td>{{bl.room_id.name}}</td> 
-            <td>{{bl.bookdate}}</td>
-            <td>{{bl.start_time}} - {{bl.end_time}}</td>
-            <td>{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
-     
-            
-            {% for s in st_booking %}
-              {% if s.booking_id == bl.booking_id %}
-                {% for u in user %}          
-                  {% if s.teacher_user_id_id == u.id %}
-                        <td> {{u.first_name}} {{u.last_name}} </td>
-                  {% endif %}
-                {% endfor %}
-              {% endif %}
-            {% endfor %}
-
-
-            {% for s in st_booking %}
-              {% if s.booking_id == bl.booking_id %}
-                {% for u in user %}          
-                  {% if s.staff_user_id_id == u.id %}
-                        <td> {{u.first_name}} {{u.last_name}} </td>
-                  {% endif %}
-                {% endfor %}
-              {% endif %}
-            {% endfor %}
-
-
-          </tr>
+            {% for bt in teacher_book %}
+                {% if bl.booking_id.id == bt.booking_id.id %}
+                    <tr>
+                        <td style="width: 10%">{{bl.room_id.name}}</td> 
+                        <td style="width: 30%">{{bl.bookdate}}</td>
+                        <td style="width: 30%">{{bl.start_time}} - {{bl.end_time}}</td>
+                        <td style="width: 30%">{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
+                    </tr>
+                {% endif%}
+            {% endfor%}
           {% endfor%}
+
 
          
         </tbody>

@@ -472,6 +472,36 @@ def history(request):
         search_txt = request.POST.get('search','')
         all_booklist = Booking_list.objects.filter(
             room_id__name__icontains= search_txt ).order_by('bookdate')
+        teacher =Teacher.objects.all()
+        staff =Staff.objects.all()
+
+        
+    
+    except ObjectDoesNotExist:
+        st_booking = None
+        teacher = None
+        staff = None
+
+
+    context = {
+            'all_booklist' : all_booklist,
+            'st_booking' : st_booking,
+            'user' : user,
+            'teacher' : teacher,
+            'staff' : staff,
+
+    }
+
+    return render(request, 'user/history.html', context)
+
+def history_teacher(request):
+    try:
+        user = User.objects.all()
+        teacher_book = Booking_teacher.objects.all()
+
+        search_txt = request.POST.get('search','')
+        all_booklist = Booking_list.objects.filter(
+            room_id__name__icontains= search_txt ).order_by('bookdate')
    
         
     
@@ -480,16 +510,11 @@ def history(request):
 
     context = {
             'all_booklist' : all_booklist,
-            'st_booking' : st_booking,
+            'teacher_book' : teacher_book,
             'user' : user,
     }
 
-    return render(request, 'user/history.html', context)
-
-def history_teacher(request):
-  
-
-    return render(request, 'user/historyteacher.html')
+    return render(request, 'user/historyteacher.html', context)
 
 
 def history_staff(request):

@@ -24,50 +24,74 @@
     <table class="table table-hover " >
         <thead >
           <tr>
-            <th scope="col">ชื่อห้อง</th>
-            <th scope="col">วันที่ขอจอง</th>
-            <th scope="col">เวลา</th>
-            <th scope="col">ผู้ขอ</th>
-            <th scope="col">อาจารย์</th>
-            <th scope="col">เจ้าหน้าที่สถานที่</th>
+            <th scope="col" style="width: 10%">ชื่อห้อง</th>
+            <th scope="col" style="width: 15%">วันที่ขอจอง</th>
+            <th scope="col" style="width: 15%">เวลา</th>
+            <th scope="col" style="width: 15%">ผู้ขอ</th>
+            <th scope="col" style="width: 15%">อาจารย์</th>
+            <th scope="col" style="width: 15%">เจ้าหน้าที่สถานที่</th>
+            <th scope="col" style="width: 10%">สถานะ</th>
+            
+      
+
 
          
           </tr>
         </thead>
         <tbody> 
 
-          {% for bl in all_booklist %}
+    {% for bl in all_booklist %}
+      {% for bs in st_booking %}
+        {% if bl.booking_id.id == bs.booking_id.id %}
+
           <tr>
             <td>{{bl.room_id.name}}</td> 
             <td>{{bl.bookdate}}</td>
             <td>{{bl.start_time}} - {{bl.end_time}}</td>
             <td>{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
-     
             
-            {% for s in st_booking %}
-              {% if s.booking_id == bl.booking_id %}
-                {% for u in user %}          
-                  {% if s.teacher_user_id_id == u.id %}
+            {% if bs.teacher_user_id_id == null %}
+              <td> - </td>
+            {% else %}
+            {% for t in teacher %}  
+              {% if bs.teacher_user_id_id == t.id %}
+                {% for u in user %}  
+                  {% if t.user_id_id == u.id %}
                         <td> {{u.first_name}} {{u.last_name}} </td>
                   {% endif %}
                 {% endfor %}
               {% endif %}
-            {% endfor %}
-
-
-            {% for s in st_booking %}
-              {% if s.booking_id == bl.booking_id %}
-                {% for u in user %}          
-                  {% if s.staff_user_id_id == u.id %}
+              {% endfor %}
+            {% endif %}
+            
+          
+             
+            {% if bs.staff_user_id_id == null %}
+              <td> - </td>
+            {% else %}
+              {% for s in staff %}  
+                {% if bs.staff_user_id_id == s.id %}
+                  {% for u in user   %}  
+                    {% if s.user_id_id == u.id %}
                         <td> {{u.first_name}} {{u.last_name}} </td>
-                  {% endif %}
-                {% endfor %}
-              {% endif %}
-            {% endfor %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
 
-
+      
+          {% if bl.booking_id.status == 2 %}
+                <td> <span class="badge badge-success">{{bl.booking_id.get_status_display}}</span> </td>
+          {% else %}
+                <td> <span class="badge badge-danger">{{bl.booking_id.get_status_display}}</span> </td>
+          {% endif %}
           </tr>
-          {% endfor%}
+
+        {% endif%}
+      {% endfor%}
+    {% endfor%}
+
 
          
         </tbody>
