@@ -42,20 +42,28 @@ def index(request):
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def bookinglistall(request):
-    search_txt = request.POST.get('search','')
+   
 
     # if request.POST.get('select') == 1:
     #     all_booklist.objects.filter(roon_id__name__icontains = 'L308')
     #     count = all_booklist.count()
+    try:
+        search_txt = request.POST.get('search','')
+        all_booklist = Booking_list.objects.filter(
+            room_id__name__icontains= search_txt ).order_by('bookdate')
+        count = all_booklist.count()
+        stbooking = Booking_student.objects.all()
+        user_id = request.user.id
+        role = UserRole.objects.get(user_id__exact=user_id)
 
-    all_booklist = Booking_list.objects.filter(
-        room_id__name__icontains= search_txt ).order_by('bookdate')
-    count = all_booklist.count()
-    stbooking = Booking_student.objects.all()
+    except ObjectDoesNotExist:
+        role = None
     context = {
         'all_booklist' : all_booklist,
         'count' : count,
         'stbooking' : stbooking,
+        'role' : role,
+
 
     }
     return render(request, 'user/bookinglist.html', context)
@@ -354,8 +362,7 @@ def accept(request, bl_id):
     context['bl_id'] = bl_id
     now = str(datetime.now())
 
-    # t_result = False
-    # s_result = False
+   
 
     try:
         user_id = request.user.id
@@ -366,70 +373,73 @@ def accept(request, bl_id):
         teacher = None
         staff = None
 
-    print(teacher)
-    print(staff)
+    # print(teacher)
+    # print(staff)
 
-    
+    t_result = ''
+    s_result = ''
 
     if request.method == 'POST':  
 
         if 'allowt' in request.POST:
-            stu.teacher_result = True
+            stu.teacher_result = '2'
             stu.teacher_date = now
             stu.teacher_user_id_id = teacher
             
             stu.save()
-            t_result = True
+            if stu.teacher_result == '2' and stu.staff_result == '2':
+                book.status = '2'
+                book.save()
+                print('===============1==================')
         
             return redirect('bookinglistall')
 
         elif 'denyt' in request.POST:
-            stu.teacher_result = False
+            stu.teacher_result = '3'
             stu.teacher_user_id_id = teacher
             stu.save()
-            t_result = False
+            if stu.teacher_result == '3':
+                stu.staff_result = '3'
+                stu.save()
+                book.status = '3'
+                book.save()
+                print('================2=================')
+
 
             return redirect('bookinglistall')
         
         elif 'allows' in request.POST:
-            stu.staff_result = True
+            stu.staff_result = '2'
             stu.staff_date = now
             stu.staff_user_id_id = staff
-
             stu.save()
-
-            s_result = True
+            if stu.staff_result == '2' and stu.staff_result == '2':
+                book.status = '2'
+                book.save()
+                print('===============3==================')
+  
             return redirect('bookinglistall')
 
         elif 'denys' in request.POST:
-            stu.staff_result = False
+            stu.staff_result = '3'
             stu.staff_user_id_id = staff
 
             stu.save()
-            s_result = False
+            if stu.staff_result == '3':
+                stu.teacher_result = '3'
+                stu.save()
+                book.status = '3'
+                book.save()
+                print('================4=================')
 
 
             return redirect('bookinglistall')
         
-    # print("=================================2")
-        
-        
-    # print('allow1')
-    # print(stu.teacher_result)
-    # print(stu.staff_result)
-    # print(t_result)
-    # print(s_result)
-
-
-    # for st in studentbook:
-
-    # if stu.teacher_result == True and stu.staff_result == True: 
-        # book.status = '2'
-        # book.save()
-
-        # print('allow2')
 
     return render(request, 'user/accept.html', context)
+
+
+
 
 def delete(request, rm_id):
     room = Room.objects.get(pk=rm_id)
@@ -475,4 +485,16 @@ def history(request):
     }
 
     return render(request, 'user/history.html', context)
+
+def history_teacher(request):
+  
+
+    return render(request, 'user/historyteacher.html')
+
+
+def history_staff(request):
+  
+
+    return render(request, 'user/historystaff.html')
+
 

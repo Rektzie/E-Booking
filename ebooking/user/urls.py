@@ -31,6 +31,9 @@ urlpatterns = [
     path('accept/<int:bl_id>/', views.accept, name='accept'),
     path('bookinglistadmin/', views.bookinglistadmin, name='bookinglistadmin'),
     path('history/', views.history, name='history'),
+    path('history/teacher/', views.history_teacher, name='history_teacher'),
+    path('history/staff/', views.history_staff, name='history_staff'),
+
     path('delete/<int:rm_id>/',views.delete, name='delete'),
     path('track_delete/<int:bl_id>/',views.track_delete, name='track_delete'),
     # path('api/',views.api, name='api'),

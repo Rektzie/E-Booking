@@ -14,13 +14,19 @@
       <ul class="navbar-nav mr-auto mt-2 mt-lg-0 ">
         
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'bookinglistall' %}">รายการจองทั้งหมด </a>
+          <a class="nav-link" href="{% url 'bookinglistall' %}">รายการคำร้อง </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'history' %}">ประวัติการจองของนักศึกษา</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'history_teacher' %}">ประวัติการจองของอาจารย์</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'history_staff' %}">ประวัติการจองของเจ้าหน้าที่</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'bookinglistadmin' %}">รายการจองของตนเอง</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'history' %}">ประวัติการจอง</a>
         </li>
       </ul>
       {% block search %}

@@ -53,10 +53,12 @@
                       </tr>
                       <tr>
                         {% for st in booking_st %}
-                        {% if st.teacher_result == 0 %}
+                        {% if st.teacher_result == 1 %}
                         <td>  <img   src="{% static 'wait.png' %}" style="width: 50px;"></td>
-                        {% else %}
+                        {% elif st.teacher_result == 2 %}
                         <td>  <img   src="{% static 'complete.png' %}" style="width: 50px;"></td>
+                        {% else %}
+                        <td>  <img   src="{% static 'deny.png' %}" style="width: 50px;"></td>
                       {% endif %}
                       {% endfor %}
                         <td>อาจารย์อนุมัติ
@@ -71,10 +73,12 @@
                       </tr>
                       <tr>
                         {% for st in booking_st %}
-                          {% if st.staff_result == 0 %}
+                          {% if st.staff_result == 1 %}
                           <td>  <img   src="{% static 'wait.png' %}" style="width: 50px;"></td>
-                          {% else %}
+                          {% elif st.staff_result == 2 %}
                           <td>  <img   src="{% static 'complete.png' %}" style="width: 50px;"></td>
+                          {% else %}
+                          <td>  <img   src="{% static 'deny.png' %}" style="width: 50px;"></td>
                         {% endif %}
                         {% endfor %}
 
