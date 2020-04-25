@@ -274,27 +274,46 @@ def add(request):
 
 
 def edit(request, rm_id):
-
-
+    context = {}
+    allroom = Room.objects.all()
     room = Room.objects.get(pk=rm_id)
     type = Room_type.objects.all()
+    
+
     if request.method == 'POST':     
+        
+        for all in allroom:
+            if all.name == request.POST.get('name') and room.name != request.POST.get('name'):
+                print('not equal')
+                context['error'] = "ห้องซ้ำ"
 
-        room.name = request.POST.get('name')
-        room.open_time = request.POST.get('st_time')
-        room.close_time = request.POST.get('ed_time')
-        room.capacity = request.POST.get('cap')
-        room.save()
+        if room.name == request.POST.get('name'):
+            print('equal')
+            room.name = request.POST.get('name')
+            room.start_time = request.POST.get('st_time')
+            room.end_time = request.POST.get('ed_time')
+            room.capacity = request.POST.get('cap')
+            room.room_type_id = request.POST.get('type')
+            room.save()
 
-        return redirect('index')
-    context = {
-        'room': room,
-        'room_id' : rm_id,
-        'type' : type 
+            return redirect('index')
 
-        }
+        else:
+            print('ไม่ซ้ำ')
+            room.name = request.POST.get('name')
+            room.start_time = request.POST.get('st_time')
+            room.end_time = request.POST.get('ed_time')
+            room.capacity = request.POST.get('cap')
+            room.room_type_id = request.POST.get('type')
+            room.save()
+            return redirect('index')
 
-    return render(request, 'user/editroom.html', context)
+    context['room'] = room
+    context['room_id'] = rm_id
+    context['type'] = type
+
+
+    return render(request, 'user/editroom.html', context=context)
 
 
 

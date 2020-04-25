@@ -4,6 +4,17 @@
 {% endblock title%}
 {% block base %}
 
+
+{% if error %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>{{ error }}</strong> 
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
+
+
 <div class="container">
     <div class="row">
         <div class="col-12 ">
@@ -32,10 +43,10 @@
                         <p> ชื่อห้อง <input type="text" id="name" name="name" required="required" value="{{room.name}}"></p> 
                     </div>
                     <div class="col-6">
-                        <select id="inputState" class="form-control">
+                        <select id="inputState" class="form-control" name="type">
                             <option selected>ประเภทห้อง</option>
                             {% for rt in type %}
-                            <option name="type">{{rt.name}}</option>
+                            <option value="{{rt.id}}">{{rt.name}}</option>
                             {% endfor %}
                           </select>
                     </div>
