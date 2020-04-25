@@ -18,6 +18,7 @@ def index(request):
     all_room = Room.objects.filter(
         name__icontains= search_txt ).order_by('name')
     type = Room_type.objects.all()
+   
     context = {
         'all_room': all_room,
         'type': type,   
@@ -478,7 +479,7 @@ def history(request):
         
     
     except ObjectDoesNotExist:
-        st_booking = None
+        st_booking = None  
         teacher = None
         staff = None
 
