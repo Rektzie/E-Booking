@@ -46,14 +46,13 @@
     <table class="table table-hover " >
         <thead >
           <tr>
-            <th scope="col">ชื่อห้อง</th>
-            <th scope="col">วันที่</th>
-            <th scope="col">เวลา</th>
-            <th scope="col">ผู้ขอ</th>
-            <th scope="col">อาจารย์</th>
-            <th scope="col">เจ้าหน้าที่</th>
-
-
+            <th scope="col" style="width: 10%">ชื่อห้อง</th>
+            <th scope="col" style="width: 15%">วันที่</th>
+            <th scope="col" style="width: 15%">เวลา</th>
+            <th scope="col" style="width: 15%">ผู้ขอ</th>
+            <th scope="col" style="width: 15%">อาจารย์</th>
+            <th scope="col" style="width: 15%">เจ้าหน้าที่</th>
+            
          
           </tr>
         </thead>
@@ -62,6 +61,9 @@
         {% for bl in all_booklist %}
         {% for st in stbooking %}
         {% if bl.booking_id.id == st.booking_id.id %}
+        {% if st.teacher_result != 2 or st.staff_result != 2%}
+          {% if st.teacher_result != 3 or st.staff_result != 3%}
+    
           <tr>
             <td>{{bl.room_id.name}} </td> 
             <td>{{bl.bookdate}}</td>
@@ -69,21 +71,50 @@
             <td>{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
             <td style="width: 10%">
               
-              {% if st.teacher_result == False %}
-              <a href="{% url 'accept' bl.list_no %}"><button type="submit" class="btn btn-danger">อนุมัติ</button></a>
-             {% else %}
-             <p> อนุมัติ</p>
-             {% endif %}
-        
-            </td>
+            {% if role.role == 2 %}
+
+                  {% if st.teacher_result == 1 %}
+                  <a href="{% url 'accept' bl.list_no %}"><button type="submit" class="btn btn-warning">อนุมัติ</button></a>
+                  {% elif st.teacher_result == 2 %}
+                  <span class="badge badge-success">อนุมัติ</span>
+                  {% else %}
+                  <span class="badge badge-danger">ไม่อนุมัติ</span>
+                {% endif %}
+           
+            {% else %}
+                  {% if st.teacher_result == 1 %}
+                  <span class="badge badge-light">รออนุมัติ</span>
+                  {% elif st.teacher_result == 2 %}
+                  <span class="badge badge-success">อนุมัติ</span>
+                  {% else %}
+                  <span class="badge badge-danger">ไม่อนุมัติ</span>
+                {% endif %}
+            {% endif %}
+          </td>
+            
             <td style="width: 10%">
-              {% if st.staff_result == False %}
-              <a href="{% url 'accept' bl.list_no %}"><button type="submit" class="btn btn-danger">อนุมัติ</button></a>
-             {% else %}
-             <p> อนุมัติ</p>
-             {% endif %}
+              {% if role.role == 3 %}
+                  {% if st.staff_result == 1 %}
+                  <a href="{% url 'accept' bl.list_no %}"><button type="submit" class="btn btn-warning">อนุมัติ</button></a>
+                  {% elif st.staff_result == 2 %}
+                  <span class="badge badge-success">อนุมัติ</span>
+                  {% else %}
+                  <span class="badge badge-danger">ไม่อนุมัติ</span>
+                {% endif %}
+            {% else %}
+                  {% if st.staff_result == 1 %}
+                  <span class="badge badge-light">รออนุมัติ</span>
+                  {% elif st.staff_result == 2 %}
+                  <span class="badge badge-success">อนุมัติ</span>
+                  {% else %}
+                  <span class="badge badge-danger">ไม่อนุมัติ</span>
+                {% endif %}
+           {% endif %}
+          
             </td>
           </tr>
+          {% endif %}
+          {% endif %}
           {% endif %}
           {% endfor%}
           {% endfor%}
