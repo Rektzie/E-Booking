@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from django.db.models import Subquery
-from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type
+from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type, UserRole
 from user.forms import EditForm, AddRoomForm, BookRoomForm
 from django.forms import formset_factory
 from user.forms import EditForm, AddRoomForm, BookRoomDescriptionForm
@@ -126,32 +126,24 @@ def booking(request, rm_id): #func called by booking.html
     context['rm_id'] = rm_id
     return render(request, 'user/booking.html', context)
 
-# def profile_edit(request):
-#     context = {}
-#     user = request.user
-#     if request.method == 'POST':     
 
-#         user.first_name = request.POST.get('fname')
-#         user.last_name = request.POST.get('lname')
-#         user.save()
-
-#         return redirect('profile_edit')
-#     return render(request, 'user/profile.html', context)
 
 def profile(request):
     context = {}
 
     try:
         user_id = request.user.id
-        
+        role = UserRole.objects.get(user_id__exact=user_id)
         student = Student.objects.get(user_id__exact=user_id)
         list = Booking_list.objects.filter(booking_id__user_id=user_id).count()
         accept = Booking_list.objects.filter(booking_id__user_id=user_id, booking_id__status='2').count()
-      
+        user = request.user
         # print(myrole)
         context['student'] = student
         context['list'] = list
         context['accept'] = accept
+        context['role'] = role
+
 
  
 
@@ -161,26 +153,34 @@ def profile(request):
    
     
     if request.method == 'POST':
-        username = request.user.username
-        user = User.objects.get(username__exact=username)
-        # oldpassword1 = request.user.password
-        # oldpassword2 = request.POST.get('oldpass')
-        password1 = request.POST.get('pass1')
-        password2 = request.POST.get('pass2')
-        # check that the passwords match
+        if 'submitpass' in request.POST:
+            username = request.user.username
+            user = User.objects.get(username__exact=username)
+            # oldpassword1 = request.user.password
+            # oldpassword2 = request.POST.get('oldpass')
+            password1 = request.POST.get('pass1')
+            password2 = request.POST.get('pass2')
+            # check that the passwords match
 
-        # matchcheck = check_password(oldpassword1, oldpassword2)
-        # if matchcheck:
-        if password1 == password2:
-            user.set_password(password1)
+            # matchcheck = check_password(oldpassword1, oldpassword2)
+            # if matchcheck:
+            if password1 == password2:
+                user.set_password(password1)
+                user.save()
+
+                logout(request)
+                return redirect('login')
+            else:
+                    context['error'] = 'รหัสผ่านไม่ตรงกัน'
+           
+        elif 'submitname' in request.POST:
+            user.first_name = request.POST.get('fname')
+            user.last_name = request.POST.get('lname')
             user.save()
+            context['success'] = 'แก้ไขข้อมูลสำเร็จ'
+        
 
-            logout(request)
-            return redirect('login')
-        else:
-                context['error'] = 'รหัสผ่านไม่ตรงกัน'
-        # else:
-        #         context['error'] = 'OldPasswords do not match.' 
+     
          
 
     return render(request, 'user/profile.html', context)
@@ -328,41 +328,66 @@ def accept(request, bl_id):
     book = Booking.objects.get(pk=book_list.booking_id.id)
   
     stu = Booking_student.objects.get(booking_id=book.id)
-    print(stu)
+ 
     context = {}
     context['book_list'] = book_list
     context['student'] = student
     context['bl_id'] = bl_id
     now = str(datetime.now())
-    if request.method == 'POST':
+
+    # t_result = False
+    # s_result = False
+
+    if request.method == 'POST':  
+
         if 'allowt' in request.POST:
             stu.teacher_result = True
             stu.teacher_date = now
             stu.save()
+            t_result = True
         
             return redirect('bookinglistall')
 
         elif 'denyt' in request.POST:
             stu.teacher_result = False
             stu.save()
+            t_result = False
+
             return redirect('bookinglistall')
         
         elif 'allows' in request.POST:
             stu.staff_result = True
             stu.staff_date = now
             stu.save()
+
+            s_result = True
             return redirect('bookinglistall')
 
         elif 'denys' in request.POST:
             stu.staff_result = False
             stu.save()
+            s_result = False
+
+
             return redirect('bookinglistall')
+        
+    # print("=================================2")
+        
+        
+    # print('allow1')
+    # print(stu.teacher_result)
+    # print(stu.staff_result)
+    # print(t_result)
+    # print(s_result)
 
-    # if stu.teacher_result == True and stu.staff_result == True: เดี๋ยวมาต่อ *********************************
-    #     book.status = '2'
-    #     book.save()
 
-    #     print(allow2)
+    # for st in studentbook:
+
+    # if stu.teacher_result == True and stu.staff_result == True: 
+        # book.status = '2'
+        # book.save()
+
+        # print('allow2')
 
     return render(request, 'user/accept.html', context)
 
