@@ -64,13 +64,18 @@ class Booking(models.Model): #each time the user submit the booking.html create 
 
 
 class Booking_student(models.Model):
+    st = (
+    (1, "รอการอนุมัติ"),
+    (2, "อนุมัติ"),
+    (3, "ไม่อนุมัติ"),
+    )
     booking_id = models.OneToOneField(Booking, on_delete=models.CASCADE)
     teacher_user_id = models.ForeignKey(Teacher, on_delete=models.CASCADE, blank=True, null=True)
     staff_user_id = models.ForeignKey(Staff, on_delete=models.CASCADE, blank=True, null=True)
     teacher_date = models.DateTimeField(blank=True, null=True)
-    teacher_result = models.BooleanField(default=False)
+    teacher_result = models.IntegerField(choices=st, default = 1)
     staff_date = models.DateTimeField(blank=True, null=True)
-    staff_result = models.BooleanField(default=False)
+    staff_result = models.IntegerField(choices=st, default = 1)
 
 
 class Booking_teacher(models.Model):

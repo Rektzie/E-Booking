@@ -342,12 +342,12 @@ def tracking(request, bl_id):
     }
     return render(request, 'user/track.html', context)
 def accept(request, bl_id):
+
     student = Student.objects.all()
     book_list = Booking_list.objects.get(pk=bl_id)
     book = Booking.objects.get(pk=book_list.booking_id.id)
-  
     stu = Booking_student.objects.get(booking_id=book.id)
- 
+    
     context = {}
     context['book_list'] = book_list
     context['student'] = student
@@ -357,11 +357,27 @@ def accept(request, bl_id):
     # t_result = False
     # s_result = False
 
+    try:
+        user_id = request.user.id
+        teacher = Teacher.objects.filter(user_id_id=user_id).values_list('id')
+        staff = Staff.objects.filter(user_id_id=user_id).values_list('id')
+
+    except ObjectDoesNotExist:
+        teacher = None
+        staff = None
+
+    print(teacher)
+    print(staff)
+
+    
+
     if request.method == 'POST':  
 
         if 'allowt' in request.POST:
             stu.teacher_result = True
             stu.teacher_date = now
+            stu.teacher_user_id_id = teacher
+            
             stu.save()
             t_result = True
         
@@ -369,6 +385,7 @@ def accept(request, bl_id):
 
         elif 'denyt' in request.POST:
             stu.teacher_result = False
+            stu.teacher_user_id_id = teacher
             stu.save()
             t_result = False
 
@@ -377,6 +394,8 @@ def accept(request, bl_id):
         elif 'allows' in request.POST:
             stu.staff_result = True
             stu.staff_date = now
+            stu.staff_user_id_id = staff
+
             stu.save()
 
             s_result = True
@@ -384,6 +403,8 @@ def accept(request, bl_id):
 
         elif 'denys' in request.POST:
             stu.staff_result = False
+            stu.staff_user_id_id = staff
+
             stu.save()
             s_result = False
 

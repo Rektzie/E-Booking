@@ -33,16 +33,16 @@
             <li class="nav-item ">
               <a class="nav-link" href="{% url 'index'%}">Room</span></a>
             </li>
-            {% if request.user.is_superuser %}
+            {% comment %} {% if request.user.is_superuser %} {% endcomment %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'bookinglistall'%}">Request</a>
             </li>
             
-            {% else %}
+            {% comment %} {% else %} {% endcomment %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'bookinglist'%}">Track</a>
             </li>
-            {% endif %}
+            {% comment %} {% endif %} {% endcomment %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{ request.user.username }}
