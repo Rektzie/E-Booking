@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
+from user.models import Student,UserRole,Teacher,Staff
 
 # Create your views here.
 
@@ -87,13 +88,14 @@ def register(request):
                     user_id_id = id
                 )
                 student.save()
-                
+                print('ok i get it1')
             elif select == '2':
                 teacher = Teacher.objects.create(
                     user_id_id = id,
                     rank = request.POST.get('rank')
                 )
                 teacher.save()
+                print('ok i get it2')
             elif select == '3':
                 staff = Staff.objects.create(
                     user_id_id = id,
@@ -101,7 +103,7 @@ def register(request):
                 )
                 staff.save()
 
-                print('ok i get it')
+                print('ok i get it3')
 
             return redirect('my_login')
         else:
