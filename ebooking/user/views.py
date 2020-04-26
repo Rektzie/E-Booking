@@ -4,11 +4,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from django.db.models import Subquery
 from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type, UserRole
-from user.forms import EditForm, AddRoomForm, BookRoomForm
 from django.forms import formset_factory
-from user.forms import EditForm, AddRoomForm, BookRoomDescriptionForm
+from user.forms import EditForm, AddRoomForm, BookRoomDescriptionForm, RangeBookingForm, BookRoomForm
 from django.http import JsonResponse
 from datetime import datetime
+
+from datetime import date, timedelta
 
 # Create your views here.
 # @login_required(login_url='/')
@@ -90,48 +91,82 @@ def booking(request, rm_id): #func called by booking.html
     #         'formset-TOTAL_FORMS': 2,
     #         }
     if request.method == 'POST':
-        formset = BookRoomFormSet(request.POST)
-        form = BookRoomDescriptionForm(request.POST)
-        if formset.is_valid() and form.is_valid():
-            
-            booking = Booking.objects.create(
-                description = form.cleaned_data['description'],
-                user_id = request.user
-            )
-            booking.save()
-            print('amount =', len(formset))
-            print(formset)
-            print('===================================================')
-            for eachForm in formset:
-                # print(eachForm.cleaned_data['start_time'])
-                print(eachForm)
-                booking_list = Booking_list.objects.create(                      
-                    start_time = eachForm.cleaned_data['start_time'],
-                    end_time = eachForm.cleaned_data['end_time'],
-                    bookdate = eachForm.cleaned_data['bookdate'],
-                    booking_id = booking,
-                    room_id = Room.objects.get(id=rm_id)
-                    
-                    
+        if 'normalBooking' in request.POST:
+            formset = BookRoomFormSet(request.POST)
+            form = BookRoomDescriptionForm(request.POST)
+            if formset.is_valid() and form.is_valid():
+                
+                booking = Booking.objects.create(
+                    description = form.cleaned_data['description'],
+                    user_id = request.user
                 )
+                booking.save()
+                for eachForm in formset:
+                    # print(eachForm.cleaned_data['start_time'])
+                    booking_list = Booking_list.objects.create(                      
+                        start_time = eachForm.cleaned_data['start_time'],
+                        end_time = eachForm.cleaned_data['end_time'],
+                        bookdate = eachForm.cleaned_data['bookdate'],
+                        booking_id = booking,
+                        room_id = Room.objects.get(id=rm_id)
+                        
+                        
+                    )
+                    
+                    
+                    booking_list.save()
+                return redirect('index')
+        elif 'rangeBooking' in request.POST:
+            rangeBookingForm = RangeBookingForm(request.POST)
+            if rangeBookingForm.is_valid():   
+                fromDate = rangeBookingForm.cleaned_data['fromDate']   # start date
+                toDate = rangeBookingForm.cleaned_data['toDate']  # end date
+
+                fromTIme = rangeBookingForm.cleaned_data['fromTime']
+                toTime = rangeBookingForm.cleaned_data['toTime']
                 
+                delta = toDate - fromDate       # as timedelta
+                print(fromDate)
+                print(toDate)
+                print(delta)
                 
-                booking_list.save()
-                print(booking_list)
-            return redirect('index')
+                booking = Booking.objects.create(
+                        description = rangeBookingForm.cleaned_data['description'],
+                        user_id = request.user
+                    )
+                for i in range(delta.days + 1):
+                    day = fromDate + timedelta(days=i)
+                    print(day)
+                    
+                    booking.save()
+                    booking_list = Booking_list.objects.create(                      
+                        start_time = fromTIme,
+                        end_time = toTime,
+                        bookdate = day,
+                        booking_id = booking,
+                        room_id = Room.objects.get(id=rm_id)   
+                    )               
+                    booking_list.save()
+                return redirect('index')
+            
+                
             
             
     else:
         formset = BookRoomFormSet()
         form = BookRoomDescriptionForm()
+        rangeBookingForm = RangeBookingForm()
         
         
-    
+    formset = BookRoomFormSet()
+    form = BookRoomDescriptionForm()
+    rangeBookingForm = RangeBookingForm()
     context = {}
     context['formset'] = formset
     # context['data'] = data
     context['form'] = form
     context['rm_id'] = rm_id
+    context['rangeBookingForm'] = rangeBookingForm
     return render(request, 'user/booking.html', context)
 
 

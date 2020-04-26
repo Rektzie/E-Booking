@@ -37,6 +37,7 @@ class AddRoomForm(forms.Form): #form add, book
     end_time.widget.attrs.update({'class' : 'form-control'})
     capacity.widget.attrs.update({'class' : 'form-control'})
     
+    
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get('name')
@@ -59,12 +60,14 @@ class BookRoomDescriptionForm(forms.Form):
     description = forms.CharField(label='เหตุผลในการจอง', widget=forms.Textarea, required=True)
     def clean(self):
         cleaned_data = super().clean()
+        
+    description.widget.attrs.update({'class' : 'form-control'})
                 
             
 class BookRoomForm(forms.Form): #for booking_list
     bookdate = forms.DateField(label='วันที่', widget=DateInput, required=True)
     start_time = forms.TimeField(label='จองเวลา' ,widget=TimeInput, required=True)
-    end_time = forms.TimeField(label='จองเวลา' ,widget=TimeInput, required=True)
+    end_time = forms.TimeField(label='ถึงเวลา' ,widget=TimeInput, required=True)
     
 
 
@@ -74,4 +77,34 @@ class BookRoomForm(forms.Form): #for booking_list
     
     def clean(self):
         cleaned_data = super().clean()
-   
+        
+
+class RangeBookingForm(forms.Form):
+    fromDate = forms.DateField(label='ตั้งแต่', widget=DateInput, required=True)
+    toDate = forms.DateField(label='จนถึง', widget=DateInput, required=True)
+    fromTime = forms.TimeField(label='จองเวลา' ,widget=TimeInput, required=True)
+    toTime = forms.TimeField(label='ถึงเวลา' ,widget=TimeInput, required=True)
+    description = forms.CharField(label='เหตุผลในการจอง', widget=forms.Textarea, required=True)
+    
+    fromDate.widget.attrs.update({'class' : 'form-control', 'max':'3000-12-31'})
+    toDate.widget.attrs.update({'class' : 'form-control', 'max':'3000-12-31'})
+    fromTime.widget.attrs.update({'class' : 'form-control'})
+    toTime.widget.attrs.update({'class' : 'form-control'})
+    description.widget.attrs.update({'class' : 'form-control'})
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        fromDate = cleaned_data.get('fromDate')
+        toDate = cleaned_data.get('toDate')
+        fromTime = cleaned_data.get('fromTime')
+        toTime = cleaned_data.get('toTime')
+        
+        if fromDate > toDate:
+            errorMsg = 'วันที่ไม่ถูกต้อง'
+            self.add_error('fromDate', errorMsg)
+            print('date-error')
+        if fromTime > toTime:
+            errorMsg = 'เวลาไม่ถูกต้อง'
+            self.add_error('fromTime', errorMsg)
+            print('Time-error')
+            

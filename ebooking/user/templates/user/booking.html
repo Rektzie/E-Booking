@@ -1,11 +1,6 @@
-{% extends 'base.html' %}
-
-{% block title %}
+{% extends 'base.html' %} {% block title %}
 <title>Booking</title>
-{% endblock title%}
-{% block base %}
-
-{% load static %}
+{% endblock title%} {% block base %} {% load static %}
 
 <!-- <link rel="stylesheet" href="{% static 'style-book.css'%}"> -->
 
@@ -17,18 +12,26 @@
     </center>
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
-                aria-controls="nav-home" aria-selected="true">จองห้อง</a>
-            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
-                aria-controls="nav-profile" aria-selected="false">จองเป็นช่วง</a>
+            <a class="nav-item nav-link active" id="normalBooking-tab" data-toggle="tab" href="#normalBooking" role="tab" aria-controls="normalBooking" aria-selected="true">จองห้อง</a>
+            <a class="nav-item nav-link" id="rangeBooking-tab" data-toggle="tab" href="#rangeBooking" role="tab" aria-controls="rangeBooking" aria-selected="false">จองเป็นช่วง</a>
 
         </div>
     </nav>
+
+{% if rangeBookingForm.errors %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>{{ rangeBookingForm.fromDate.errors }}</strong> 
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
+
     <form method="POST" action="{% url 'booking' rm_id %}">
         {% csrf_token %}
         <div class="tab-content" id="nav-tabContent">
             <!-- tab1-->
-            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+            <div class="tab-pane fade show active" id="normalBooking" role="tabpanel" aria-labelledby="normalBooking-tab">
                 <br>
 
                 <!-- <input type="button" value="Add More" id="add_more"> -->
@@ -55,10 +58,7 @@
 
 
                 <div id="form_set">
-                    {{ formset.management_form }}
-                    {% for eachForm in formset.forms %}
-                    {{form.non_field_errors}}
-                    {{form.errors}}
+                    {{ formset.management_form }} {% for eachForm in formset.forms %} {{form.non_field_errors}} {{form.errors}}
 
 
 
@@ -83,7 +83,8 @@
 
 
 
-                    {% comment %} <div class="form-group row p-3">
+                    {% comment %}
+                    <div class="form-group row p-3">
 
                         <label class="col-sm-1 col-form-label">วันที่</label>
                         <div class="col-sm-4">
@@ -120,17 +121,14 @@
                         </div>
                         <label class="col-sm-1 col-form-label">ถึงเวลา</label>
                         <div class="col-sm-2">
-                            {% comment %} {{ formset.end_time }} {% endcomment %}
-                            {{ formset.empty_form.end_time }}
+                            {% comment %} {{ formset.end_time }} {% endcomment %} {{ formset.empty_form.end_time }}
                         </div>
                     </div>
 
                 </div>
 
                 <div class="form-group" id="form_set">
-                    {% comment %} {% for form in formset.forms %}
-                    {{form.non_field_errors}}
-                    {{form.errors}} {% endcomment %}
+                    {% comment %} {% for form in formset.forms %} {{form.non_field_errors}} {{form.errors}} {% endcomment %}
                     <div class='no_error'>
                         <label class="col-sm-2 col-form-label">เหตุผลในการจอง</label>
                         <div class="col-sm-12">
@@ -143,50 +141,63 @@
 
 
 
-                <button type="submit" class="btn btn-dark" style="float: right;">ยืนยัน</button>
+                <button type="submit" name="normalBooking" class="btn btn-dark" style="float: right;">ยืนยัน</button>
                 <br>
                 <br>
             </div>
 
+        </form>
+
+
+
+
+
+        <form method="POST" action="{% url 'booking' rm_id %}">
+            {% csrf_token %}
+            <div class="tab-pane fade" id="rangeBooking" role="tabpanel" aria-labelledby="rangeBooking-tab">
+                <br>
+                <div class="form-group row p-3">
+                
+                    <label class="col-sm-1 col-form-label">ตั้งแต่</label>
+                    <div class="col-sm-2">
+                        {% comment %} <input type="date" class="form-control" name="date"> {% endcomment %}
+                        {{ rangeBookingForm.fromDate }}
+                    </div>
+                    <label class="col-sm-1 col-form-label">จนถึง</label>
+                    <div class="col-sm-2">
+                        {% comment %} <input type="date" class="form-control" name="date"> {% endcomment %}
+                        {{ rangeBookingForm.toDate }}
+                    </div>
+                    <label class="col-sm-1 col-form-label">จองเวลา</label>
+                    <div class="col-sm-2">
+                        {% comment %} <input type="time" class="form-control" name="start_time"> {% endcomment %}
+                        {{ rangeBookingForm.fromTime }}
+                    </div>
+                    <label class="col-sm-1 col-form-label">ถึงเวลา</label>
+                    <div class="col-sm-2">
+                        {% comment %} <input type="time" class="form-control" name="end_time"> {% endcomment %}
+                        {{ rangeBookingForm.toTime }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 col-form-label">เหตุผลในการจอง</label>
+                    <div class="col-sm-12">
+                        {% comment %} <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" name="reason"></textarea> {% endcomment %}
+                        {{ rangeBookingForm.description }}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-dark" value="rangeBooking" name="rangeBooking" style="float: right;">ยืนยัน</button>
+                <br>
+                <br>
+
+
+            </div>
+        </div>
+        <!-- tab1-->
     </form>
-
-
-
-
-
-    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-        <br>
-        <div class="form-group row p-3">
-            <label class="col-sm-1 col-form-label">วันที่</label>
-            <div class="col-sm-4">
-                <input type="date" class="form-control" name="date">
-            </div>
-            <label class="col-sm-1 col-form-label">จองเวลา</label>
-            <div class="col-sm-2">
-                <input type="time" class="form-control" name="start_time">
-            </div>
-            <label class="col-sm-1 col-form-label">ถึงเวลา</label>
-            <div class="col-sm-2">
-                <input type="time" class="form-control" name="end_time">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 col-form-label">เหตุผลในการจอง</label>
-            <div class="col-sm-12">
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" name="reason"></textarea>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-dark" style="float: right;">ยืนยัน</button>
-        <br>
-        <br>
-
-
-    </div>
-
-
-</div> <!-- tab1-->
-</div> <!-- container-->
+</div>
+<!-- container-->
 
 
 
@@ -273,7 +284,7 @@
 <script  src="{% static 'script.js'%}"></script> -->
 
 <script>
-    $('#add_more').click(function () {
+    $('#add_more').click(function() {
         var form_idx = $('#id_form-TOTAL_FORMS').val();
         $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
         $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
