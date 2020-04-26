@@ -129,6 +129,7 @@ def booking(request, rm_id): #func called by booking.html
                     user_id = request.user
                 )
                 booking.save()
+                bookid = booking.id
                 for eachForm in formset:
                     # print(eachForm.cleaned_data['start_time'])
                     booking_list = Booking_list.objects.create(                      
@@ -136,14 +137,32 @@ def booking(request, rm_id): #func called by booking.html
                         end_time = eachForm.cleaned_data['end_time'],
                         bookdate = eachForm.cleaned_data['bookdate'],
                         booking_id = booking,
-                        room_id = Room.objects.get(id=rm_id)
-                        
-                        
+                        room_id = Room.objects.get(id=rm_id)  
                     )
                     
-                    
                     booking_list.save()
+    # ramonzii ============================================================================================
+                if request.user.groups.filter(name ='student').exists():
+                    student = Booking_student.objects.create(    
+                        booking_id_id = bookid
+                    )
+                    student.save()
+                elif request.user.groups.filter(name ='teacher').exists():
+                    teacher = Booking_teacher.objects.create(
+                        booking_id_id = bookid
+                    )
+                    teacher.save()
+                
+                elif request.user.groups.filter(name ='staff').exists():
+                    staff = Booking_staff.objects.create(
+                        booking_id_id = bookid
+                    )
+                    staff.save()
+    # ramonzii ============================================================================================
+                
                 return redirect('index')
+
+
         elif 'rangeBooking' in request.POST:
             rangeBookingForm = RangeBookingForm(request.POST)
             if rangeBookingForm.is_valid():   
@@ -207,11 +226,11 @@ def profile(request):
     try:
       
         user_id = request.user.id
-       
+        user = request.user
         student = Student.objects.get(user_id__exact=user_id)
         list = Booking_list.objects.filter(booking_id__user_id=user_id).count()
         accept = Booking_list.objects.filter(booking_id__user_id=user_id, booking_id__status='2').count()
-        user = request.user
+        
        
         context['student'] = student
         context['list'] = list
@@ -587,5 +606,11 @@ def history_staff(request):
   
 
     return render(request, 'user/historystaff.html')
+
+
+def booking2(request):
+  
+
+    return render(request, 'user/booking2.html')
 
 
