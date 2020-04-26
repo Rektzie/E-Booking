@@ -25,7 +25,9 @@ SECRET_KEY = 'rfzw1@fz&-yes4ky7m7i507dbn4yb!iu0#y10+57uh0q)6697)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['fiery-bedrock-260116.appspot.com', 'localhost', '127.0.0.1']
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Application definition
@@ -40,16 +42,19 @@ INSTALLED_APPS = [
     'user',
     'guest',
     'rest_framework',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'ebooking.urls'

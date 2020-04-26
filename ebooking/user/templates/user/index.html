@@ -6,156 +6,143 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'style-index.css'%}">
 
-<body >
+<body>
+
+
+
+  <div id="app">
   
 
 
-
-
     <div class="indexsize">
-        <br><br><br><br><br><br><br><br><br>
-   <div class="row justify-content-md-center ">
-      
-        <form class="form-inline md-form form-sm mt-0 m-3 " method="POST" action="{% url 'index' %}">
+      <br><br><br><br><br><br><br><br><br>
+      <div class="row justify-content-md-center ">
+        <form class="form-inline md-form form-sm mt-0 m-3 ">
           {% csrf_token %}
-     
-         <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2 " >
-                <input class="form-control" type="text" placeholder="ค้นหาห้อง" name="search" >
-                
+          <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2 ">
+            <input class="form-control" type="text" placeholder="ค้นหาห้อง" name="search" v-model="search">
+          </div>
+          <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2">
+          </div>
+          <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2">
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                [[ select ]]
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#" name="findtype"  v-for="(value,key) in type" v-on:click="filterType(key)" >[[ value ]]</a>
+              </div>
             </div>
-            
-            <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2">
-          
-            </div>
-            <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2">
-              
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                     ประเภทห้อง
-                    </button>
-                   
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                      {% for rt in type %}
-                      <a class="dropdown-item" href="#" name="findtype" value="{{rt.name}}" >{{rt.name}}</a>
-                      {% endfor %}
-                    </div>
-                 
-                  </div>
-            </div>
-            {% if request.user.is_superuser %}
-            <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2">
-            <a href="{% url 'add'  %}"><button type="button" class="btn btn-danger" >เพิ่ม</button></a>
-            {% endif %}
-             
-            </div>
+          </div>
+          {% if request.user.is_superuser %}
+          <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2">
+            <a href="{% url 'add'  %}"><button type="button" class="btn btn-danger">เพิ่ม</button></a>
+          </div>
+          {% endif %}
         </form>
-      </div>  
+      </div>
     </div>
-<br>
-     <center>
-    <div style="width: 65%" class="table-wrapper-scroll-y my-custom-scrollbar">
-    <table class="table table-hover " id="indextb" bgcolor="#eaecea">
-        <thead class="">
-          <tr>
-            <th scope="col">ชื่อห้อง</th>
-            <th scope="col">เวลาเปิด</th>
-            <th scope="col">เวลาปิด</th>
-            <th scope="col">ความจุ</th>
-            <th scope="col">ประเภทห้อง</th>
-          
+    <br>
 
 
-          </tr>
-        </thead>
-        <tbody> 
-         {% for rm in all_room %}
-          <tr>
-            <td>{{rm.name}}</td>
-            <td>{{rm.start_time}}</td>
-            <td>{{rm.end_time}}</td>
-            <td>{{rm.capacity}}</td>
-            <td>{{rm.room_type.name}}</td>
-            <td>
-              <a href="{% url 'bookcheck' rm.id %}"><button type="submit" class="btn btn-info">สถานะการจอง</button></a>
-              <a href="{% url 'booking' rm.id %}"><button type="submit" class="btn btn-info">จอง</button></a>
-              {% if request.user.is_superuser %}
-            <a href="{% url 'edit' rm.id %}"><button type="submit" class="btn btn-danger">แก้ไข</button></a>
-            {% endif %}
-            {% if request.user.is_superuser %}
-            <a href="{% url 'delete' rm.id %}"><button type="submit" class="btn btn-danger">ลบ</button></a>
-        
-            </td>
-            {% endif %}
-            {% comment %} {% if user.is_authenticated %} {% endcomment %}
-      {% if request.user.is_superuser %}
+    <center>
+
+
+      <div style="width: 65%" class="table-wrapper-scroll-y my-custom-scrollbar">
+        <table class="table table-hover " id="indextb" bgcolor="#eaecea">
+          <thead class="">
+            <tr>
+              <th scope="col">ชื่อห้อง</th>
+              <th scope="col">เวลาเปิด</th>
+              <th scope="col">เวลาปิด</th>
+              <th scope="col">ความจุ</th>
+              <th scope="col">ประเภทห้อง</th>
+            </tr>
+          </thead>
+          <tbody>
             
-            {% endif %} 
-          {% comment %} {% endif %} {% endcomment %} 
-         </tr>
-        {% endfor %}
-        </tbody>
-      </table>
-    </div>
+            <tr v-for ="room in filterRoom">
+              <td>[[ room.name ]]</td>
+              <td>[[ room.start_time ]]</td>
+              <td>[[ room.end_time ]]</td>
+              <td>[[ room.capacity ]]</td>
+              <td>[[ type[room.room_type] ]]</td>
+              <td>
+                <a v-bind:href="'bookcheck/'+ room.id"><button type="submit"
+                    class="btn btn-info">สถานะการจอง</button></a>
+                <a v-bind:href="'booking/'+ room.id"><button type="submit" class="btn btn-info">จอง</button></a>
+                {% if request.user.is_superuser %}
+                <a v-bind:href="'edit/' + room.id"><button type="submit" class="btn btn-danger">แก้ไข</button></a>
+                {% endif %}
+                {% if request.user.is_superuser %}
+                <a v-bind:href="'delete/' + room.id"><button type="submit" class="btn btn-danger">ลบ</button></a>
+                {% endif %}
+              </td>
+              
+            </tr>
+        
+          </tbody>
+        </table>
+      </div>
     </center>
 
-    
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      delimiters: ['[[', ']]'],
+      data: {
+        message: 'Hello Vue!',
+        type: {},
+        select : "ประเภทห้อง",
+        all_room : [],
+        isSuperUser: "{{ request.user.is_superuser }}",
+        search : '',
+      },
+      methods: { // เก็บฟังชั่น
+        async filterType(id){
+          let room = await axios.get("http://localhost:8000/index/roomfilter/?type="+ id)
+          this.all_room = room.data
+          this.select = this.type[id]
+        }
+      },
+        
+
+      computed: { // getter เรียก data มีการคำนวนก่อนเรียก 
+        filterRoom() {
+          if (this.search == ''){
+            return this.all_room
+          }
+          return  this.all_room.filter((room) => {
+            return room.name.toLowerCase().includes(this.search.toLowerCase())
+          })
+        }
+      },
+      async mounted(){ // ขอrequestมา ไปget ข้อมูลมา
+        console.log(this.type)
+        let type = await axios.get("http://localhost:8000/index/roomtype/")
+        let room = await axios.get("http://localhost:8000/index/room/")
+        this.all_room = room.data
+        console.log(type.data)
+        for (const el of type.data) {
+            this.type[el.id] = el.name
+        }
+        console.log(this.type)
+        console.log(this.all_room)
+        console.log(this.isSuperUser)
+
+        this.$forceUpdate()
+
+      }
+
+    })
 
 
-    
- // const axios = require('axios');
-    // var rooms = []
 
-    // function initialize () {
-    //     axios.get('/api/')
-    //     .then(function (response) {
-    //         // handle success
-    //         rooms = response.data
 
-    //         rooms.forEach((room) => {
-    //             let name = room.text
-    //             let start_time = room.start_time
-    //             let end_time = room.end_time
-    //             let capacity = room.capacity
 
-    //             let td = createRoom(text, start_time, end_time)
-    //             let ul = document.querySelector('ul#mytodo')
-    //             ul.appendChild(li)
-
-    //         //     let table = document.getElementById('indextb');
-    //         //     let row = table.insertRow(-1);
-    //         //     let cell, text;
-                
-    //         //     for(let i=0; i< 4 ; i++){
-    //         //         cell = row.insertCell(-1);
-    //         //         if(i==0){
-    //         //             text = name;
-    //         //         }else if(i==1){
-    //         //             text = start_time;
-    //         //         }else if(i == 2){
-    //         //             text = end_time;
-    //         //         }else{
-    //         //             text = capacity;
-    //         //         }
-    //         //         cell.appendChild(document.createTextNode(text));
-    //         // }
-    //         })
-
-    //         console.log(response);
-    //     })
-    //     .catch(function (error) {
-    //         // handle error
-    //         console.log(error);
-    //     })
-    //     .then(function () {
-    //         // always executed
-    //     });
-    // }
-
-   
-
-    </script>
+  </script>
 </body>
 {% endblock base %}

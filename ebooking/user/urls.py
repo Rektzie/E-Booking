@@ -36,7 +36,13 @@ urlpatterns = [
 
     path('delete/<int:rm_id>/',views.delete, name='delete'),
     path('track_delete/<int:bl_id>/',views.track_delete, name='track_delete'),
-    # path('api/',views.api, name='api'),
+    path('room/',views.RoomList.as_view(), name='room'),
+    path('roomfilter/',views.RoomFilter.as_view(), name='room_filter'),
+    path('roomtype/',views.RoomTypeList.as_view(), name='roomtype'),
+
+
+
+
 
 
     # path('profile/edit/',views.profile_edit, name='profile_edit'),

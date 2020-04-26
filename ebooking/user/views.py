@@ -12,16 +12,18 @@ from django.http import JsonResponse
 from datetime import datetime
 from django.db.models import Q
 from django.contrib.auth.models import Group
+from rest_framework import generics
+from rest_framework.response import Response
+from user.serializers import RoomSerializer,RoomTypeSerializer
 
 # Create your views here.
 # @login_required(login_url='/')
 # @permission_required('user.view_room', login_url='/')
 def index(request):
-    search_txt = request.POST.get('search','')
-    all_room = Room.objects.filter(
-        name__icontains= search_txt ).order_by('name')
+
+    all_room = Room.objects.all()
     type = Room_type.objects.all()
-   
+    
     context = {
         'all_room': all_room,
         'type': type,   
@@ -31,19 +33,36 @@ def index(request):
 
     return render(request, 'user/index.html', context)
 
-# @csrf_exempt
-# def api(request):
-#     if request.method == 'GET':
-#         room = Room.objects.all()
-#         serializer = ToDoItemSerializer(room, many=True)
-#         return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+class RoomList(generics.ListCreateAPIView):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
 
-    # elif request.method == 'POST':
-    #     serializer = ToDoItemSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class RoomTypeList(generics.ListCreateAPIView):
+    queryset = Room_type.objects.all()
+    serializer_class = RoomTypeSerializer
+ 
+class RoomFilter(generics.RetrieveAPIView):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+
+    def isEqual(self, room):
+        return room['room_type'] == self.type
+    
+
+    def get(self, request, *args, **kwarg):
+        try:
+            self.type = int(request.GET.get('type'))
+
+            if self.type:
+                room = Room.objects.all()
+                serializer = RoomSerializer(room, many=True)
+                filter_data = filter(self.isEqual, serializer.data)
+            return Response(filter_data)
+        except Exception as e:
+            return Response({
+                "error" : str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 def bookinglistall(request):
     context = {}
