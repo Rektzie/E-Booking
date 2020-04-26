@@ -83,7 +83,7 @@
       
           {% if bl.booking_id.status == 2 %}
                 <td> <span class="badge badge-success">{{bl.booking_id.get_status_display}}</span> </td>
-          {% else %}
+          {% elif bl.booking_id.status == 3 %}
                 <td> <span class="badge badge-danger">{{bl.booking_id.get_status_display}}</span> </td>
           {% endif %}
           </tr>

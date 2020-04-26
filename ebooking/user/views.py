@@ -1,13 +1,16 @@
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from django.db.models import Subquery
-from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type, UserRole
+from user.models import Student, Teacher, Staff, Adminn, Booking, Booking_student, Booking_teacher, Booking_staff, Booking_list, Room, Room_type
 from django.forms import formset_factory
 from user.forms import EditForm, AddRoomForm, BookRoomDescriptionForm, RangeBookingForm, BookRoomForm
 from django.http import JsonResponse
 from datetime import datetime
+from django.db.models import Q
+from django.contrib.auth.models import Group
 
 from datetime import date, timedelta
 
@@ -19,6 +22,7 @@ def index(request):
     all_room = Room.objects.filter(
         name__icontains= search_txt ).order_by('name')
     type = Room_type.objects.all()
+   
     context = {
         'all_room': all_room,
         'type': type,   
@@ -43,31 +47,36 @@ def index(request):
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def bookinglistall(request):
-   
+    context = {}
 
     # if request.POST.get('select') == 1:
     #     all_booklist.objects.filter(roon_id__name__icontains = 'L308')
     #     count = all_booklist.count()
-    try:
-        search_txt = request.POST.get('search','')
-        all_booklist = Booking_list.objects.filter(
-            room_id__name__icontains= search_txt ).order_by('bookdate')
-        count = all_booklist.count()
-        stbooking = Booking_student.objects.all()
-        user_id = request.user.id
-        role = UserRole.objects.get(user_id__exact=user_id)
+    
+    search_txt = request.POST.get('search','')
+    all_booklist = Booking_list.objects.filter(
+        Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='2') ).order_by('bookdate')
+    count = all_booklist.count()
+    stbooking = Booking_student.objects.all()
+    user_id = request.user.id
+    
+    context['all_booklist'] = all_booklist
+    context['count'] = count
+    context['stbooking'] = stbooking
 
-    except ObjectDoesNotExist:
-        role = None
-    context = {
-        'all_booklist' : all_booklist,
-        'count' : count,
-        'stbooking' : stbooking,
-        'role' : role,
+    if request.user.groups.filter(name ='student').exists():
+       context['group'] = 'นักศึกษา'
+    elif request.user.groups.filter(name ='teacher').exists():
+       context['group'] = 'อาจารย์'
+    elif request.user.groups.filter(name ='staff').exists():
+       context['group'] = 'บุคลากร'
+    elif request.user.groups.filter(name ='admin').exists():
+       context['group'] = 'ผู้ดูแลระบบ'
+    
 
-
-    }
-    return render(request, 'user/bookinglist.html', context)
+    
+    
+    return render(request, 'user/bookinglist.html', context=context)
 
 def bookinglist(request): #existing booking list from users' requests
 
@@ -171,48 +180,51 @@ def booking(request, rm_id): #func called by booking.html
 
 
 
+
+
 def profile(request):
     context = {}
 
     try:
+      
         user_id = request.user.id
-        role = UserRole.objects.get(user_id__exact=user_id)
+       
         student = Student.objects.get(user_id__exact=user_id)
         list = Booking_list.objects.filter(booking_id__user_id=user_id).count()
         accept = Booking_list.objects.filter(booking_id__user_id=user_id, booking_id__status='2').count()
         user = request.user
-        # print(myrole)
+       
         context['student'] = student
         context['list'] = list
         context['accept'] = accept
-        context['role'] = role
-
-
- 
+      
 
 
     except ObjectDoesNotExist:
         student = None
-   
+
+    if request.user.groups.filter(name ='student').exists():
+       context['group'] = 'นักศึกษา'
+    elif request.user.groups.filter(name ='teacher').exists():
+       context['group'] = 'อาจารย์'
+    elif request.user.groups.filter(name ='staff').exists():
+       context['group'] = 'บุคลากร'
+    elif request.user.groups.filter(name ='admin').exists():
+       context['group'] = 'ผู้ดูแลระบบ'
     
     if request.method == 'POST':
         if 'submitpass' in request.POST:
-            username = request.user.username
-            user = User.objects.get(username__exact=username)
-            # oldpassword1 = request.user.password
-            # oldpassword2 = request.POST.get('oldpass')
+            username = request.user.id
+            user = User.objects.get(id__exact=username)
             password1 = request.POST.get('pass1')
             password2 = request.POST.get('pass2')
-            # check that the passwords match
-
-            # matchcheck = check_password(oldpassword1, oldpassword2)
-            # if matchcheck:
+         
             if password1 == password2:
                 user.set_password(password1)
                 user.save()
 
                 logout(request)
-                return redirect('login')
+                return redirect('my_login')
             else:
                     context['error'] = 'รหัสผ่านไม่ตรงกัน'
            
@@ -506,14 +518,14 @@ def history(request):
 
         search_txt = request.POST.get('search','')
         all_booklist = Booking_list.objects.filter(
-            room_id__name__icontains= search_txt ).order_by('bookdate')
+            Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='1')).order_by('bookdate')
         teacher =Teacher.objects.all()
         staff =Staff.objects.all()
 
-        
+    
     
     except ObjectDoesNotExist:
-        st_booking = None
+        st_booking = None  
         teacher = None
         staff = None
 
