@@ -31,7 +31,7 @@ def my_login(request):
 
 
 def register(request):
-    context = {}
+    context = dict()
 
     if request.method == 'POST':
         password = request.POST.get('password')
@@ -50,11 +50,14 @@ def register(request):
             user = None
 
         if user:
-            context = {
-                'error_user' : "username ซ้ำ"
-            }
-            return redirect('my_login')
-            # return render(request, 'guest/login.html', context)
+        
+            context['error_user'] = 'This username is taken. Try another.'
+            context['fname'] = request.POST.get('firstname')
+            context['lname'] = request.POST.get('lastname')
+            context['email'] = request.POST.get('email')
+            context['user'] = request.POST.get('username')
+
+            return render(request, 'guest/login.html', context)
 
         if password == repassword:
             user = User.objects.create_user(request.POST.get('username'), request.POST.get('email'), request.POST.get('password'))
@@ -74,11 +77,6 @@ def register(request):
             print(user.id)
             id = user.id
 
-            myrole = UserRole.objects.create(
-                    role = request.POST.get('role'),
-                    user_id_id = id
-                )
-            myrole.save()
 
             if select == '1':
                 student = Student.objects.create(
@@ -107,7 +105,14 @@ def register(request):
 
             return redirect('my_login')
         else:
-            context['error'] = 'Password ซ้ำ'
+            context['error_pass'] = 'Password not match.'
+            context['fname'] = request.POST.get('firstname')
+            context['lname'] = request.POST.get('lastname')
+            context['email'] = request.POST.get('email')
+            context['user'] = request.POST.get('username')
+ 
+
+
             return render(request, 'guest/login.html', context=context)
      
     return render(request, 'guest/login.html')

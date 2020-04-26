@@ -267,13 +267,14 @@ footer a {
     text-decoration: none;
 }
 
+
    </style> 
 
 
     <title>Document</title>
 </head>
 <body>
- 
+
  
     <div class="container" id="container">
         <div class="form-container sign-up-container">
@@ -282,12 +283,23 @@ footer a {
                 <h1>Create Account</h1>
                 <div >
                 </div>
-                <input type="text" name="firstname" placeholder="FirstName" required/>
-                <input type="text" name="lastname" placeholder="LastName" required/>
-                <input type="email" name="email" placeholder="Email" required/>
-                <input type="text" name="username" placeholder="Username" required/>
+                <input type="text" name="firstname" placeholder="FirstName" required id="fname"/>
+                <input type="text" name="lastname" placeholder="LastName" required id="lname"/>
+                <input type="email" name="email" placeholder="Email" required id="email"/>
+                <input type="text" name="username" placeholder="Username" id="user" required/>
+                
+                {% if error_user %}
+                <span >
+                    {{ error_user }}
+                </span>
+                {% endif %}
                 <input type="password" name="password" placeholder="Password" required/>
                 <input type="password" name="repassword" placeholder="Re-Password" required/>
+                {% if error_pass %}
+                <span >
+                    {{ error_pass }}
+                </span>
+                {% endif %}
                 <select id="role" name="role" required>
                     <option value="">บทบาท</option>
                     <option value="1" id="role1" >นักศึกษา</option>
@@ -313,29 +325,8 @@ footer a {
                 <input type="text" name="position" placeholder="ฝ่าย" id="position" />
 
 
-             
-        <!-- <div class="form-group">
-            <label for="seeAnotherFieldGroup">Do You Want To See Another Group of Fields?</label>
-            <select class="form-control" id="seeAnotherFieldGroup">
-                <option value="no">Not Particularly.</option>
-                <option value="yes">I Guess!</option>
-            </select>
-        </div>
-        <div class="form-group" id="otherFieldGroupDiv">
-            <div class="row">
-            <div class="col-6">
-                <label for="otherField1">Group: Heres One!</label>
-                <input type="text" class="form-control w-100" id="otherField1">
-            </div>
-            <div class="col-6">
-                <label for="otherField2">Group: Another One!</label>
-                <input type="text" class="form-control w-100" id="otherField2">
-            </div>
-            </div>
-        </div> -->
-    
 
-                <button>Sign Up</button>
+                <button onclick="myFunction()" >Sign Up</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
@@ -371,9 +362,18 @@ footer a {
     
    
 <script>
-            const signUpButton = document.getElementById('signUp');
+        const signUpButton = document.getElementById('signUp');
         const signInButton = document.getElementById('signIn');
         const container = document.getElementById('container');
+        var error = "{{error_user}}";
+        var pass_error = "{{error_pass}}";
+        var fname = "{{ fname }}";
+        var lname = "{{ lname }}";
+        var email = "{{ email }}";
+        var user = "{{ user }}";
+        
+
+
 
         signUpButton.addEventListener('click', () => {
             container.classList.add("right-panel-active");
@@ -382,11 +382,28 @@ footer a {
         signInButton.addEventListener('click', () => {
             container.classList.remove("right-panel-active");
         });
+
+   
+        if (error == "This username is taken. Try another." || pass_error == "Password not match.") {
+                container.classList.add("right-panel-active");
+                document.getElementById("fname").value = fname;
+                document.getElementById("lname").value = lname;
+                document.getElementById("email").value = email;
+                document.getElementById("user").value = user;
+        }
+        // else if (pass_error == "Password not match.") {
+        //     container.classList.add("right-panel-active");
+        //     document.getElementById("fname").value = fname;
+        //     document.getElementById("lname").value = lname;
+        //     document.getElementById("email").value = email;
+        //     document.getElementById("user").value = user;
+        // }
+        
 </script>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 
 <script>
- $("#role").change(function() {
+    $("#role").change(function() {
         if ($(this).val() == "1") {
             $('#stid').show();
             $('#major').show();
