@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
@@ -163,22 +164,17 @@ def profile(request):
     
     if request.method == 'POST':
         if 'submitpass' in request.POST:
-            username = request.user.username
-            user = User.objects.get(username__exact=username)
-            # oldpassword1 = request.user.password
-            # oldpassword2 = request.POST.get('oldpass')
+            username = request.user.id
+            user = User.objects.get(id__exact=username)
             password1 = request.POST.get('pass1')
             password2 = request.POST.get('pass2')
-            # check that the passwords match
-
-            # matchcheck = check_password(oldpassword1, oldpassword2)
-            # if matchcheck:
+         
             if password1 == password2:
                 user.set_password(password1)
                 user.save()
 
                 logout(request)
-                return redirect('login')
+                return redirect('my_login')
             else:
                     context['error'] = 'รหัสผ่านไม่ตรงกัน'
            
