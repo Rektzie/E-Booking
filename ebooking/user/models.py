@@ -107,8 +107,8 @@ class Room(models.Model):
 
 class Booking_list(models.Model): #each day of booking
     list_no = models.AutoField(primary_key=True)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    start_time = models.TimeField(null=False)
+    end_time = models.TimeField(null=False)
     bookdate = models.DateField(blank=True, null=True)
     booking_id = models.ForeignKey(Booking, on_delete=models.CASCADE)
     room_id = models.ForeignKey(Room, on_delete=models.CASCADE)
