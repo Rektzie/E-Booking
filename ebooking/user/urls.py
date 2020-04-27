@@ -23,6 +23,8 @@ urlpatterns = [
     path('bookinglistall/', views.bookinglistall, name='bookinglistall'),
     path('bookinglist/', views.bookinglist, name='bookinglist'),
     path('booking/<int:rm_id>/', views.booking, name='booking'),
+    path('booking2/<int:rm_id>/', views.booking2, name='booking2'),
+
     path('profile/', views.profile, name='profile'),
     path('bookcheck/<int:rm_id>/', views.bookcheck, name='bookcheck'),
     path('add/', views.add, name='add'),

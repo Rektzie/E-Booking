@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block base %}
+
+<br><br>
+<div class="container bg-light shadow p-3">   
+<ul class="nav nav-pills">
+    <li class="nav-item">
+      <a class="nav-link active" href="{% url 'booking'%}">Active</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'booking'%}">Link</a>
+    </li>
+   
+  </ul>
+
+  
+  {% block book %}
+  {% endblock book %}
+
+
+</div>
+  {% endblock base %}

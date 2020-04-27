@@ -57,14 +57,14 @@
                         <div class="form-group row">
                             <label  class="col-sm-3 col-form-label">วันที่จอง</label>
                             <div class="col-sm-9">
-                                <input type="text" readonly class="form-control" name="fname" value="{{ book_list.booking_id.date }}">
+                                <input type="text" readonly class="form-control" name="fname" value="{{ book_list.bookdate }}">
                             </div>
                             </div>
 
                         <div class="form-group row">
                             <label  class="col-sm-3 col-form-label">เวลาที่จอง</label>
                             <div class="col-sm-9">
-                                <input type="text" readonly class="form-control" name="fname" value="{{ book_list.start_time }} - {{ book_list.end_time }}">
+                                <input type="text" readonly class="form-control" name="fname" value="{{ book_list.start_time |time:'H:i' }} - {{ book_list.end_time |time:'H:i'}}">
                             </div>
                             </div>  
                             

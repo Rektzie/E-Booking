@@ -15,11 +15,15 @@
 
 
     <div class="indexsize">
+
+      
+      
       <br><br><br><br><br><br><br><br><br>
-      <div class="row justify-content-md-center ">
-        <form class="form-inline md-form form-sm mt-0 m-3 ">
-          {% csrf_token %}
-          <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2 ">
+   
+        
+    
+<!-- old one -->
+          <!-- <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2 ">
             <input class="form-control" type="text" placeholder="ค้นหาห้อง" name="search" v-model="search">
           </div>
           <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2">
@@ -34,30 +38,54 @@
                 <a class="dropdown-item" href="#" name="findtype"  v-for="(value,key) in type" v-on:click="filterType(key)" >[[ value ]]</a>
               </div>
             </div>
-          </div>
-          {% if request.user.is_superuser %}
-          <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2">
-            <a href="{% url 'add'  %}"><button type="button" class="btn btn-danger">เพิ่ม</button></a>
-          </div>
-          {% endif %}
-        </form>
+          </div> -->
+<!-- old one -->
+
+<form >
+  {% csrf_token %}
+  <center>
+
+
+  <div class="input-group col-6">
+    <input type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="ค้นหาห้อง" name="search" v-model="search">
+    <div class="input-group-append">
+      <button class="btn btn-dark dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  [[ select ]]</button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="#" name="findtype"  v-for="(value,key) in type" v-on:click="filterType(key)" >[[ value ]]</a>
       </div>
     </div>
-    <br>
+  </div>
+  
 
+ 
+</center>
+        </form> 
+</div>
+
+    
+    <br>
+    
 
     <center>
 
 
-      <div style="width: 65%" class="table-wrapper-scroll-y my-custom-scrollbar">
+      <div style="width: 80%" class="table-wrapper-scroll-y my-custom-scrollbar">
         <table class="table table-hover " id="indextb" bgcolor="#eaecea">
-          <thead class="">
+          <thead bgcolor="#ffc20e">
             <tr>
-              <th scope="col">ชื่อห้อง</th>
-              <th scope="col">เวลาเปิด</th>
-              <th scope="col">เวลาปิด</th>
-              <th scope="col">ความจุ</th>
-              <th scope="col">ประเภทห้อง</th>
+              <th scope="col" style="width: 10%;">ชื่อห้อง</th>
+              <th scope="col"style="width: 15%;">เวลาเปิด</th>
+              <th scope="col"style="width: 15%;">เวลาปิด</th>
+              <th scope="col"style="width: 10%;">ความจุ</th>
+              <th scope="col"style="width: 15%;">ประเภทห้อง</th>
+              <th style="width: 25%;"> 
+                {% if request.user.is_superuser %}
+                <div class="md-form active-pink active-pink-2">
+                  <a href="{% url 'add'  %}"><button type="button" class="btn btn-danger" style="float: right;">เพิ่ม</button></a>
+                </div>
+                {% endif %}
+              </th>
+
             </tr>
           </thead>
           <tbody>

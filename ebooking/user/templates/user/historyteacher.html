@@ -41,7 +41,7 @@
                     <tr>
                         <td style="width: 10%">{{bl.room_id.name}}</td> 
                         <td style="width: 30%">{{bl.bookdate}}</td>
-                        <td style="width: 30%">{{bl.start_time}} - {{bl.end_time}}</td>
+                        <td style="width: 30%">{{bl.start_time |time:'H:i'}} - {{bl.end_time |time:'H:i'}}</td>
                         <td style="width: 30%">{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
                     </tr>
                 {% endif%}

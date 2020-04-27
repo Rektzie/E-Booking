@@ -112,6 +112,7 @@ def bookinglist(request): #existing booking list from users' requests
 
 def booking(request, rm_id): #func called by booking.html
     BookRoomFormSet = formset_factory(BookRoomForm)
+    room = Room.objects.get(pk=rm_id)
     
     # data = {
     #         'formset-0-raw': 'my raw field string',
@@ -129,6 +130,7 @@ def booking(request, rm_id): #func called by booking.html
                     user_id = request.user
                 )
                 booking.save()
+                bookid = booking.id
                 for eachForm in formset:
                     # print(eachForm.cleaned_data['start_time'])
                     booking_list = Booking_list.objects.create(                      
@@ -136,14 +138,32 @@ def booking(request, rm_id): #func called by booking.html
                         end_time = eachForm.cleaned_data['end_time'],
                         bookdate = eachForm.cleaned_data['bookdate'],
                         booking_id = booking,
-                        room_id = Room.objects.get(id=rm_id)
-                        
-                        
+                        room_id = Room.objects.get(id=rm_id)  
                     )
                     
-                    
                     booking_list.save()
+    # ramonzii ============================================================================================
+                if request.user.groups.filter(name ='student').exists():
+                    student = Booking_student.objects.create(    
+                        booking_id_id = bookid
+                    )
+                    student.save()
+                elif request.user.groups.filter(name ='teacher').exists():
+                    teacher = Booking_teacher.objects.create(
+                        booking_id_id = bookid
+                    )
+                    teacher.save()
+                
+                elif request.user.groups.filter(name ='staff').exists():
+                    staff = Booking_staff.objects.create(
+                        booking_id_id = bookid
+                    )
+                    staff.save()
+    # ramonzii ============================================================================================
+                
                 return redirect('index')
+
+
         elif 'rangeBooking' in request.POST:
             rangeBookingForm = RangeBookingForm(request.POST)
             if rangeBookingForm.is_valid():   
@@ -174,10 +194,7 @@ def booking(request, rm_id): #func called by booking.html
                     )               
                     booking_list.save()
                 return redirect('index')
-            
-                
-            
-            
+                 
     else:
         formset = BookRoomFormSet()
         form = BookRoomDescriptionForm()
@@ -193,6 +210,8 @@ def booking(request, rm_id): #func called by booking.html
     context['form'] = form
     context['rm_id'] = rm_id
     context['rangeBookingForm'] = rangeBookingForm
+    context['room'] = room
+
     return render(request, 'user/booking.html', context)
 
 
@@ -205,11 +224,11 @@ def profile(request):
     try:
       
         user_id = request.user.id
-       
+        user = request.user
         student = Student.objects.get(user_id__exact=user_id)
         list = Booking_list.objects.filter(booking_id__user_id=user_id).count()
         accept = Booking_list.objects.filter(booking_id__user_id=user_id, booking_id__status='2').count()
-        user = request.user
+        
        
         context['student'] = student
         context['list'] = list
@@ -559,18 +578,15 @@ def history(request):
     return render(request, 'user/history.html', context)
 
 def history_teacher(request):
-    try:
-        user = User.objects.all()
-        teacher_book = Booking_teacher.objects.all()
+    user = User.objects.all()
+    teacher_book = Booking_teacher.objects.all()
 
-        search_txt = request.POST.get('search','')
-        all_booklist = Booking_list.objects.filter(
-            room_id__name__icontains= search_txt ).order_by('bookdate')
+    search_txt = request.POST.get('search','')
+    all_booklist = Booking_list.objects.filter(
+        room_id__name__icontains= search_txt ).order_by('bookdate')
    
         
-    
-    except ObjectDoesNotExist:
-        st_booking = None
+
 
     context = {
             'all_booklist' : all_booklist,
@@ -582,8 +598,29 @@ def history_teacher(request):
 
 
 def history_staff(request):
+ 
+    user = User.objects.all()
+    staff_book = Booking_staff.objects.all()
+
+    search_txt = request.POST.get('search','')
+    all_booklist = Booking_list.objects.filter(
+        room_id__name__icontains= search_txt ).order_by('bookdate')
+   
+        
+
+
+    context = {
+            'all_booklist' : all_booklist,
+            'staff_book' : staff_book,
+            'user' : user,
+    }
+
+    return render(request, 'user/historystaff.html', context)
+
+
+def booking2(request):
   
 
-    return render(request, 'user/historystaff.html')
+    return render(request, 'user/booking2.html')
 
 
