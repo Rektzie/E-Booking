@@ -147,26 +147,24 @@ def booking(request, rm_id): #func called by booking.html
         elif 'rangeBooking' in request.POST:
             rangeBookingForm = RangeBookingForm(request.POST)
             if rangeBookingForm.is_valid():   
-                fromDate = rangeBookingForm.cleaned_data['fromDate']   # start date
+                fromDate = rangeBookingForm.cleaned_data['fromDate'] # start date
                 toDate = rangeBookingForm.cleaned_data['toDate']  # end date
 
                 fromTIme = rangeBookingForm.cleaned_data['fromTime']
                 toTime = rangeBookingForm.cleaned_data['toTime']
                 
-                delta = toDate - fromDate       # as timedelta
-                print(fromDate)
-                print(toDate)
-                print(delta)
+                delta = toDate - fromDate # as timedelta
                 
                 booking = Booking.objects.create(
                         description = rangeBookingForm.cleaned_data['description'],
                         user_id = request.user
                     )
+                booking.save()
                 for i in range(delta.days + 1):
                     day = fromDate + timedelta(days=i)
                     print(day)
                     
-                    booking.save()
+                    
                     booking_list = Booking_list.objects.create(                      
                         start_time = fromTIme,
                         end_time = toTime,
