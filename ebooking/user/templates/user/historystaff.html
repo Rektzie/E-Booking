@@ -3,7 +3,7 @@
 <title>All Bookinglist</title>
 {% endblock title%}
 {% block search %}
-<form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'history_staff' %}">
+<form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'history_teacher' %}">
   {% csrf_token %}
   <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search">
 </form>
@@ -28,15 +28,16 @@
             <th scope="col" style="width: 30%">วันที่ขอจอง</th>
             <th scope="col" style="width: 30%">เวลา</th>
             <th scope="col" style="width: 30%">ผู้ขอ</th>
-          
+
 
          
           </tr>
         </thead>
         <tbody> 
-            {% for bl in all_booklist %}
-            {% for bs in staff_book %}
-                {% if bl.booking_id.id == bs.booking_id.id %}
+
+          {% for bl in all_booklist %}
+            {% for bt in staff_book %}
+                {% if bl.booking_id.id == bt.booking_id.id %}
                     <tr>
                         <td style="width: 10%">{{bl.room_id.name}}</td> 
                         <td style="width: 30%">{{bl.bookdate}}</td>
@@ -46,6 +47,7 @@
                 {% endif%}
             {% endfor%}
           {% endfor%}
+
 
          
         </tbody>
