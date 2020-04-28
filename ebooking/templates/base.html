@@ -35,10 +35,11 @@
               <a class="nav-link" href="{% url 'index'%}">Room</span></a>
             </li>
             {% comment %} {% if request.user.is_superuser %} {% endcomment %}
+            {% if perms.user.change_booking_list %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'bookinglistall'%}">Request</a>
             </li>
-            
+            {% endif %}
             {% comment %} {% else %} {% endcomment %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'trackbookinglist'%}">Track</a>
@@ -47,9 +48,11 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'bookinglistadmin'%}">My History</a>
             </li>
+            {% if perms.user.change_booking_list %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'history'%}">All History</a>
             </li>
+            {% endif %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{ request.user.username }}
