@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-<title>Accept Request</title>
+<title>Detail</title>
 {% endblock title%}
 {% block base %}
 
@@ -15,25 +15,32 @@
       
          <div class="col-4 p-3 ">
              <div class="p-3 shadow bg-light" >
-                <br>
-                <br>
-                {% load static %}
-                <center> <img src="{% static 'user1.png' %}" style="width: 100px;"> 
-                 <br>
-                 <br>
-                <h5>{{ book_list.booking_id.user_id.first_name }} {{ book_list.booking_id.user_id.last_name }}</h5>
-               
-            {% for s in student %}
-                {% if book_list.booking_id.user_id.id == s.user_id_id %}
-             <p>รหัสนักศึกษา : {{ s.stu_id }}</p>
-             <p>ชั้นปี : {{ s.year }} </p>
-             <p>email : {{ book_list.booking_id.user_id.email }} </p>
-                {% endif %}
-            {% endfor %}
-            
+              
+                <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        
+                        <th scope="col">วันที่จอง</th>
+                        <th scope="col">เวลา</th>
+                       
+                      </tr>
+                    </thead>
+                    <tbody>
 
-                 </center>
+                        {% for all in all_book %}
+                        {% if all.booking_id == book_list.booking_id %}
+                      <tr>
+                    
+                        <td>{{ all.bookdate }}</td>
+                        <td>{{ all.start_time |time:'H:i'}} - {{ all.end_time |time:'H:i'}}</td>
+                    
+                      </tr>
+                     {% endif %}
+                     {% endfor %}
+                    </tbody>
+                  </table>
                  <br>
+                
                 
                  
                
@@ -46,7 +53,39 @@
                  <div class="container">
                      <div class="shadow  p-4 bg-light " >
                         <center><h2> คำร้องขอจองห้อง </h2></center>
+                    
                         <br>
+                        
+                        <div class="form-group row">
+                            <label  class="col-sm-3 col-form-label">ชื่อ</label>
+                            <div class="col-sm-9">
+                                <input type="text" readonly class="form-control" name="fname" value="{{ book_list.booking_id.user_id.first_name }} {{ book_list.booking_id.user_id.last_name }}">
+                            </div>
+                            </div>
+                            {% for s in student %}
+                    {% if book_list.booking_id.user_id.id == s.user_id_id %}
+                            <div class="form-group row">
+                                <label  class="col-sm-3 col-form-label">รหัสนักศึกษา</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="form-control" name="fname" value="{{ s.stu_id }}">
+                                </div>
+                                </div>
+
+                        <div class="form-group row">
+                                <label  class="col-sm-3 col-form-label">ชั้นปี</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="form-control" name="fname" value="{{ s.year }}">
+                                </div>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            <div class="form-group row">
+                                <label  class="col-sm-3 col-form-label">email</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="form-control" name="fname" value="{{ book_list.booking_id.user_id.email }}">
+                                </div>
+                                </div>
+                               
                         <div class="form-group row">
                             <label  class="col-sm-3 col-form-label">ห้อง</label>
                             <div class="col-sm-9">
@@ -55,24 +94,13 @@
                             </div>
 
                         <div class="form-group row">
-                            <label  class="col-sm-3 col-form-label">วันที่จอง</label>
+                            <label  class="col-sm-3 col-form-label">วันที่ส่งคำร้องขอ</label>
                             <div class="col-sm-9">
                                 <input type="text" readonly class="form-control" name="fname" value="{{ book_list.bookdate }}">
                             </div>
                             </div>
 
-                        <div class="form-group row">
-                            <label  class="col-sm-3 col-form-label">เวลาที่จอง</label>
-                            <div class="col-sm-9">
-                                <input type="text" readonly class="form-control" name="fname" value="{{ book_list.start_time |time:'H:i' }} - {{ book_list.end_time |time:'H:i'}}">
-                            </div>
-                            </div>  
-                            <div class="form-group row">
-                                <label  class="col-sm-3 col-form-label">เวลาที่ส่งคำร้อง</label>
-                                <div class="col-sm-9">
-                                    <input type="text" readonly class="form-control" name="fname" value="{{ book_list.booking_id.date}}">
-                                </div>
-                                </div>      
+                              
                         <div class="form-group row">
                             <label  class="col-sm-3 col-form-label">เหตุผลในการจอง</label>
                             <div class="col-sm-9">

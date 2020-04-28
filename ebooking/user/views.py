@@ -74,8 +74,11 @@ def bookinglistall(request):
     
     search_txt = request.POST.get('search','')
     all_booklist = Booking_list.objects.filter(
-        Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='2') ).order_by('bookdate')
-    count = all_booklist.count()
+        Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='2') ).distinct('booking_id')
+
+    student = Booking_student.objects.values('booking_id_id')
+    count = Booking.objects.filter(id__in = Subquery(student)).exclude(status = '2').exclude(status = '3').count()
+   
     stbooking = Booking_student.objects.all()
     user_id = request.user.id
     
@@ -100,7 +103,8 @@ def bookinglistall(request):
 def trackbookinglist(request): #existing booking list from users' requests
 
   
-    all_booklist = Booking_list.objects.filter(Q(booking_id__status ='1')).order_by('bookdate')
+    all_booklist = Booking_list.objects.filter(Q(booking_id__status ='1')).distinct('booking_id')
+    
     user_id = request.user.id
     context = {
         'all_booklist' : all_booklist,
@@ -265,8 +269,8 @@ def profile(request):
         user_id = request.user.id
         user = request.user
         student = Student.objects.get(user_id__exact=user_id)
-        list = Booking_list.objects.filter(booking_id__user_id=user_id).count()
-        accept = Booking_list.objects.filter(booking_id__user_id=user_id, booking_id__status='2').count()
+        list = Booking.objects.filter(user_id=user_id).count()
+        accept = Booking.objects.filter(user_id=user_id, status='2').count()
         
        
         context['student'] = student
@@ -452,7 +456,7 @@ def tracking(request, bl_id):
     listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')
     booking = Booking.objects.filter(id__in = Subquery(listno)).values_list('id')
     booking_st = Booking_student.objects.filter(booking_id__in =  Subquery(booking))
- 
+    all_book = Booking_list.objects.all()
     
 
     book_list = Booking_list.objects.get(pk=bl_id)
@@ -465,6 +469,8 @@ def tracking(request, bl_id):
         'book_list': book_list,
         'student': student,
         'booking_st': booking_st,
+        'all_book': all_book,
+
     
 
 
@@ -477,11 +483,15 @@ def accept(request, bl_id):
     book_list = Booking_list.objects.get(pk=bl_id)
     book = Booking.objects.get(pk=book_list.booking_id.id)
     stu = Booking_student.objects.get(booking_id=book.id)
-    
+    all_book = Booking_list.objects.all()
+
+
     context = {}
     context['book_list'] = book_list
     context['student'] = student
     context['bl_id'] = bl_id
+    context['all_book'] = all_book
+
     now = str(datetime.now())
 
    
@@ -501,9 +511,9 @@ def accept(request, bl_id):
     t_result = ''
     s_result = ''
 
-    if request.method == 'POST':  
-
-        if 'allowt' in request.POST:
+    
+    if request.user.groups.filter(name ='teacher').exists():
+        if 'allow' in request.POST:
             stu.teacher_result = '2'
             stu.teacher_date = now
             stu.teacher_user_id_id = teacher
@@ -516,7 +526,7 @@ def accept(request, bl_id):
         
             return redirect('bookinglistall')
 
-        elif 'denyt' in request.POST:
+        elif 'deny' in request.POST:
             stu.teacher_result = '3'
             stu.teacher_user_id_id = teacher
             stu.save()
@@ -529,8 +539,9 @@ def accept(request, bl_id):
 
 
             return redirect('bookinglistall')
-        
-        elif 'allows' in request.POST:
+
+    elif request.user.groups.filter(name ='staff').exists():
+        if 'allow' in request.POST:
             stu.staff_result = '2'
             stu.staff_date = now
             stu.staff_user_id_id = staff
@@ -542,7 +553,7 @@ def accept(request, bl_id):
   
             return redirect('bookinglistall')
 
-        elif 'denys' in request.POST:
+        elif 'deny' in request.POST:
             stu.staff_result = '3'
             stu.staff_user_id_id = staff
 
@@ -556,6 +567,63 @@ def accept(request, bl_id):
 
 
             return redirect('bookinglistall')
+    
+
+    # if request.method == 'POST':  
+
+        # if 'allowt' in request.POST:
+        #     stu.teacher_result = '2'
+        #     stu.teacher_date = now
+        #     stu.teacher_user_id_id = teacher
+            
+        #     stu.save()
+        #     if stu.teacher_result == '2' and stu.staff_result == '2':
+        #         book.status = '2'
+        #         book.save()
+        #         print('===============1==================')
+        
+        #     return redirect('bookinglistall')
+
+        # elif 'denyt' in request.POST:
+        #     stu.teacher_result = '3'
+        #     stu.teacher_user_id_id = teacher
+        #     stu.save()
+        #     if stu.teacher_result == '3':
+        #         stu.staff_result = '3'
+        #         stu.save()
+        #         book.status = '3'
+        #         book.save()
+        #         print('================2=================')
+
+
+        #     return redirect('bookinglistall')
+        
+        # elif 'allows' in request.POST:
+        #     stu.staff_result = '2'
+        #     stu.staff_date = now
+        #     stu.staff_user_id_id = staff
+        #     stu.save()
+        #     if stu.staff_result == '2' and stu.staff_result == '2':
+        #         book.status = '2'
+        #         book.save()
+        #         print('===============3==================')
+  
+        #     return redirect('bookinglistall')
+
+        # elif 'denys' in request.POST:
+        #     stu.staff_result = '3'
+        #     stu.staff_user_id_id = staff
+
+        #     stu.save()
+        #     if stu.staff_result == '3':
+        #         stu.teacher_result = '3'
+        #         stu.save()
+        #         book.status = '3'
+        #         book.save()
+        #         print('================4=================')
+
+
+        #     return redirect('bookinglistall')
         
 
     return render(request, 'user/accept.html', context)
@@ -572,12 +640,14 @@ def track_delete(request, bl_id):
     listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')
     booking = Booking.objects.filter(id__in = Subquery(listno))
     booking.delete()
-    return redirect('bookinglist')
+    return redirect('trackbookinglist')
 
 def bookinglistadmin(request):
     search_txt = request.POST.get('search','')
+
+    
     all_booklist = Booking_list.objects.filter(
-            Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='1')).order_by('bookdate')
+            Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='1')).distinct('booking_id')
         
     user_id = request.user.id
     context = {
@@ -594,7 +664,7 @@ def history(request):
 
         search_txt = request.POST.get('search','')
         all_booklist = Booking_list.objects.filter(
-            Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='1')).order_by('bookdate')
+            Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='1')).distinct('booking_id')
         teacher =Teacher.objects.all()
         staff =Staff.objects.all()
 
@@ -623,7 +693,7 @@ def history_teacher(request):
 
     search_txt = request.POST.get('search','')
     all_booklist = Booking_list.objects.filter(
-        room_id__name__icontains= search_txt ).order_by('bookdate')
+        room_id__name__icontains= search_txt ).distinct('booking_id')
    
         
 
@@ -644,7 +714,7 @@ def history_staff(request):
 
     search_txt = request.POST.get('search','')
     all_booklist = Booking_list.objects.filter(
-        room_id__name__icontains= search_txt ).order_by('bookdate')
+        room_id__name__icontains= search_txt ).distinct('booking_id')
    
         
 
@@ -667,11 +737,14 @@ def detail(request, bl_id):
     
     student = Student.objects.all()
     book_list = Booking_list.objects.get(pk=bl_id)
+    all_book = Booking_list.objects.all()
 
     context = {}
     context['book_list'] = book_list
     context['student'] = student
     context['bl_id'] = bl_id
+    context['all_book'] = all_book
+
    
 
    
