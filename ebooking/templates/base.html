@@ -41,9 +41,15 @@
             
             {% comment %} {% else %} {% endcomment %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'bookinglist'%}">Track</a>
+              <a class="nav-link" href="{% url 'trackbookinglist'%}">Track</a>
             </li>
             {% comment %} {% endif %} {% endcomment %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'bookinglistadmin'%}">My History</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'history'%}">All History</a>
+            </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{ request.user.username }}

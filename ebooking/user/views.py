@@ -97,9 +97,10 @@ def bookinglistall(request):
     
     return render(request, 'user/bookinglist.html', context=context)
 
-def bookinglist(request): #existing booking list from users' requests
+def trackbookinglist(request): #existing booking list from users' requests
 
-    all_booklist = Booking_list.objects.all().order_by('bookdate')
+  
+    all_booklist = Booking_list.objects.filter(Q(booking_id__status ='1')).order_by('bookdate')
     user_id = request.user.id
     context = {
         'all_booklist' : all_booklist,
@@ -108,11 +109,12 @@ def bookinglist(request): #existing booking list from users' requests
 
 
 
-    return render(request, 'user/bookinglistme.html', context)
+    return render(request, 'user/trackbookinglist.html', context)
 
 def booking(request, rm_id): #func called by booking.html
     BookRoomFormSet = formset_factory(BookRoomForm)
     room = Room.objects.get(pk=rm_id)
+    
     
     # data = {
     #         'formset-0-raw': 'my raw field string',
@@ -153,12 +155,19 @@ def booking(request, rm_id): #func called by booking.html
                         booking_id_id = bookid
                     )
                     teacher.save()
+                    update = Booking.objects.get(pk=bookid)
+                    update.status = '2'
+                    update.save()
                 
                 elif request.user.groups.filter(name ='staff').exists():
                     staff = Booking_staff.objects.create(
                         booking_id_id = bookid
+                        
                     )
                     staff.save()
+                    update = Booking.objects.get(pk=bookid)
+                    update.status = '2'
+                    update.save()
     # ramonzii ============================================================================================
                 
                 return redirect('index')
@@ -180,6 +189,7 @@ def booking(request, rm_id): #func called by booking.html
                         user_id = request.user
                     )
                 booking.save()
+                bookid = booking.id
                 for i in range(delta.days + 1):
                     day = fromDate + timedelta(days=i)
                     print(day)
@@ -193,6 +203,31 @@ def booking(request, rm_id): #func called by booking.html
                         room_id = Room.objects.get(id=rm_id)   
                     )               
                     booking_list.save()
+                    # ramonzii ============================================================================================
+                if request.user.groups.filter(name ='student').exists():
+                    student = Booking_student.objects.create(    
+                        booking_id_id = bookid
+                    )
+                    student.save()
+                elif request.user.groups.filter(name ='teacher').exists():
+                    teacher = Booking_teacher.objects.create(
+                        booking_id_id = bookid
+                    )
+                    teacher.save()
+                    update = Booking.objects.get(pk=bookid)
+                    update.status = '2'
+                    update.save()
+                
+                elif request.user.groups.filter(name ='staff').exists():
+                    staff = Booking_staff.objects.create(
+                        booking_id_id = bookid
+                        
+                    )
+                    staff.save()
+                    update = Booking.objects.get(pk=bookid)
+                    update.status = '2'
+                    update.save()
+    # ramonzii ============================================================================================
                 return redirect('index')
                  
     else:
@@ -538,7 +573,8 @@ def track_delete(request, bl_id):
 def bookinglistadmin(request):
     search_txt = request.POST.get('search','')
     all_booklist = Booking_list.objects.filter(
-        room_id__name__icontains= search_txt ).order_by('bookdate')
+            Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='1')).order_by('bookdate')
+        
     user_id = request.user.id
     context = {
         'all_booklist' : all_booklist,
@@ -623,4 +659,18 @@ def booking2(request):
 
     return render(request, 'user/booking2.html')
 
+def detail(request, bl_id):
+    
+    student = Student.objects.all()
+    book_list = Booking_list.objects.get(pk=bl_id)
 
+    context = {}
+    context['book_list'] = book_list
+    context['student'] = student
+    context['bl_id'] = bl_id
+   
+
+   
+        
+
+    return render(request, 'user/detail.html', context=context)

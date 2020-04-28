@@ -67,6 +67,12 @@
                                 <input type="text" readonly class="form-control" name="fname" value="{{ book_list.start_time |time:'H:i' }} - {{ book_list.end_time |time:'H:i'}}">
                             </div>
                             </div>  
+                        <div class="form-group row">
+                                <label  class="col-sm-3 col-form-label">วันที่ส่งคำร้อง</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="form-control" name="fname" value="{{ book_list.booking_id.date }}">
+                                </div>
+                            </div>
                             
                         <div class="form-group row">
                             <label  class="col-sm-3 col-form-label">เหตุผลในการจอง</label>

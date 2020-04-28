@@ -21,7 +21,7 @@ from django.contrib.auth.models import User
 urlpatterns = [
     path('', views.index, name='index'),
     path('bookinglistall/', views.bookinglistall, name='bookinglistall'),
-    path('bookinglist/', views.bookinglist, name='bookinglist'),
+    path('trackbookinglist/', views.trackbookinglist, name='trackbookinglist'),
     path('booking/<int:rm_id>/', views.booking, name='booking'),
     path('booking2/<int:rm_id>/', views.booking2, name='booking2'),
 
@@ -35,17 +35,15 @@ urlpatterns = [
     path('history/', views.history, name='history'),
     path('history/teacher/', views.history_teacher, name='history_teacher'),
     path('history/staff/', views.history_staff, name='history_staff'),
+    path('history/detail/<int:bl_id>/', views.detail, name='detail'),
+
 
     path('delete/<int:rm_id>/',views.delete, name='delete'),
     path('track_delete/<int:bl_id>/',views.track_delete, name='track_delete'),
     path('room/',views.RoomList.as_view(), name='room'),
     path('roomfilter/',views.RoomFilter.as_view(), name='room_filter'),
     path('roomtype/',views.RoomTypeList.as_view(), name='roomtype'),
+    
 
 
-
-
-
-
-    # path('profile/edit/',views.profile_edit, name='profile_edit'),
 ]
