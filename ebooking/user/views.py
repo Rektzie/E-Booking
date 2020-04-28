@@ -19,7 +19,7 @@ from datetime import date, timedelta
 
 # Create your views here.
 @login_required(login_url='/')
-# @permission_required('user.view_room', login_url='/')
+@permission_required('user.view_room', login_url='/')
 def index(request):
 
     all_room = Room.objects.all()
