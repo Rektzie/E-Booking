@@ -23,8 +23,6 @@ urlpatterns = [
     path('bookinglistall/', views.bookinglistall, name='bookinglistall'),
     path('trackbookinglist/', views.trackbookinglist, name='trackbookinglist'),
     path('booking/<int:rm_id>/', views.booking, name='booking'),
-    path('booking2/<int:rm_id>/', views.booking2, name='booking2'),
-
     path('profile/', views.profile, name='profile'),
     path('bookcheck/<int:rm_id>/', views.bookcheck, name='bookcheck'),
     path('add/', views.add, name='add'),
@@ -36,14 +34,10 @@ urlpatterns = [
     path('history/teacher/', views.history_teacher, name='history_teacher'),
     path('history/staff/', views.history_staff, name='history_staff'),
     path('history/detail/<int:bl_id>/', views.detail, name='detail'),
-
-
     path('delete/<int:rm_id>/',views.delete, name='delete'),
     path('track_delete/<int:bl_id>/',views.track_delete, name='track_delete'),
     path('room/',views.RoomList.as_view(), name='room'),
     path('roomfilter/',views.RoomFilter.as_view(), name='room_filter'),
     path('roomtype/',views.RoomTypeList.as_view(), name='roomtype'),
     
-
-
 ]

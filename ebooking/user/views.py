@@ -20,6 +20,7 @@ from datetime import date, timedelta
 # Create your views here.
 @login_required(login_url='/')
 # @permission_required('user.view_room', login_url='/')
+# เข้าได้ทุกคน ยกเว้นคนไม่login
 def index(request):
 
     all_room = Room.objects.all()
@@ -120,6 +121,7 @@ def trackbookinglist(request): #existing booking list from users' requests
     return render(request, 'user/trackbookinglist.html', context)
 
 @login_required(login_url='/')
+# แอดมินเข้าไม่ได้
 def booking(request, rm_id): #func called by booking.html
     context = dict()
     BookRoomFormSet = formset_factory(BookRoomForm)
@@ -264,7 +266,7 @@ def booking(request, rm_id): #func called by booking.html
 
 
 
-
+# เข้าได้ทุกคน
 @login_required(login_url='/')
 def profile(request):
     context = {}
@@ -323,7 +325,7 @@ def profile(request):
          
 
     return render(request, 'user/profile.html', context)
-
+# ทุกคน
 @login_required(login_url='/')
 def bookcheck(request, rm_id):
     room = Room.objects.get(pk=rm_id)
@@ -372,6 +374,7 @@ def bookcheck(request, rm_id):
     
 #     return render(request, 'user/addroom.html', context=context)
 
+# แอดมิน
 @login_required(login_url='/')
 def add(request):
     context = dict()
@@ -411,7 +414,7 @@ def add(request):
     else:
         form = AddRoomForm()
     return render(request, 'user/addroom.html', {'form': form})
-
+# แอดมิน
 @login_required(login_url='/')
 def edit(request, rm_id):
     context = {}
@@ -455,7 +458,7 @@ def edit(request, rm_id):
 
     return render(request, 'user/editroom.html', context=context)
 
-
+# นักศึกษา
 @login_required(login_url='/')
 def tracking(request, bl_id):
 
@@ -483,7 +486,7 @@ def tracking(request, bl_id):
 
     }
     return render(request, 'user/track.html', context)
-
+# teacher staff
 @login_required(login_url='/')
 def accept(request, bl_id):
 
@@ -637,13 +640,14 @@ def accept(request, bl_id):
     return render(request, 'user/accept.html', context)
 
 
-
+#  admin
 @login_required(login_url='/')
 def delete(request, rm_id):
     room = Room.objects.get(pk=rm_id)
     room.delete()
     return redirect('index')
 
+# student
 @login_required(login_url='/')
 def track_delete(request, bl_id):
     listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')
@@ -651,6 +655,7 @@ def track_delete(request, bl_id):
     booking.delete()
     return redirect('trackbookinglist')
 
+# ยกเว้นแอดมิน ค่อยไปแก้ในหน้าย่อย list base template
 @login_required(login_url='/')
 def bookinglistadmin(request):
     search_txt = request.POST.get('search','')
@@ -666,6 +671,7 @@ def bookinglistadmin(request):
      
     }
     return render(request, 'user/bookinglistadmin.html', context)
+
 
 @login_required(login_url='/')
 @permission_required('user.change_booking_list', login_url='/')
@@ -698,6 +704,7 @@ def history(request):
     }
 
     return render(request, 'user/history.html', context)
+
 
 @login_required(login_url='/')
 def history_teacher(request):
@@ -740,12 +747,8 @@ def history_staff(request):
 
     return render(request, 'user/historystaff.html', context)
 
-@login_required(login_url='/')
-def booking2(request):
-  
 
-    return render(request, 'user/booking2.html')
-
+# ทุกคน
 @login_required(login_url='/')
 def detail(request, bl_id):
     
@@ -760,8 +763,5 @@ def detail(request, bl_id):
     context['all_book'] = all_book
 
    
-
-   
-        
 
     return render(request, 'user/detail.html', context=context)
