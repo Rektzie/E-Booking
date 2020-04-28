@@ -111,6 +111,7 @@ def bookinglist(request): #existing booking list from users' requests
     return render(request, 'user/bookinglistme.html', context)
 
 def booking(request, rm_id): #func called by booking.html
+    context = dict()
     BookRoomFormSet = formset_factory(BookRoomForm)
     room = Room.objects.get(pk=rm_id)
     
@@ -123,6 +124,7 @@ def booking(request, rm_id): #func called by booking.html
         if 'normalBooking' in request.POST:
             formset = BookRoomFormSet(request.POST)
             form = BookRoomDescriptionForm(request.POST)
+            rangeBookingForm = RangeBookingForm()
             if formset.is_valid() and form.is_valid():
                 
                 booking = Booking.objects.create(
@@ -166,6 +168,8 @@ def booking(request, rm_id): #func called by booking.html
 
         elif 'rangeBooking' in request.POST:
             rangeBookingForm = RangeBookingForm(request.POST)
+            formset = BookRoomFormSet()
+            form = BookRoomDescriptionForm()
             if rangeBookingForm.is_valid():   
                 fromDate = rangeBookingForm.cleaned_data['fromDate'] # start date
                 toDate = rangeBookingForm.cleaned_data['toDate']  # end date
@@ -201,10 +205,10 @@ def booking(request, rm_id): #func called by booking.html
         rangeBookingForm = RangeBookingForm()
         
         
-    formset = BookRoomFormSet()
-    form = BookRoomDescriptionForm()
-    rangeBookingForm = RangeBookingForm()
-    context = {}
+    # formset = BookRoomFormSet()
+    # form = BookRoomDescriptionForm()
+    # rangeBookingForm = RangeBookingForm()
+    
     context['formset'] = formset
     # context['data'] = data
     context['form'] = form
