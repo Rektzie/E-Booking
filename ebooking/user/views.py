@@ -325,7 +325,8 @@ def profile(request):
 @login_required(login_url='/')
 def bookcheck(request, rm_id):
     room = Room.objects.get(pk=rm_id)
-    all_booklist = Booking_list.objects.all()
+    all_booklist = Booking_list.objects.all()  
+    all_booklist = Booking_list.objects.filter(~Q(booking_id__status ='1') & ~Q(booking_id__status ='3'))
     context = {
         'all_booklist' : all_booklist,
         'room' : room,

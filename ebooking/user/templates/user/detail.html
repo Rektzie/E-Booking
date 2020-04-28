@@ -107,7 +107,16 @@
                                 <textarea readonly class="form-control" id="exampleFormControlTextarea1" rows="3"  name="reason" required="required">{{ book_list.booking_id.description }} </textarea>
                             </div>
                             </div>
-                         
+                         <div class="form-group row">
+                            <label  class="col-sm-3 col-form-label">สถานะ</label>
+                            <div class="col-sm-9">
+                                {% if book_list.booking_id.status == 2 %}
+                                <span class="badge badge-success">อนุมัติ</span>
+                                {% else %}
+                                <span class="badge badge-danger">ไม่อนุมัติ</span>
+                                {% endif %}
+                            </div>
+                            </div>
                              </div>
                            </div>
                         </form>

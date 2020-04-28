@@ -44,8 +44,7 @@
                         <td >{{bl.booking_id.date}}</td>
 
                         <td >{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
-                        <td><a href="{% url 'detail' bl.list_no %}"><button type="submit" class="btn btn-warning" style="float: right;">รายละเอียด</button></a></td>
-                        
+                        <td><a href="{% url 'detail' bl.list_no %}"><button type="submit" class="btn btn-warning" style="float: right;"><span class="oi oi-document"></span></button></a></td>                        
                         
                     </tr>
                 {% endif%}
