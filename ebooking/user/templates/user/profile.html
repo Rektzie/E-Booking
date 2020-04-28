@@ -1,3 +1,6 @@
+<!-- ======================================หน้าโปรไฟล์เปลี่ยนรหัส เปลี่ยนชื่อได้ ======================== -->
+
+
 {% extends 'base.html' %}
 
 {% block base %}
@@ -44,6 +47,7 @@
          
                     </center>
                     <br>
+                    {% if group != "ผู้ดูแลระบบ" %}
                     <div class="row">
                         <div class="col-6">
                             <center>
@@ -58,7 +62,7 @@
                             </center>
                         </div>
                     </div>
-                    
+                    {% endif %}
                   
                 </div>
             </div>
@@ -95,7 +99,7 @@
                                                 <input type="text"  class="form-control" name="lname"  value="{{ request.user.last_name }}">
                                                 </div>
                                             </div>
-                                            {% if request.user.is_authenticated %}
+                                            {% if group == "นักศึกษา" %}
                                             <div class="form-group row">
                                                 <label  class="col-sm-3 col-form-label">รหัสนักศึกษา</label>
                                                 <div class="col-sm-9">

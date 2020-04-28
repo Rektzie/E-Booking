@@ -1,9 +1,11 @@
+<!-- =====================รายการจองห้องที่ได้รับการอนุมติ หรือไม่อนุมัติ เป็นประวัติของตัวเอง======================================= -->
+
 {% extends 'list_base.html' %}
 {% block title %}
 <title>All Bookinglist</title>
 {% endblock title%}
 {% block search %}
-<form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'bookinglistadmin' %}">
+<form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'mybookinglist' %}">
   {% csrf_token %}
   <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search">
 </form>
