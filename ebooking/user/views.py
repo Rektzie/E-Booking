@@ -124,9 +124,10 @@ def booking(request, rm_id): #func called by booking.html
     #         }
     if request.method == 'POST':
         if 'normalBooking' in request.POST:
-            formset = BookRoomFormSet(request.POST)
+            formset = BookRoomFormSet(request.POST,form_kwargs={'rm': rm_id})
             form = BookRoomDescriptionForm(request.POST)
             rangeBookingForm = RangeBookingForm()
+            print(request.POST.get('bookdate'))
             if formset.is_valid() and form.is_valid():
                 
                 booking = Booking.objects.create(
@@ -176,8 +177,8 @@ def booking(request, rm_id): #func called by booking.html
 
 
         elif 'rangeBooking' in request.POST:
-            rangeBookingForm = RangeBookingForm(request.POST)
-            formset = BookRoomFormSet()
+            rangeBookingForm = RangeBookingForm(request.POST, room=rm_id)
+            formset = BookRoomFormSet(form_kwargs={'rm': rm_id})
             form = BookRoomDescriptionForm()
             if rangeBookingForm.is_valid():   
                 fromDate = rangeBookingForm.cleaned_data['fromDate'] # start date
@@ -196,7 +197,7 @@ def booking(request, rm_id): #func called by booking.html
                 bookid = booking.id
                 for i in range(delta.days + 1):
                     day = fromDate + timedelta(days=i)
-                    print(day)
+                    
                     
                     
                     booking_list = Booking_list.objects.create(                      
@@ -235,7 +236,7 @@ def booking(request, rm_id): #func called by booking.html
                 return redirect('index')
                  
     else:
-        formset = BookRoomFormSet()
+        formset = BookRoomFormSet(form_kwargs={'rm': rm_id})
         form = BookRoomDescriptionForm()
         rangeBookingForm = RangeBookingForm()
         

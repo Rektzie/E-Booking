@@ -66,6 +66,11 @@ class BookRoomDescriptionForm(forms.Form):
                 
             
 class BookRoomForm(forms.Form): #for booking_list
+    def __init__(self, *args, rm, **kwargs):
+        self.rm = rm
+        super().__init__(*args, **kwargs)
+        
+    
     
     bookdate = forms.DateField(label='วันที่', widget=DateInput, required=True)
     start_time = forms.TimeField(label='จองเวลา' ,widget=TimeInput, required=True)
@@ -79,19 +84,40 @@ class BookRoomForm(forms.Form): #for booking_list
 
     def clean(self):
         cleaned_data = super().clean()
-        allBookingList = Booking_list.objects.all()
+        allBookingList = Booking_list.objects.filter(room_id__id=self.rm)
         start_time = cleaned_data.get('start_time')
         end_time = cleaned_data.get('end_time')
         bookdate = cleaned_data.get('bookdate')
+        state = 1
+        roomErr = ''
+        print(self.rm)
         
         for each in allBookingList:
-            if ((start_time >= each.start_time and start_time <= each.end_time) or 
-                (end_time >= each.start_time and end_time <= each.end_time)) and each.bookdate == bookdate and Booking.objects.get(id=each.booking_id.id).st == '2':
-                errorMsg = 'จองเวลาซ้ำ'
-                self.add_error('bookdate', errorMsg)
-                print('จองเวลาซ้ำ')
+            if (Booking.objects.get(id=each.booking_id.id).st == '2' and (start_time >= each.start_time and start_time <= each.end_time) or 
+                (end_time >= each.start_time and end_time <= each.end_time)) and each.bookdate == bookdate:
+                state = 0  
+                roomErr = each.room_id.name
+                break
+            
+        if state == 0:
+            errorMsg = 'ห้อง', roomErr, 'ถูกจองไปแล้ว'
+            self.add_error('bookdate', errorMsg)
+            print('ห้อง', roomErr, 'ถูกจองไปแล้ว')
+                          
+        if start_time > end_time:
+            errorMsg = 'เวลาไม่ถูกต้อง'
+            self.add_error('fromTime', errorMsg)
+            print('Time-error')
+            
+        
+            
+            
             
 class RangeBookingForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self._room = kwargs.pop('room', None)
+        super().__init__(*args, **kwargs)
+    
     fromDate = forms.DateField(label='ตั้งแต่', widget=DateInput, required=True)
     toDate = forms.DateField(label='จนถึง', widget=DateInput, required=True)
     fromTime = forms.TimeField(label='จองเวลา' ,widget=TimeInput, required=True)
@@ -106,12 +132,14 @@ class RangeBookingForm(forms.Form):
     
     def clean(self):
         cleaned_data = super().clean()
-        allBookingList = Booking_list.objects.all()
+        allBookingList = Booking_list.objects.filter(room_id__id=self._room)
         fromDate = cleaned_data.get('fromDate')
         toDate = cleaned_data.get('toDate')
         fromTime = cleaned_data.get('fromTime')
         toTime = cleaned_data.get('toTime')
         state = 1
+        
+        print(self._room)
         
         if fromDate > toDate:
             errorMsg = 'วันที่ไม่ถูกต้อง'
@@ -120,7 +148,7 @@ class RangeBookingForm(forms.Form):
         if fromTime > toTime:
             errorMsg = 'เวลาไม่ถูกต้อง'
             self.add_error('fromTime', errorMsg)
-            print('Time-error')  
+            print('Time-error')
             
                  
         delta = toDate - fromDate # as timedelta
@@ -128,14 +156,13 @@ class RangeBookingForm(forms.Form):
         for i in range(delta.days + 1):
             day = fromDate + timedelta(days=i)
             for each in allBookingList:  
-                if ((fromTime >= each.start_time and fromTime <= each.end_time) or 
-                    (toTime >= each.start_time and toTime <= each.end_time)) and each.bookdate == day and Booking.objects.get(id=each.booking_id.id).st == '2':
+                if (Booking.objects.get(id=each.booking_id.id).st == '2' and (fromTime >= each.start_time and fromTime <= each.end_time) or 
+                    (toTime >= each.start_time and toTime <= each.end_time)) and each.bookdate == day:
                     state = 0  
-                    print(Booking.objects.get(id=each.booking_id.id).st)
                     break
         if state == 0:
-            errorMsg = 'เวลาไม่ถูกต้อง Range'
+            errorMsg = 'มีห้องในช่วงถูกจองไปแล้ว'
             self.add_error('fromDate', errorMsg)
-            print('Time-error Range')
+            print('มีห้องในช่วงถูกจองไปแล้ว')
             
             
