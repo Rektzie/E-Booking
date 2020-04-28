@@ -19,7 +19,7 @@ from datetime import date, timedelta
 
 # Create your views here.
 @login_required(login_url='/')
-@permission_required('user.view_room', login_url='/')
+# @permission_required('user.view_room', login_url='/')
 def index(request):
 
     all_room = Room.objects.all()
@@ -66,6 +66,7 @@ class RoomFilter(generics.RetrieveAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/')
+@permission_required('user.change_booking_list', login_url='/')
 def bookinglistall(request):
     context = {}
 
@@ -102,6 +103,7 @@ def bookinglistall(request):
     return render(request, 'user/bookinglist.html', context=context)
 
 @login_required(login_url='/')
+@permission_required('user.view_booking_student', login_url='/')
 def trackbookinglist(request): #existing booking list from users' requests
 
   
@@ -666,6 +668,7 @@ def bookinglistadmin(request):
     return render(request, 'user/bookinglistadmin.html', context)
 
 @login_required(login_url='/')
+@permission_required('user.change_booking_list', login_url='/')
 def history(request):
     try:
         user = User.objects.all()
