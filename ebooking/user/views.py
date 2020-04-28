@@ -18,7 +18,7 @@ from user.serializers import RoomSerializer,RoomTypeSerializer
 from datetime import date, timedelta
 
 # Create your views here.
-# @login_required(login_url='/')
+@login_required(login_url='/')
 # @permission_required('user.view_room', login_url='/')
 def index(request):
 
@@ -65,6 +65,7 @@ class RoomFilter(generics.RetrieveAPIView):
                 "error" : str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
 
+@login_required(login_url='/')
 def bookinglistall(request):
     context = {}
 
@@ -97,6 +98,7 @@ def bookinglistall(request):
     
     return render(request, 'user/bookinglist.html', context=context)
 
+@login_required(login_url='/')
 def trackbookinglist(request): #existing booking list from users' requests
 
   
@@ -111,6 +113,7 @@ def trackbookinglist(request): #existing booking list from users' requests
 
     return render(request, 'user/trackbookinglist.html', context)
 
+@login_required(login_url='/')
 def booking(request, rm_id): #func called by booking.html
     context = dict()
     BookRoomFormSet = formset_factory(BookRoomForm)
@@ -256,7 +259,7 @@ def booking(request, rm_id): #func called by booking.html
 
 
 
-
+@login_required(login_url='/')
 def profile(request):
     context = {}
 
@@ -315,7 +318,7 @@ def profile(request):
 
     return render(request, 'user/profile.html', context)
 
-
+@login_required(login_url='/')
 def bookcheck(request, rm_id):
     room = Room.objects.get(pk=rm_id)
     all_booklist = Booking_list.objects.all()
@@ -362,7 +365,7 @@ def bookcheck(request, rm_id):
     
 #     return render(request, 'user/addroom.html', context=context)
 
-
+@login_required(login_url='/')
 def add(request):
     context = dict()
 
@@ -402,7 +405,7 @@ def add(request):
         form = AddRoomForm()
     return render(request, 'user/addroom.html', {'form': form})
 
-
+@login_required(login_url='/')
 def edit(request, rm_id):
     context = {}
     allroom = Room.objects.all()
@@ -446,7 +449,7 @@ def edit(request, rm_id):
     return render(request, 'user/editroom.html', context=context)
 
 
-
+@login_required(login_url='/')
 def tracking(request, bl_id):
 
     listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')
@@ -471,6 +474,8 @@ def tracking(request, bl_id):
 
     }
     return render(request, 'user/track.html', context)
+
+@login_required(login_url='/')
 def accept(request, bl_id):
 
     student = Student.objects.all()
@@ -562,18 +567,20 @@ def accept(request, bl_id):
 
 
 
-
+@login_required(login_url='/')
 def delete(request, rm_id):
     room = Room.objects.get(pk=rm_id)
     room.delete()
     return redirect('index')
 
+@login_required(login_url='/')
 def track_delete(request, bl_id):
     listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')
     booking = Booking.objects.filter(id__in = Subquery(listno))
     booking.delete()
     return redirect('bookinglist')
 
+@login_required(login_url='/')
 def bookinglistadmin(request):
     search_txt = request.POST.get('search','')
     all_booklist = Booking_list.objects.filter(
@@ -587,6 +594,7 @@ def bookinglistadmin(request):
     }
     return render(request, 'user/bookinglistadmin.html', context)
 
+@login_required(login_url='/')
 def history(request):
     try:
         user = User.objects.all()
@@ -617,6 +625,7 @@ def history(request):
 
     return render(request, 'user/history.html', context)
 
+@login_required(login_url='/')
 def history_teacher(request):
     user = User.objects.all()
     teacher_book = Booking_teacher.objects.all()
@@ -636,7 +645,7 @@ def history_teacher(request):
 
     return render(request, 'user/historyteacher.html', context)
 
-
+@login_required(login_url='/')
 def history_staff(request):
  
     user = User.objects.all()
@@ -657,12 +666,13 @@ def history_staff(request):
 
     return render(request, 'user/historystaff.html', context)
 
-
+@login_required(login_url='/')
 def booking2(request):
   
 
     return render(request, 'user/booking2.html')
 
+@login_required(login_url='/')
 def detail(request, bl_id):
     
     student = Student.objects.all()
