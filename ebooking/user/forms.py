@@ -131,6 +131,7 @@ class RangeBookingForm(forms.Form):
                 if ((fromTime >= each.start_time and fromTime <= each.end_time) or 
                     (toTime >= each.start_time and toTime <= each.end_time)) and each.bookdate == day and Booking.objects.get(id=each.booking_id.id).st == '2':
                     state = 0  
+                    print(Booking.objects.get(id=each.booking_id.id).st)
                     break
         if state == 0:
             errorMsg = 'เวลาไม่ถูกต้อง Range'

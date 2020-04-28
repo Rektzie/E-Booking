@@ -174,7 +174,7 @@ def booking(request, rm_id): #func called by booking.html
                 fromDate = rangeBookingForm.cleaned_data['fromDate'] # start date
                 toDate = rangeBookingForm.cleaned_data['toDate']  # end date
 
-                fromTIme = rangeBookingForm.cleaned_data['fromTime']
+                fromTime = rangeBookingForm.cleaned_data['fromTime']
                 toTime = rangeBookingForm.cleaned_data['toTime']
                 
                 delta = toDate - fromDate # as timedelta
@@ -190,7 +190,7 @@ def booking(request, rm_id): #func called by booking.html
                     
                     
                     booking_list = Booking_list.objects.create(                      
-                        start_time = fromTIme,
+                        start_time = fromTime,
                         end_time = toTime,
                         bookdate = day,
                         booking_id = booking,
