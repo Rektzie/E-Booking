@@ -41,9 +41,11 @@
             </li>
             {% endif %}
             {% comment %} {% else %} {% endcomment %}
+            {% if perms.user.view_booking_student %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'trackbookinglist'%}">Track</a>
             </li>
+            {% endif %}
             {% comment %} {% endif %} {% endcomment %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'bookinglistadmin'%}">My History</a>

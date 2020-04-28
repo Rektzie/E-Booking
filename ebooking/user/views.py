@@ -103,7 +103,7 @@ def bookinglistall(request):
     return render(request, 'user/bookinglist.html', context=context)
 
 @login_required(login_url='/')
-
+@permission_required('user.view_booking_student', login_url='/')
 def trackbookinglist(request): #existing booking list from users' requests
 
   
