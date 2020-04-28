@@ -79,7 +79,7 @@
               <th scope="col"style="width: 10%;">ความจุ</th>
               <th scope="col"style="width: 15%;">ประเภทห้อง</th>
               <th style="width: 25%;"> 
-                {% if request.user.is_superuser %}
+                {% if perms.user.change_room %}
                 <div class="md-form active-pink active-pink-2">
                   <a href="{% url 'add'  %}"><button type="button" class="btn btn-danger" style="float: right;">เพิ่ม</button></a>
                 </div>
@@ -99,13 +99,16 @@
               <td>
                 <a v-bind:href="'bookcheck/'+ room.id"><button type="submit"
                     class="btn btn-info">สถานะการจอง</button></a>
+                    {% if perms.user.change_room %}
                 <a v-bind:href="'booking/'+ room.id"><button type="submit" class="btn btn-info">จอง</button></a>
-                {% if request.user.is_superuser %}
+                {% endif %}
+                {% if perms.user.change_room %}
                 <a v-bind:href="'edit/' + room.id"><button type="submit" class="btn btn-danger">แก้ไข</button></a>
-                {% endif %}
-                {% if request.user.is_superuser %}
+               {% endif %}
+
+                {% if perms.user.delete_room %}
                 <a v-bind:href="'delete/' + room.id"><button type="submit" class="btn btn-danger">ลบ</button></a>
-                {% endif %}
+               {% endif %}
               </td>
               
             </tr>
