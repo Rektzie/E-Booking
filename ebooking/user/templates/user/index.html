@@ -99,12 +99,12 @@
               <td>
                 <a v-bind:href="'bookcheck/'+ room.id"><button type="submit"
                     class="btn btn-info">สถานะการจอง</button></a>
-                    {% if perms.user.add_booking %}
+                {% if perms.user.add_booking %}
                 <a v-bind:href="'booking/'+ room.id"><button type="submit" class="btn btn-info">จอง</button></a>
                 {% endif %}
                 {% if perms.user.change_room %}
                 <a v-bind:href="'edit/' + room.id"><button type="submit" class="btn btn-danger"><span class="oi oi-pencil"></span></button></a>
-               {% endif %}
+                {% endif %}
 
                 {% if perms.user.delete_room %}
                 <a v-bind:href="'delete/' + room.id"><button type="submit" class="btn btn-danger"><span class="oi oi-trash"></span></button></a>

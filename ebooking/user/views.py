@@ -67,7 +67,7 @@ class RoomFilter(generics.RetrieveAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/')
-@permission_required('user.change_booking_list', login_url='/')
+@permission_required('user.view_booking_teacher', login_url='/')
 def bookinglistall(request):
     context = {}
 
@@ -104,7 +104,7 @@ def bookinglistall(request):
     return render(request, 'user/bookinglist.html', context=context)
 
 @login_required(login_url='/')
-@permission_required('user.view_booking_student', login_url='/')
+@permission_required('user.delete_booking_student', login_url='/')
 def trackbookinglist(request): #existing booking list from users' requests
 
   
@@ -121,6 +121,7 @@ def trackbookinglist(request): #existing booking list from users' requests
     return render(request, 'user/trackbookinglist.html', context)
 
 @login_required(login_url='/')
+@permission_required('user.add_booking', login_url='/')
 # แอดมินเข้าไม่ได้
 def booking(request, rm_id): #func called by booking.html
     context = dict()
@@ -379,6 +380,7 @@ def bookcheck(request, rm_id):
 
 # แอดมิน
 @login_required(login_url='/')
+@permission_required('user.add_room', login_url='/')
 def add(request):
     context = dict()
 
@@ -419,6 +421,7 @@ def add(request):
     return render(request, 'user/addroom.html', {'form': form})
 # แอดมิน
 @login_required(login_url='/')
+@permission_required('user.change_room', login_url='/')
 def edit(request, rm_id):
     context = {}
     allroom = Room.objects.all()
@@ -463,6 +466,7 @@ def edit(request, rm_id):
 
 # นักศึกษา
 @login_required(login_url='/')
+@permission_required('user.delete_booking_student', login_url='/')
 def tracking(request, bl_id):
 
     listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')
@@ -491,6 +495,7 @@ def tracking(request, bl_id):
     return render(request, 'user/track.html', context)
 # teacher staff
 @login_required(login_url='/')
+@permission_required('user.view_booking_teacher', login_url='/')
 def accept(request, bl_id):
 
     student = Student.objects.all()
@@ -582,6 +587,7 @@ def accept(request, bl_id):
 
 #  admin
 @login_required(login_url='/')
+@permission_required('user.delete_room', login_url='/')
 def delete(request, rm_id):
     room = Room.objects.get(pk=rm_id)
     room.delete()
@@ -589,6 +595,7 @@ def delete(request, rm_id):
 
 # student
 @login_required(login_url='/')
+@permission_required('user.delete_booking_student', login_url='/')
 def track_delete(request, bl_id):
     listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')  #ดึงรายการจองที่มีlist_no เท่ากับค่าที่รับมา แล้วselect  booking_id_id
     booking = Booking.objects.filter(id__in = Subquery(listno))  # ดึงข้อมูลการจองที่มีid เท่ากับ id ของรายการจอง
@@ -597,6 +604,7 @@ def track_delete(request, bl_id):
 
 # ยกเว้นแอดมิน ค่อยไปแก้ในหน้าย่อย list base template
 @login_required(login_url='/')
+@permission_required('user.add_booking', login_url='/')
 def mybookinglist(request):
     search_txt = request.POST.get('search','')
 
@@ -614,7 +622,7 @@ def mybookinglist(request):
 
 
 @login_required(login_url='/')
-@permission_required('user.change_booking_list', login_url='/')
+@permission_required('user.view_booking_teacher', login_url='/')
 def history(request):
     try:
         user = User.objects.all()                                           #ดึงข้อมูลผู้ใช้ทั้งหมด
@@ -646,6 +654,7 @@ def history(request):
 
 
 @login_required(login_url='/')
+@permission_required('user.view_booking_teacher', login_url='/')
 def history_teacher(request):
     user = User.objects.all()                                           #ดึงข้อมูลผู้ใช้ทั้งหมด
     teacher_book = Booking_teacher.objects.all()                        #ดึงข้อมูลการจองของอาจารย์
@@ -665,6 +674,7 @@ def history_teacher(request):
     return render(request, 'user/historyteacher.html', context)
 
 @login_required(login_url='/')
+@permission_required('user.view_booking_teacher', login_url='/')
 def history_staff(request):
  
     user = User.objects.all()                                               #ดึงข้อมูลผู้ใช้ทั้งหมด
