@@ -44,6 +44,4 @@ admin.site.register(Room_type)
 
 admin.site.register(UserRole)
 
-
-
-# admin.site.register(Permission)
+admin.site.register(Permission)

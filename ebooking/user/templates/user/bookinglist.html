@@ -1,3 +1,5 @@
+<!-- =====================หน้าrequestรายการจอง คือแสดงรายการคำขอ แล้วไปอนุมัติ จะแก้ชื่อแต่บัคต้องแก้หลายที่======================================= -->
+
 {% extends 'base.html' %}
 {% block title %}
 <title>All Bookinglist</title>
@@ -25,13 +27,9 @@
     <div class="col-2">
       <form action="{% url 'bookinglistall' %}" method="POST">
         {% csrf_token %}
-        <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref" name="select" onchange="this.form.submit();">
-          <!-- <option selected >Today</option> -->
-          <option value="">Sort</option>
-          <option value="1">Today</option>
-          <option value="2">Yesterday</option>
-          <option value="3">All</option>
-        </select>
+  
+        
+        </form>
       </form>
       
     </div>   
@@ -48,8 +46,7 @@
         <thead >
           <tr>
             <th scope="col" style="width: 10%">ชื่อห้อง</th>
-            <th scope="col" style="width: 15%">วันที่</th>
-            <th scope="col" style="width: 15%">เวลา</th>
+            <th scope="col" style="width: 15%">วันที่ส่งคำร้อง</th>
             <th scope="col" style="width: 15%">ผู้ขอ</th>
             <th scope="col" style="width: 15%">อาจารย์</th>
             <th scope="col" style="width: 15%">เจ้าหน้าที่</th>
@@ -59,7 +56,7 @@
         </thead>
         <tbody> 
 
-        {% for bl in all_booklist %}
+        {% for bl in all_booklist%}
         {% for st in stbooking %}
         {% if bl.booking_id.id == st.booking_id.id %}
         {% if st.teacher_result != 2 or st.staff_result != 2%}
@@ -67,8 +64,8 @@
     
           <tr>
             <td>{{bl.room_id.name}} </td> 
-            <td>{{bl.bookdate}}</td>
-            <td>{{bl.start_time |time:"H:i"}} - {{bl.end_time |time:"H:i"}} </td>
+            <td>{{bl.booking_id.date}}</td>
+      
             <td>{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
             <td style="width: 10%">
               

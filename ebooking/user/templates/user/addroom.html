@@ -1,18 +1,10 @@
+<!-- =====================หน้าเพิ่มห้อง======================================= -->
+
 {% extends 'base.html' %}
 {% block title %}
 <title>Add Room</title>
 {% endblock title%}
 {% block base %}
-<!-- <div class="alert alert-warning" role="alert">
-    {{ form.name.errors }}   
-  </div> -->
-  <!-- <div class="alert alert-danger" role="alert">
-    {{ form.name.errors }}   
-  </div> -->
-  <!-- <div class="alert alert-danger" role="alert">
-   {{ form.name.errors }}   
-  
-  </div> -->
 
   {% if form.errors %}
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -46,6 +38,7 @@
         <div class="col-6 p-3 ">
             <div class="bg-light p-3 shadow">
 
+<!-- =====================ฟอร์มเพิ่มห้อง======================================= -->
 
                 <form method="POST" action="{% url 'add'%}">
                     {% csrf_token %}
@@ -77,6 +70,8 @@
                         </div>
                     <button type="submit" class="btn btn-dark">ยืนยัน</button>
                 </form>
+<!-- ============================================================================ -->
+
             </div>
         </div>
     </div>

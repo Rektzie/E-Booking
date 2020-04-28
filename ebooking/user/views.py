@@ -18,8 +18,9 @@ from user.serializers import RoomSerializer,RoomTypeSerializer
 from datetime import date, timedelta
 
 # Create your views here.
-# @login_required(login_url='/')
+@login_required(login_url='/')
 # @permission_required('user.view_room', login_url='/')
+# เข้าได้ทุกคน ยกเว้นคนไม่login
 def index(request):
 
     all_room = Room.objects.all()
@@ -65,6 +66,8 @@ class RoomFilter(generics.RetrieveAPIView):
                 "error" : str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
 
+@login_required(login_url='/')
+@permission_required('user.change_booking_list', login_url='/')
 def bookinglistall(request):
     context = {}
 
@@ -74,8 +77,11 @@ def bookinglistall(request):
     
     search_txt = request.POST.get('search','')
     all_booklist = Booking_list.objects.filter(
-        Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='2') ).order_by('bookdate')
-    count = all_booklist.count()
+        Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='2') ).distinct('booking_id')
+
+    student = Booking_student.objects.values('booking_id_id')
+    count = Booking.objects.filter(id__in = Subquery(student)).exclude(status = '2').exclude(status = '3').count()
+   
     stbooking = Booking_student.objects.all()
     user_id = request.user.id
     
@@ -97,10 +103,13 @@ def bookinglistall(request):
     
     return render(request, 'user/bookinglist.html', context=context)
 
+@login_required(login_url='/')
+@permission_required('user.view_booking_student', login_url='/')
 def trackbookinglist(request): #existing booking list from users' requests
 
   
-    all_booklist = Booking_list.objects.filter(Q(booking_id__status ='1')).order_by('bookdate')
+    all_booklist = Booking_list.objects.filter(Q(booking_id__status ='1')).distinct('booking_id')
+    
     user_id = request.user.id
     context = {
         'all_booklist' : all_booklist,
@@ -111,6 +120,8 @@ def trackbookinglist(request): #existing booking list from users' requests
 
     return render(request, 'user/trackbookinglist.html', context)
 
+@login_required(login_url='/')
+# แอดมินเข้าไม่ได้
 def booking(request, rm_id): #func called by booking.html
     context = dict()
     BookRoomFormSet = formset_factory(BookRoomForm)
@@ -256,8 +267,8 @@ def booking(request, rm_id): #func called by booking.html
 
 
 
-
-
+# เข้าได้ทุกคน
+@login_required(login_url='/')
 def profile(request):
     context = {}
 
@@ -266,8 +277,8 @@ def profile(request):
         user_id = request.user.id
         user = request.user
         student = Student.objects.get(user_id__exact=user_id)
-        list = Booking_list.objects.filter(booking_id__user_id=user_id).count()
-        accept = Booking_list.objects.filter(booking_id__user_id=user_id, booking_id__status='2').count()
+        list = Booking.objects.filter(user_id=user_id).count()
+        accept = Booking.objects.filter(user_id=user_id, status='2').count()
         
        
         context['student'] = student
@@ -285,8 +296,10 @@ def profile(request):
        context['group'] = 'อาจารย์'
     elif request.user.groups.filter(name ='staff').exists():
        context['group'] = 'บุคลากร'
-    elif request.user.groups.filter(name ='admin').exists():
+    else: 
        context['group'] = 'ผู้ดูแลระบบ'
+
+
     
     if request.method == 'POST':
         if 'submitpass' in request.POST:
@@ -315,11 +328,12 @@ def profile(request):
          
 
     return render(request, 'user/profile.html', context)
-
-
+# ทุกคน
+@login_required(login_url='/')
 def bookcheck(request, rm_id):
     room = Room.objects.get(pk=rm_id)
-    all_booklist = Booking_list.objects.all()
+    all_booklist = Booking_list.objects.all()  
+    all_booklist = Booking_list.objects.filter(~Q(booking_id__status ='1') & ~Q(booking_id__status ='3'))
     context = {
         'all_booklist' : all_booklist,
         'room' : room,
@@ -363,7 +377,8 @@ def bookcheck(request, rm_id):
     
 #     return render(request, 'user/addroom.html', context=context)
 
-
+# แอดมิน
+@login_required(login_url='/')
 def add(request):
     context = dict()
 
@@ -402,8 +417,8 @@ def add(request):
     else:
         form = AddRoomForm()
     return render(request, 'user/addroom.html', {'form': form})
-
-
+# แอดมิน
+@login_required(login_url='/')
 def edit(request, rm_id):
     context = {}
     allroom = Room.objects.all()
@@ -446,14 +461,14 @@ def edit(request, rm_id):
 
     return render(request, 'user/editroom.html', context=context)
 
-
-
+# นักศึกษา
+@login_required(login_url='/')
 def tracking(request, bl_id):
 
     listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')
     booking = Booking.objects.filter(id__in = Subquery(listno)).values_list('id')
     booking_st = Booking_student.objects.filter(booking_id__in =  Subquery(booking))
- 
+    all_book = Booking_list.objects.all()
     
 
     book_list = Booking_list.objects.get(pk=bl_id)
@@ -466,26 +481,32 @@ def tracking(request, bl_id):
         'book_list': book_list,
         'student': student,
         'booking_st': booking_st,
+        'all_book': all_book,
+
     
 
 
 
     }
     return render(request, 'user/track.html', context)
+# teacher staff
+@login_required(login_url='/')
 def accept(request, bl_id):
 
     student = Student.objects.all()
     book_list = Booking_list.objects.get(pk=bl_id)
     book = Booking.objects.get(pk=book_list.booking_id.id)
     stu = Booking_student.objects.get(booking_id=book.id)
-    
+    all_book = Booking_list.objects.all()
+
+
     context = {}
     context['book_list'] = book_list
     context['student'] = student
     context['bl_id'] = bl_id
-    now = str(datetime.now())
+    context['all_book'] = all_book
 
-   
+    now = str(datetime.now())
 
     try:
         user_id = request.user.id
@@ -496,15 +517,10 @@ def accept(request, bl_id):
         teacher = None
         staff = None
 
-    # print(teacher)
-    # print(staff)
-
-    t_result = ''
-    s_result = ''
-
-    if request.method == 'POST':  
-
-        if 'allowt' in request.POST:
+    
+    
+    if request.user.groups.filter(name ='teacher').exists():   #ปุ่มอนุมัติของอาจารย์
+        if 'allow' in request.POST:
             stu.teacher_result = '2'
             stu.teacher_date = now
             stu.teacher_user_id_id = teacher
@@ -517,7 +533,7 @@ def accept(request, bl_id):
         
             return redirect('bookinglistall')
 
-        elif 'denyt' in request.POST:
+        elif 'deny' in request.POST:
             stu.teacher_result = '3'
             stu.teacher_user_id_id = teacher
             stu.save()
@@ -530,8 +546,9 @@ def accept(request, bl_id):
 
 
             return redirect('bookinglistall')
-        
-        elif 'allows' in request.POST:
+
+    elif request.user.groups.filter(name ='staff').exists():    #ปุ่มอนุมัติของบุคคลากร
+        if 'allow' in request.POST:
             stu.staff_result = '2'
             stu.staff_date = now
             stu.staff_user_id_id = staff
@@ -543,7 +560,7 @@ def accept(request, bl_id):
   
             return redirect('bookinglistall')
 
-        elif 'denys' in request.POST:
+        elif 'deny' in request.POST:
             stu.staff_result = '3'
             stu.staff_user_id_id = staff
 
@@ -557,28 +574,35 @@ def accept(request, bl_id):
 
 
             return redirect('bookinglistall')
+    
         
 
     return render(request, 'user/accept.html', context)
 
 
-
-
+#  admin
+@login_required(login_url='/')
 def delete(request, rm_id):
     room = Room.objects.get(pk=rm_id)
     room.delete()
     return redirect('index')
 
+# student
+@login_required(login_url='/')
 def track_delete(request, bl_id):
-    listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')
-    booking = Booking.objects.filter(id__in = Subquery(listno))
-    booking.delete()
-    return redirect('bookinglist')
+    listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')  #ดึงรายการจองที่มีlist_no เท่ากับค่าที่รับมา แล้วselect  booking_id_id
+    booking = Booking.objects.filter(id__in = Subquery(listno))  # ดึงข้อมูลการจองที่มีid เท่ากับ id ของรายการจอง
+    booking.delete()                                               #ลบ
+    return redirect('trackbookinglist')
 
-def bookinglistadmin(request):
+# ยกเว้นแอดมิน ค่อยไปแก้ในหน้าย่อย list base template
+@login_required(login_url='/')
+def mybookinglist(request):
     search_txt = request.POST.get('search','')
+
+    
     all_booklist = Booking_list.objects.filter(
-            Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='1')).order_by('bookdate')
+            Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='1')).distinct('booking_id') #ดึงรายการจองย่อยที่ตรงกับการค้นหา และไม่มีสถานะเป็น 'รอการอนุมัติ' และไม่ซ้ำกัน
         
     user_id = request.user.id
     context = {
@@ -586,18 +610,20 @@ def bookinglistadmin(request):
         'user_id' : user_id
      
     }
-    return render(request, 'user/bookinglistadmin.html', context)
+    return render(request, 'user/mybookinglist.html', context)
 
+
+@login_required(login_url='/')
+@permission_required('user.change_booking_list', login_url='/')
 def history(request):
     try:
-        user = User.objects.all()
-        st_booking = Booking_student.objects.all()
-
+        user = User.objects.all()                                           #ดึงข้อมูลผู้ใช้ทั้งหมด
+        st_booking = Booking_student.objects.all()                          #ดึงข้อมูลการจองของนักศึกษา
         search_txt = request.POST.get('search','')
         all_booklist = Booking_list.objects.filter(
-            Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='1')).order_by('bookdate')
-        teacher =Teacher.objects.all()
-        staff =Staff.objects.all()
+            Q(room_id__name__icontains= search_txt) & ~Q(booking_id__status ='1')).distinct('booking_id')  #ดึงรายการจองย่อยที่ตรงกับการค้นหา และไม่มีสถานะเป็น 'รอการอนุมัติ' และไม่ซ้ำกัน
+        teacher =Teacher.objects.all()                                      #ดึงข้อมูลอาจารย์
+        staff =Staff.objects.all()                                          #ดึงข้อมูลเจ้าหน้าที่
 
     
     
@@ -618,13 +644,14 @@ def history(request):
 
     return render(request, 'user/history.html', context)
 
-def history_teacher(request):
-    user = User.objects.all()
-    teacher_book = Booking_teacher.objects.all()
 
-    search_txt = request.POST.get('search','')
+@login_required(login_url='/')
+def history_teacher(request):
+    user = User.objects.all()                                           #ดึงข้อมูลผู้ใช้ทั้งหมด
+    teacher_book = Booking_teacher.objects.all()                        #ดึงข้อมูลการจองของอาจารย์
+    search_txt = request.POST.get('search','')                          #get request มาเพื่อเอาไปsearch
     all_booklist = Booking_list.objects.filter(
-        room_id__name__icontains= search_txt ).order_by('bookdate')
+        room_id__name__icontains= search_txt ).distinct('booking_id')   #ดึงรายการจองโดยเลือกห้องที่มีชื่อตามการค้นหา และ ไม่เอาห้องซ้ำ
    
         
 
@@ -637,15 +664,14 @@ def history_teacher(request):
 
     return render(request, 'user/historyteacher.html', context)
 
-
+@login_required(login_url='/')
 def history_staff(request):
  
-    user = User.objects.all()
-    staff_book = Booking_staff.objects.all()
-
-    search_txt = request.POST.get('search','')
+    user = User.objects.all()                                               #ดึงข้อมูลผู้ใช้ทั้งหมด
+    staff_book = Booking_staff.objects.all()                                #ดึงข้อมูลการจองของบุคลากร
+    search_txt = request.POST.get('search','')                              #get request มาเพื่อเอาไปsearch
     all_booklist = Booking_list.objects.filter(
-        room_id__name__icontains= search_txt ).order_by('bookdate')
+        room_id__name__icontains= search_txt ).distinct('booking_id')       #ดึงรายการจองโดยเลือกห้องที่มีชื่อตามการค้นหา และ ไม่เอาห้องซ้ำ
    
         
 
@@ -659,23 +685,20 @@ def history_staff(request):
     return render(request, 'user/historystaff.html', context)
 
 
-def booking2(request):
-  
-
-    return render(request, 'user/booking2.html')
-
+# ทุกคน
+@login_required(login_url='/')
 def detail(request, bl_id):
     
-    student = Student.objects.all()
-    book_list = Booking_list.objects.get(pk=bl_id)
+    student = Student.objects.all()                         #ดึงข้อมูลนักเรียน จะเอาพวกรหัส ชั้นปี
+    book_list = Booking_list.objects.get(pk=bl_id)          #ดึงรายการจองย่อยที่มีidตรงกับที่ส่งมา เพื่อจะได้แสดงรายการจองในหน้าdetail
+    all_book = Booking_list.objects.all()                   #ดึงรายการจองย่อยทั้งหมด เพื่อไปเช็ควัน เวลา ของแต่ละรายการจองนั้นๆ เอาวันที่ เวลาของbooking นั้นๆ
 
     context = {}
     context['book_list'] = book_list
     context['student'] = student
     context['bl_id'] = bl_id
-   
+    context['all_book'] = all_book
 
    
-        
 
     return render(request, 'user/detail.html', context=context)

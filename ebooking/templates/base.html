@@ -8,6 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" integrity="sha256-BJ/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=" crossorigin="anonymous" />
     <style>
       body{
     background-color: #d7e2de;
@@ -35,21 +36,26 @@
               <a class="nav-link" href="{% url 'index'%}">Room</span></a>
             </li>
             {% comment %} {% if request.user.is_superuser %} {% endcomment %}
+            {% if perms.user.change_booking_list %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'bookinglistall'%}">Request</a>
             </li>
-            
+            {% endif %}
             {% comment %} {% else %} {% endcomment %}
+            {% if perms.user.view_booking_student %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'trackbookinglist'%}">Track</a>
             </li>
+            {% endif %}
             {% comment %} {% endif %} {% endcomment %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'bookinglistadmin'%}">My History</a>
+              <a class="nav-link" href="{% url 'mybookinglist'%}">My History</a>
             </li>
+            {% if perms.user.change_booking_list %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'history'%}">All History</a>
             </li>
+            {% endif %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{ request.user.username }}

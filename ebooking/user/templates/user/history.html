@@ -1,3 +1,5 @@
+<!-- ======================================ประวัติการจองของนักศึกษา ======================== -->
+
 {% extends 'list_base.html' %}
 {% block title %}
 <title>All Bookinglist</title>
@@ -24,13 +26,14 @@
     <table class="table table-hover " >
         <thead >
           <tr>
-            <th scope="col" style="width: 10%">ชื่อห้อง</th>
-            <th scope="col" style="width: 15%">วันที่ขอจอง</th>
-            <th scope="col" style="width: 15%">เวลา</th>
+            <th scope="col" style="width: 7%">ชื่อห้อง</th>
+            <th scope="col" style="width: 15%">วันที่ส่งคำร้อง</th>
             <th scope="col" style="width: 15%">ผู้ขอ</th>
             <th scope="col" style="width: 15%">อาจารย์</th>
             <th scope="col" style="width: 15%">เจ้าหน้าที่สถานที่</th>
-            <th scope="col" style="width: 10%">สถานะ</th>
+            <th scope="col" style="width: 8%">สถานะ</th>
+            <th scope="col" style="width: 5%"></th>
+
             
       
 
@@ -46,8 +49,7 @@
 
           <tr>
             <td>{{bl.room_id.name}}</td> 
-            <td>{{bl.bookdate}}</td>
-            <td>{{bl.start_time |time:'H:i'}} - {{bl.end_time |time:'H:i'}}</td>
+            <td>{{bl.booking_id.date}}</td>
             <td>{{bl.booking_id.user_id.first_name}} {{bl.booking_id.user_id.last_name}}</td>
             
             {% if bs.teacher_user_id_id == null %}
@@ -86,6 +88,8 @@
           {% elif bl.booking_id.status == 3 %}
                 <td> <span class="badge badge-danger">{{bl.booking_id.get_status_display}}</span> </td>
           {% endif %}
+          
+          <td><a href="{% url 'detail' bl.list_no %}"><button type="submit" class="btn btn-warning" style="float: right;"><span class="oi oi-document"></span></button></a></td>
           </tr>
 
         {% endif%}
