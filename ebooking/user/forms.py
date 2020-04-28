@@ -2,7 +2,7 @@ from builtins import object
 from tkinter import Widget
 
 from django import forms
-from user.models import Room_type, Booking_list
+from user.models import Room_type, Booking_list, Booking
 from user.models import Room
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import date, timedelta
@@ -86,7 +86,7 @@ class BookRoomForm(forms.Form): #for booking_list
         
         for each in allBookingList:
             if ((start_time >= each.start_time and start_time <= each.end_time) or 
-                (end_time >= each.start_time and end_time <= each.end_time)) and each.bookdate == bookdate:
+                (end_time >= each.start_time and end_time <= each.end_time)) and each.bookdate == bookdate and Booking.objects.get(id=each.booking_id.id).st == '2':
                 errorMsg = 'จองเวลาซ้ำ'
                 self.add_error('bookdate', errorMsg)
                 print('จองเวลาซ้ำ')
@@ -129,11 +129,13 @@ class RangeBookingForm(forms.Form):
             day = fromDate + timedelta(days=i)
             for each in allBookingList:  
                 if ((fromTime >= each.start_time and fromTime <= each.end_time) or 
-                    (toTime >= each.start_time and toTime <= each.end_time)) and each.bookdate == day:
+                    (toTime >= each.start_time and toTime <= each.end_time)) and each.bookdate == day and Booking.objects.get(id=each.booking_id.id).st == '2':
                     state = 0  
+                    print(Booking.objects.get(id=each.booking_id.id).st)
                     break
         if state == 0:
             errorMsg = 'เวลาไม่ถูกต้อง Range'
-            self.add_error('fromTime', errorMsg)
+            self.add_error('fromDate', errorMsg)
             print('Time-error Range')
+            
             

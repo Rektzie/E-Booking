@@ -3,20 +3,41 @@
 {% endblock title%} {% block base %}
 
 <style>
-
-.my-custom-scrollbar {
-    position: relative;
-    height: 470px;
-    overflow: auto;
-    overflow-x: hidden;
+    .my-custom-scrollbar {
+        position: relative;
+        height: 470px;
+        overflow: auto;
+        overflow-x: hidden;
     }
-.table-wrapper-scroll-y {
-    display: block;
+
+    .table-wrapper-scroll-y {
+        display: block;
     }
 </style>
 
 
+    {% if rangeBookingForm.errors %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>{{ rangeBookingForm.fromDate.errors }}</strong>
+        <strong>{{ rangeBookingForm.fromTIme.errors }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    {% if formset.errors %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>{{ formset.bookdate.errors }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+
 <br><br>
+
 
 <div class="container bg-light shadow p-3" style="height: 650px;">
     <!-- container-->
@@ -25,18 +46,10 @@
 
         <br>
 
-{% if rangeBookingForm.errors %}
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>{{ rangeBookingForm.fromDate.errors }}</strong> 
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-{% endif %}
-{% if form.errors %}
-    
-    <strong>{{ formset.bookdate.errors }}</strong>
-{% endif %}
+
+
+
+
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             <label class="btn btn-secondary active">
                 <input type="radio" name="options" id="option1" autocomplete="off" checked> จองหลายวัน
@@ -48,18 +61,12 @@
         </div>
     </center>
     <hr class="my-4">
-    {% if rangeBookingForm.errors %}
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>{{ rangeBookingForm.fromDate.errors }}</strong>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endif %}
+
+
 
     <form method="POST" action="{% url 'booking' rm_id %}">
         {% csrf_token %}
-        <div id="tab1"class="table-wrapper-scroll-y my-custom-scrollbar">
+        <div id="tab1" class="table-wrapper-scroll-y my-custom-scrollbar">
             <!--  tab 1-->
 
 
