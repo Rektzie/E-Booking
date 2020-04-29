@@ -3,18 +3,7 @@
 <title>Booking</title>
 {% endblock title%} {% block base %}
 
-<style>
-    .my-custom-scrollbar {
-        position: relative;
-        height: 400px;
-        overflow: auto;
-        overflow-x: hidden;
-    }
 
-    .table-wrapper-scroll-y {
-        display: block;
-    }
-</style>
 
 
     {% if rangeBookingForm.errors %}
@@ -48,9 +37,6 @@
         <br>
 
 
-
-
-
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             <label class="btn btn-secondary active">
                 <input type="radio" name="options" id="option1" autocomplete="off" checked> จองหลายวัน
@@ -64,10 +50,9 @@
     <hr class="my-4">
 
     
-
     <form method="POST" action="{% url 'booking' rm_id %}">
         {% csrf_token %}
-        <div id="tab1" class="table-wrapper-scroll-y my-custom-scrollbar">
+        <div id="tab1" >
             <!--  tab 1-->
 
             <div class="">
