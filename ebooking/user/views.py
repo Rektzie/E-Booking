@@ -35,7 +35,7 @@ def index(request):
 
     return render(request, 'user/index.html', context)
 
-class RoomList(generics.ListCreateAPIView):
+class RoomList(generics.ListCreateAPIView):  #ใช้rest framework มาสร้าง api class beas view สืบทอด generics ดึงมาเป็นjson ดึงจากdatabaseละแสดงมาเป็นjason
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
@@ -46,22 +46,23 @@ class RoomTypeList(generics.ListCreateAPIView):
  
 
 #  ส่วนที่ดึงข้อมูลมาห้องมาเพื่อที่จะแสดงในหน้าindex แล้วก็ทำajax 
-class RoomFilter(generics.RetrieveAPIView):
+class RoomFilter(generics.RetrieveAPIView):    #เพิ่มเงื่อนไข
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
+
     def isEqual(self, room):                            #เช็คว่าห้องที่
-        return room['room_type'] == self.type
+        return room['room_type'] == self.type           #เช็คfk กับ typeในurl
     
 
     def get(self, request, *args, **kwarg):
         try:
-            self.type = int(request.GET.get('type'))
+            self.type = int(request.GET.get('type'))  #ตัวแปรหลังhttp
 
             if self.type:
                 room = Room.objects.all()
                 serializer = RoomSerializer(room, many=True)
-                filter_data = filter(self.isEqual, serializer.data)   #แปลงข้อมูลเป็นjason
+                filter_data = filter(self.isEqual, serializer.data)   #แปลงข้อมูลเป็นjason  รับตัวที่กรอง กับ list ข้อมูลที่จะกรอง
             return Response(filter_data)
         except Exception as e:
             return Response({

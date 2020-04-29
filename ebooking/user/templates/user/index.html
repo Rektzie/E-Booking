@@ -105,21 +105,20 @@
 
   <script>
     const app = new Vue({
-      el: '#app',
-      delimiters: ['[[', ']]'],
+      el: '#app',    //element
+      delimiters: ['[[', ']]'],  // แปลงเครื่องหมาย
       data: {
-        message: 'Hello Vue!',
+        message: 'Hello Vue!',   // พวกดาต้าเก็บตัวแปร
         type: {},
         select : "ประเภทห้อง",
         all_room : [],
-        isSuperUser: "{{ request.user.is_superuser }}",
         search : '',
       },
       methods: { // เก็บฟังชั่น
         async filterType(id){
           let room = await axios.get("http://localhost:8000/index/roomfilter/?type="+ id)
           this.all_room = room.data
-          this.select = this.type[id]
+          this.select = this.type[id]    //get id มาแสดง
         }
       },
         
