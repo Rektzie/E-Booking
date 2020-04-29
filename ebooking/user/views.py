@@ -342,8 +342,8 @@ def profile(request):
 @login_required(login_url='/')
 def bookcheck(request, rm_id):
     room = Room.objects.get(pk=rm_id)
-    all_booklist = Booking_list.objects.all()  
-    all_booklist = Booking_list.objects.filter(~Q(booking_id__status ='1') & ~Q(booking_id__status ='3'))
+    # all_booklist = Booking_list.objects.all()  
+    all_booklist = Booking_list.objects.filter(~Q(booking_id__status ='1') & ~Q(booking_id__status ='3')).order_by('bookdate')
     context = {
         'all_booklist' : all_booklist,
         'room' : room,
@@ -481,7 +481,7 @@ def tracking(request, bl_id):
     listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')
     booking = Booking.objects.filter(id__in = Subquery(listno)).values_list('id')
     booking_st = Booking_student.objects.filter(booking_id__in =  Subquery(booking))
-    all_book = Booking_list.objects.all()
+    all_book = Booking_list.objects.all().order_by('bookdate')
     
 
     book_list = Booking_list.objects.get(pk=bl_id)
