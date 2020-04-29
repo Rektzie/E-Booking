@@ -8,8 +8,7 @@
 
     {% if rangeBookingForm.errors %}
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>{{ rangeBookingForm.fromDate.errors }}</strong>
-        <strong>{{ rangeBookingForm.fromTIme.errors }}</strong>
+        <strong>{{ rangeBookingForm.fromDate.errors }} {{ rangeBookingForm.fromTime.errors }}</strong>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -18,7 +17,15 @@
 
     {% if formset.errors %}
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>{{ formset.bookdate.errors }}</strong>
+        
+        <strong>
+            {% for dict in formset.errors %}
+                {% for error in dict.values %}
+                    {{ error }}
+                {% endfor %}
+            {% endfor %}
+        </strong>
+
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
