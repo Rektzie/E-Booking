@@ -19,8 +19,8 @@ from datetime import date, timedelta
 
 # Create your views here.
 @login_required(login_url='/')
-# @permission_required('user.view_room', login_url='/')
-# เข้าได้ทุกคน ยกเว้นคนไม่login
+@permission_required('user.view_room', login_url='/')
+
 def index(request):
 
     all_room = Room.objects.all()
@@ -66,8 +66,10 @@ class RoomFilter(generics.RetrieveAPIView):
                 "error" : str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
 
+
 @login_required(login_url='/')
-@permission_required('user.view_booking_teacher', login_url='/')
+@permission_required('user.view_booking', login_url='/index/')
+
 def bookinglistall(request):
     context = {}
 
@@ -93,10 +95,13 @@ def bookinglistall(request):
        context['group'] = 'นักศึกษา'
     elif request.user.groups.filter(name ='teacher').exists():
        context['group'] = 'อาจารย์'
+    elif request.user.groups.filter(name ='extra staff').exists():
+       context['group'] = 'เจ้าหน้าที่สถานที่'
     elif request.user.groups.filter(name ='staff').exists():
        context['group'] = 'บุคลากร'
     elif request.user.groups.filter(name ='admin').exists():
        context['group'] = 'ผู้ดูแลระบบ'
+    
     
 
     
@@ -104,7 +109,7 @@ def bookinglistall(request):
     return render(request, 'user/bookinglist.html', context=context)
 
 @login_required(login_url='/')
-@permission_required('user.delete_booking_student', login_url='/')
+@permission_required('user.add_booking_student', login_url='/index/')
 def trackbookinglist(request): #existing booking list from users' requests
 
   
@@ -121,7 +126,7 @@ def trackbookinglist(request): #existing booking list from users' requests
     return render(request, 'user/trackbookinglist.html', context)
 
 @login_required(login_url='/')
-@permission_required('user.add_booking', login_url='/')
+@permission_required('user.add_booking', login_url='/index/')
 # แอดมินเข้าไม่ได้
 def booking(request, rm_id): #func called by booking.html
     context = dict()
@@ -295,6 +300,8 @@ def profile(request):
        context['group'] = 'นักศึกษา'
     elif request.user.groups.filter(name ='teacher').exists():
        context['group'] = 'อาจารย์'
+    elif request.user.groups.filter(name ='extra staff').exists():
+       context['group'] = 'เจ้าหน้าที่สถานที่'
     elif request.user.groups.filter(name ='staff').exists():
        context['group'] = 'บุคลากร'
     else: 
@@ -380,7 +387,7 @@ def bookcheck(request, rm_id):
 
 # แอดมิน
 @login_required(login_url='/')
-@permission_required('user.add_room', login_url='/')
+@permission_required('user.add_room', login_url='/index/')
 def add(request):
     context = dict()
 
@@ -421,7 +428,7 @@ def add(request):
     return render(request, 'user/addroom.html', {'form': form})
 # แอดมิน
 @login_required(login_url='/')
-@permission_required('user.change_room', login_url='/')
+@permission_required('user.change_room', login_url='/index/')
 def edit(request, rm_id):
     context = {}
     allroom = Room.objects.all()
@@ -466,7 +473,7 @@ def edit(request, rm_id):
 
 # นักศึกษา
 @login_required(login_url='/')
-@permission_required('user.delete_booking_student', login_url='/')
+@permission_required('user.add_booking_student', login_url='/index/')
 def tracking(request, bl_id):
 
     listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')
@@ -486,16 +493,13 @@ def tracking(request, bl_id):
         'student': student,
         'booking_st': booking_st,
         'all_book': all_book,
-
-    
-
-
-
     }
     return render(request, 'user/track.html', context)
-# teacher staff
+
+
+# teacher extrastaff
 @login_required(login_url='/')
-@permission_required('user.view_booking_teacher', login_url='/')
+@permission_required('user.change_booking_student', login_url='/index/')
 def accept(request, bl_id):
 
     student = Student.objects.all()
@@ -587,7 +591,7 @@ def accept(request, bl_id):
 
 #  admin
 @login_required(login_url='/')
-@permission_required('user.delete_room', login_url='/')
+@permission_required('user.delete_room', login_url='/index/')
 def delete(request, rm_id):
     room = Room.objects.get(pk=rm_id)
     room.delete()
@@ -595,7 +599,7 @@ def delete(request, rm_id):
 
 # student
 @login_required(login_url='/')
-@permission_required('user.delete_booking_student', login_url='/')
+@permission_required('user.delete_booking_student', login_url='/index/')
 def track_delete(request, bl_id):
     listno = Booking_list.objects.filter(list_no=bl_id).values_list('booking_id_id')  #ดึงรายการจองที่มีlist_no เท่ากับค่าที่รับมา แล้วselect  booking_id_id
     booking = Booking.objects.filter(id__in = Subquery(listno))  # ดึงข้อมูลการจองที่มีid เท่ากับ id ของรายการจอง
@@ -604,7 +608,7 @@ def track_delete(request, bl_id):
 
 # ยกเว้นแอดมิน ค่อยไปแก้ในหน้าย่อย list base template
 @login_required(login_url='/')
-@permission_required('user.add_booking', login_url='/')
+@permission_required('user.add_booking', login_url='/index/')
 def mybookinglist(request):
     search_txt = request.POST.get('search','')
 
@@ -622,7 +626,8 @@ def mybookinglist(request):
 
 
 @login_required(login_url='/')
-@permission_required('user.view_booking_teacher', login_url='/')
+@permission_required('user.view_booking', login_url='/index/')
+
 def history(request):
     try:
         user = User.objects.all()                                           #ดึงข้อมูลผู้ใช้ทั้งหมด
@@ -633,13 +638,10 @@ def history(request):
         teacher =Teacher.objects.all()                                      #ดึงข้อมูลอาจารย์
         staff =Staff.objects.all()                                          #ดึงข้อมูลเจ้าหน้าที่
 
-    
-    
     except ObjectDoesNotExist:
         st_booking = None  
         teacher = None
         staff = None
-
 
     context = {
             'all_booklist' : all_booklist,
@@ -647,14 +649,14 @@ def history(request):
             'user' : user,
             'teacher' : teacher,
             'staff' : staff,
-
     }
 
     return render(request, 'user/history.html', context)
 
 
 @login_required(login_url='/')
-@permission_required('user.view_booking_teacher', login_url='/')
+@permission_required('user.view_booking', login_url='/index/')
+
 def history_teacher(request):
     user = User.objects.all()                                           #ดึงข้อมูลผู้ใช้ทั้งหมด
     teacher_book = Booking_teacher.objects.all()                        #ดึงข้อมูลการจองของอาจารย์
@@ -674,7 +676,8 @@ def history_teacher(request):
     return render(request, 'user/historyteacher.html', context)
 
 @login_required(login_url='/')
-@permission_required('user.view_booking_teacher', login_url='/')
+@permission_required('user.view_booking', login_url='/index/')
+
 def history_staff(request):
  
     user = User.objects.all()                                               #ดึงข้อมูลผู้ใช้ทั้งหมด

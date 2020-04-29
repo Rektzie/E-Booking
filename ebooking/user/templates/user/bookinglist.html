@@ -91,7 +91,7 @@
           </td>
             
             <td style="width: 10%">
-              {% if group == 'บุคลากร' %}
+              {% if group == 'เจ้าหน้าที่สถานที่' %}
                   {% if st.staff_result == 1 %}
                   <a href="{% url 'accept' bl.list_no %}"><button type="submit" class="btn btn-warning">อนุมัติ</button></a>
                   {% elif st.staff_result == 2 %}
