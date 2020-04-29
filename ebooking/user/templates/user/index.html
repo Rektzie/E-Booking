@@ -21,25 +21,7 @@
       <br><br><br><br><br><br><br><br><br>
    
         
-    
-<!-- old one -->
-          <!-- <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2 ">
-            <input class="form-control" type="text" placeholder="ค้นหาห้อง" name="search" v-model="search">
-          </div>
-          <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2">
-          </div>
-          <div class="md-form active-pink active-pink-2 mb-3 mt-0 m-2">
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                [[ select ]]
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#" name="findtype"  v-for="(value,key) in type" v-on:click="filterType(key)" >[[ value ]]</a>
-              </div>
-            </div>
-          </div> -->
-<!-- old one -->
+
 
 <form >
   {% csrf_token %}
@@ -47,7 +29,8 @@
 
 
   <div class="input-group col-6">
-    <input type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="ค้นหาห้อง" name="search" v-model="search">
+
+    <input type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="ค้นหาห้อง" name="search" v-model="search">      <!-- v model คือ พิมไปแล้วข้อมูลอีกที่มันจะขึ้นตามที่พิม -->
     <div class="input-group-append">
       <button class="btn btn-dark dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  [[ select ]]</button>
       <div class="dropdown-menu">
@@ -89,7 +72,7 @@
             </tr>
           </thead>
           <tbody>
-            
+            <!-- วนลูปแสดงรายการห้อง ใช้vue.js -->
             <tr v-for ="room in filterRoom">
               <td>[[ room.name ]]</td>
               <td>[[ room.start_time ]]</td>
@@ -140,21 +123,22 @@
         }
       },
         
-
+//  ส่วนของsearchที่เราพิมแล้วมันก็ขึ้นตามที่เราพิม
       computed: { // getter เรียก data มีการคำนวนก่อนเรียก 
         filterRoom() {
           if (this.search == ''){
             return this.all_room
           }
-          return  this.all_room.filter((room) => {
+         //คือค้นหาห้องตามที่เราพิมมาโดยดูจากidที่ส่งเข้ามา
+          return  this.all_room.filter((room) => {  
             return room.name.toLowerCase().includes(this.search.toLowerCase())
           })
         }
       },
       async mounted(){ // ขอrequestมา ไปget ข้อมูลมา
         console.log(this.type)
-        let type = await axios.get("http://localhost:8000/index/roomtype/")
-        let room = await axios.get("http://localhost:8000/index/room/")
+        let type = await axios.get("http://localhost:8000/index/roomtype/")   // ที่อยู่ของข้อมูลประเภทห้องที่เป็นjson ที่เราไปget
+        let room = await axios.get("http://localhost:8000/index/room/")      // ที่อยู่ของข้อมูลห้องที่เป็นjson ที่เราไปget
         this.all_room = room.data
         console.log(type.data)
         for (const el of type.data) {
@@ -169,9 +153,6 @@
       }
 
     })
-
-
-
 
 
   </script>

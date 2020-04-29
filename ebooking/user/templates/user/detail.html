@@ -4,7 +4,18 @@
 <title>Detail</title>
 {% endblock title%}
 {% block base %}
+<style>
+.my-custom-scrollbar {
+    position: relative;
+    height: 450px;
+    overflow: auto;
+    overflow-x: hidden;
+}
 
+.table-wrapper-scroll-y {
+    display: block;
+}
+</style>
 <br><br>
 <div class="container">
        
@@ -15,7 +26,7 @@
     <div class="row">
          <div></div>
       
-         <div class="col-4 p-3 ">
+         <div class="col-4 p-3 table-wrapper-scroll-y my-custom-scrollbar" style="height: 450px;">
              <div class="p-3 shadow bg-light" >
               
                 <table class="table table-hover">

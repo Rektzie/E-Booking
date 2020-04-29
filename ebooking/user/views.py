@@ -44,11 +44,13 @@ class RoomTypeList(generics.ListCreateAPIView):
     queryset = Room_type.objects.all()
     serializer_class = RoomTypeSerializer
  
+
+#  ส่วนที่ดึงข้อมูลมาห้องมาเพื่อที่จะแสดงในหน้าindex แล้วก็ทำajax 
 class RoomFilter(generics.RetrieveAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
-    def isEqual(self, room):
+    def isEqual(self, room):                            #เช็คว่าห้องที่
         return room['room_type'] == self.type
     
 
@@ -59,7 +61,7 @@ class RoomFilter(generics.RetrieveAPIView):
             if self.type:
                 room = Room.objects.all()
                 serializer = RoomSerializer(room, many=True)
-                filter_data = filter(self.isEqual, serializer.data)
+                filter_data = filter(self.isEqual, serializer.data)   #แปลงข้อมูลเป็นjason
             return Response(filter_data)
         except Exception as e:
             return Response({
@@ -562,7 +564,7 @@ def accept(request, bl_id):
             stu.staff_date = now
             stu.staff_user_id_id = staff
             stu.save()
-            if stu.staff_result == '2' and stu.staff_result == '2':
+            if stu.teacher_result == '2' and stu.staff_result == '2':
                 book.status = '2'
                 book.save()
                 print('===============3==================')

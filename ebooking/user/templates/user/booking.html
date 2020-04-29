@@ -6,7 +6,7 @@
 <style>
     .my-custom-scrollbar {
         position: relative;
-        height: 470px;
+        height: 400px;
         overflow: auto;
         overflow-x: hidden;
     }
@@ -40,7 +40,7 @@
 <br><br>
 
 
-<div class="container bg-light shadow p-3" style="height: 650px;">
+<div class="container bg-light shadow p-3" >
     <!-- container-->
     <center>
         <h2>คำร้องจอง {{room.name}}</h2>
@@ -63,15 +63,17 @@
     </center>
     <hr class="my-4">
 
-
+    
 
     <form method="POST" action="{% url 'booking' rm_id %}">
         {% csrf_token %}
         <div id="tab1" class="table-wrapper-scroll-y my-custom-scrollbar">
             <!--  tab 1-->
 
-
-
+            <div class="">
+                <button type="button" class="btn btn-outline-warning" id="add_more" >เพิ่มวัน</button>
+            </div>
+            
             <div id="form_set">
                 {{ formset.management_form }} {% for eachForm in formset.forms %} {{form.non_field_errors}}
                 {{form.errors}}
@@ -91,12 +93,11 @@
                         {{ eachForm.end_time }}
 
                     </div>
-                    <div>
-                        <button type="button" class="btn btn-outline-warning" id="add_more">เพิ่มวัน</button>
-                    </div>
+                    
                 </div>
 
             </div>
+          
             {% endfor %}
 
 
@@ -119,6 +120,7 @@
                 </div>
 
             </div>
+          
 
             <div class="form-group" id="form_set">
                 <div class='no_error'>
@@ -191,21 +193,6 @@
 <!-- container-->
 
 
-
-
-<!-- <script>
-
-var header = document.getElementById("myDIV");
-var btns = header.getElementsByClassName("btn");
-for (var i = 0; i < btns.length; i++) {
-  btns[i].addEventListener("click", function() {
-  var current = document.getElementsByClassName("active");
-  current[0].className = current[0].className.replace(" active", "");
-  this.className += " active";
-  });
-}
-
-</script> -->
 
 <script>
 

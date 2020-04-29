@@ -26,9 +26,9 @@
     <table class="table table-hover" >
         <thead >
           <tr>
-            <th scope="col" style="width: 10%;" >ชื่อห้อง</th>
-            <th scope="col" style="width: 10%;" >วันที่</th>
-            <th scope="col" style="width: 10%;" >เวลา</th>
+            <th scope="col" style="width: 5%;" >ชื่อห้อง</th>
+            <th scope="col" style="width: 30%;" >วันที่ส่งคำร้อง</th>
+       
             <th scope="col" style="width: 5%;" ></th>
 
            
@@ -41,8 +41,8 @@
           {% if bl.booking_id.user_id.id == user_id %}
           <tr>
             <td>{{bl.room_id.name}}</td> 
-            <td>{{bl.bookdate}}</td>
-            <td>{{bl.start_time |time:'H:i'}} - {{bl.end_time |time:'H:i'}}</td>
+            <td>{{bl.booking_id.date}}</td>
+   
             <td><a href="{% url 'detail' bl.list_no %}"><button type="submit" class="btn btn-warning" style="float: right;"><span class="oi oi-document"></span></button></a></td>
           </tr>
           {% endif %}

@@ -24,8 +24,8 @@
         <thead >
           <tr>
             <th scope="col">ชื่อห้อง</th>
-            <th scope="col">วันที่</th>
-            <th scope="col">เวลา</th>
+            <th scope="col">วันที่ส่งคำร้อง</th>
+ 
             <th scope="col"></th>
 
            
@@ -37,10 +37,10 @@
         {% for bl in all_booklist %}
         {% if bl.booking_id.user_id.id == user_id %}
           <tr>
-            <td >{{bl.room_id.name}}</td> 
-            <td style="width: 30%">{{bl.bookdate}}</td>
-            <td style="width: 25%">{{bl.start_time |time:'H:i'}} - {{bl.end_time |time:'H:i'}}</td>
-            <td style="width: 20%">
+            <td style="width: 10%">{{bl.room_id.name}}</td> 
+            <td style="width: 30%">{{bl.booking_id.date}}</td>
+          
+            <td style="width: 10%">
               <a href="{% url 'tracking' bl.list_no %}"><button type="button" class="btn btn-danger">ตรวจสอบ</button></a>
               <a href="{% url 'track_delete' bl.list_no %}"><button type="button" class="btn btn-danger">ลบ</button></a>
 
